@@ -1,0 +1,8 @@
+{
+  "name": "halp-client",
+  "version": "0.1.0",
+  "description": "React JS Client Application for online users",
+  "main": "index.js",
+  "author": "Derek Wang, Alex Gilbert, Davin Lee, Kanon Shibata",
+  "license": "MIT"
+}
