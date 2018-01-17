@@ -5,6 +5,4 @@ go:
   - master
 
 env:
-  - ADDR=":443"
-  - TLSCERT="/server/gateway/tls/fullchain.pem"
-  - TLSKEY="/server/gateway/tls/privkey.pem"
+  - ADDR=":443" TLSCERT="/server/gateway/tls/fullchain.pem" TLSKEY="/server/gateway/tls/privkey.pem"
