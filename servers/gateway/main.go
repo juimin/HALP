@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+
+	"github.com/JuiMin/HALP/servers/gateway/handlers"
 )
 
 func main() {
@@ -26,4 +30,23 @@ func main() {
 		// Exit with a non zero exit code
 		os.Exit(1)
 	}
+
+	// Create a new mux to start the server
+	mux := http.NewServeMux()
+
+	// TODO: DEFINE HANDLERS
+
+	// Default Root handling
+	mux.HandleFunc("/", handlers.RootHandler)
+
+	// CORS Handling
+	// This takes over for the mux after it has done everything the server needs
+	corsHandler := handlers.NewCORSHandler(mux)
+	fmt.Println("CORS Mounted Successfully")
+
+	// Notify that the server is started
+	fmt.Printf("Server started on port %s\n", port)
+
+	// Start the listener with TLS, logging when errors occur
+	log.Fatal(http.ListenAndServeTLS(port, tlscert, tlskey, corsHandler))
 }
