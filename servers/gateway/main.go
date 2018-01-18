@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/juimin/HALP/server/gateway/handlers"
+	"github.com/JuiMin/HALP/servers/gateway/handlers"
 )
 
 func main() {
