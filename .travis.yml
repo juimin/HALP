@@ -4,6 +4,9 @@ go:
   - 1.9.X
   - master
 
+go_import_path:
+  - github.com/JuiMin/HALP
+
 before_install: ./server/gateway/scripts/gencert.sh
 
 env:
