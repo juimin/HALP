@@ -1,0 +1,4 @@
+# Ignore these files when pushing to docker
+
+# We don't need testing scripts in the container
+./scripts
