@@ -48,6 +48,11 @@ func main() {
 		DB:       0,  //use default DB
 	})
 
+	// temp usage of redisClient so the build doesn't die
+	if redisClient != nil {
+		fmt.Println("The client is there lol")
+	}
+
 	// Create a new redis store
 	// Set the session store to be a redis store with the given time duration
 	// redisSess := sessions.NewRedisStore(redisClient, time.Duration(time.Second)*time.Second)
