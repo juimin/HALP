@@ -20,15 +20,14 @@ var bcryptCost = 13
 
 // User represents a user account in the database
 type User struct {
-	ID          bson.ObjectId `json:"id" bson:"_id"`
-	Email       string        `json:"email"`
-	PassHash    []byte        `json:"-"` // Stored, but not encoded to clients
-	UserName    string        `json:"userName"`
-	FirstName   string        `json:"firstName"`
-	LastName    string        `json:"lastName"`
-	PhotoURL    string        `json:"photoURL"`
-	Occupation  string        `json:"occupation"`
-	Specialties []string      `json:"specialties"` // List representation of expert level categories
+	ID         bson.ObjectId `json:"id" bson:"_id"`
+	Email      string        `json:"email"`
+	PassHash   []byte        `json:"-"` // Stored, but not encoded to clients
+	UserName   string        `json:"userName"`
+	FirstName  string        `json:"firstName"`
+	LastName   string        `json:"lastName"`
+	PhotoURL   string        `json:"photoURL"`
+	Occupation string        `json:"occupation"`
 }
 
 // Credentials represents user sign-in credentials
@@ -104,18 +103,6 @@ func (nu *NewUser) Validate() error {
 //ToUser converts the NewUser to a User, setting the
 //PhotoURL and PassHash fields appropriately
 func (nu *NewUser) ToUser() (*User, error) {
-	//TODO: set the PhotoURL field of the new User to
-	//the Gravatar PhotoURL for the user's email address.
-	//see https://en.gravatar.com/site/implement/hash/
-	//and https://en.gravatar.com/site/implement/images/
-
-	//TODO: also set the ID field of the new User
-	//to a new bson ObjectId
-	//http://godoc.org/labix.org/v2/mgo/bson
-
-	//TODO: also call .SetPassword() to set the PassHash
-	//field of the User to a hash of the NewUser.Password
-
 	// Validate the new user object to confirm that we can convert it
 	// into a valid user
 	err := nu.Validate()
@@ -135,8 +122,8 @@ func (nu *NewUser) ToUser() (*User, error) {
 		UserName:   nu.UserName,
 		FirstName:  nu.FirstName,
 		LastName:   nu.LastName,
-		ID:         bson.NewObjectId(),
-		PhotoURL:   gravatarBasePhotoURL + emailHash,
+		ID:         bson.NewObjectId(),               // Generate a new bson object ID
+		PhotoURL:   gravatarBasePhotoURL + emailHash, // Gravatar for the given email
 		Occupation: nu.Occupation,
 	}
 
@@ -146,12 +133,9 @@ func (nu *NewUser) ToUser() (*User, error) {
 	return user, nil
 }
 
-//FullName returns the user's full name, in the form:
-// "<FirstName> <LastName>"
-//If either first or last name is an empty string, no
-//space is put betweeen the names
+// FullName outputs the full name of the given user
+// Empty string is returned if no name is seen
 func (u *User) FullName() string {
-	//TODO: implement according to comment above
 	if len(u.FirstName) > 0 {
 		if len(u.LastName) > 0 {
 			return u.FirstName + " " + u.LastName
@@ -164,11 +148,10 @@ func (u *User) FullName() string {
 	return ""
 }
 
-//SetPassword hashes the password and stores it in the PassHash field
+// SetPassword hashes the password and stores it in the PassHash field
 func (u *User) SetPassword(password string) error {
-	//TODO: use the bcrypt package to generate a new hash of the password
-	//https://godoc.org/golang.org/x/crypto/bcrypt
-
+	// use the bcrypt package to generate a new hash of the password
+	// https://godoc.org/golang.org/x/crypto/bcrypt
 	if len(password) < 6 {
 		return fmt.Errorf("Password length much be 6 or greater")
 	}
@@ -198,15 +181,30 @@ func (u *User) Authenticate(password string) error {
 
 //ApplyUpdates applies the updates to the user. An error
 //is returned if the updates are invalid
-func (u *User) ApplyUpdates(updates *Updates) error {
+func (u *User) ApplyUpdates(updates *UserUpdate) error {
 	//TODO: set the fields of `u` to the values of the related
 	//field in the `updates` struct, enforcing the following rules:
 	//- the FirstName must be non-zero-length
 	//- the LastName must be non-zero-length
 	if len(updates.FirstName) == 0 || len(updates.LastName) == 0 {
-		return fmt.Errorf("Invalid updates. First and last name must both have a non-zero length")
+		return fmt.Errorf("Invalid input. First and last name must both have a non-zero length")
 	}
+
+	// We can't deal with empty emails either because this is not optional
+	if len(updates.Email) == 0 {
+		return fmt.Errorf("Invalid Input. Email cannot be empty")
+	}
+
+	// We aren't dealing with occupation because it is optional
 	u.FirstName = updates.FirstName
 	u.LastName = updates.LastName
+	u.Email = updates.Email
+
+	return nil
+}
+
+// PassUpdate allows for the changing of a password given knowledge of the old password
+func (u *User) PassUpdate(updates *PasswordUpdate) error {
+	// TODO finish this
 	return nil
 }

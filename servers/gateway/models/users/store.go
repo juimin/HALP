@@ -30,7 +30,10 @@ type Store interface {
 	Insert(newUser *NewUser) (*User, error)
 
 	//Update applies UserUpdates to the given user ID
-	Update(userID bson.ObjectId, updates *Updates) error
+	UserUpdate(userID bson.ObjectId, updates *UserUpdate) error
+
+	// Update applies password changes
+	PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) error
 
 	//Delete deletes the user with the given ID
 	Delete(userID bson.ObjectId) error
