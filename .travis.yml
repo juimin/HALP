@@ -12,5 +12,4 @@ env:
   - ADDR=":443" TLSCERT="/server/gateway/tls/fullchain.pem" TLSKEY="/server/gateway/tls/privkey.pem" COVERALLS_TOKEN="pXG7s1nhA2iTD6qlq7P1A964rFmZetMRM"
 
 script:
-  - ./servers/gateway/scripts/gencert.sh
   - $GOPATH/bin/goveralls -service=travis-ci
