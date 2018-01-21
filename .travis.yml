@@ -6,6 +6,7 @@ go:
   - 1.9
 
 before_install: 
+  - .$GOPATH/src/github.com/JuiMin/HALP/server/gateway/scripts/gencert.sh
   - go get github.com/mattn/goveralls
 
 env:
