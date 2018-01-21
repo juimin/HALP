@@ -12,7 +12,7 @@ type CORSHandler struct {
 // ServeHTTP defines what the CORS handler does when an http request is passed through it
 func (ch *CORSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Check if the origin of the request is from somewhere we don't like
-	if r.Header.Get("Origin") == "bad url" {
+	if r.Header.Get("Origin") == "http://evil.com" {
 		http.Error(w, "Sorry, bad request blocked", http.StatusUnauthorized)
 		return
 	}
