@@ -9,7 +9,7 @@ before_install:
   - go get github.com/mattn/goveralls
 
 env:
-  - ADDR=":443" TLSCERT="$GOPATH/src/github.com/JuiMin/HALP/server/gateway/tls/fullchain.pem" TLSKEY="$GOPATH/src/github.com/JuiMin/HALP/server/gateway/tls/privkey.pem" COVERALLS_TOKEN="pXG7s1nhA2iTD6qlq7P1A964rFmZetMRM"
+  - ADDR=":4089" TLSCERT="$GOPATH/src/github.com/JuiMin/HALP/server/gateway/tls/fullchain.pem" TLSKEY="$GOPATH /src/github.com/JuiMin/HALP/server/gateway/tls/privkey.pem" COVERALLS_TOKEN="pXG7s1nhA2iTD6qlq7P1A964rFmZetMRM"
 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
