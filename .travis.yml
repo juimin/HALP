@@ -5,7 +5,8 @@ sudo: false
 go:
   - 1.9
 
-before_install: 
+before_install:
+  - ./$GOPATH/src/github.com/JuiMin/servers/gateway/scripts/gencert.sh
   - go get github.com/mattn/goveralls
 
 env:
