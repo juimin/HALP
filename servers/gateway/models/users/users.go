@@ -60,7 +60,6 @@ type UserUpdate struct {
 
 // PasswordUpdate represents requirements for changing the user's password
 type PasswordUpdate struct {
-	OldPassword     string `json:"oldPassword"`
 	NewPassword     string `json:"newPassword"`
 	NewPasswordConf string `json:"newPasswordConf"`
 }
@@ -195,16 +194,35 @@ func (u *User) ApplyUpdates(updates *UserUpdate) error {
 		return fmt.Errorf("Invalid Input. Email cannot be empty")
 	}
 
+	// Check Email valid
+	if _, err := mail.ParseAddress(updates.Email); err != nil {
+		return fmt.Errorf("Invalid input. Email not a valid email")
+	}
+
 	// We aren't dealing with occupation because it is optional
 	u.FirstName = updates.FirstName
 	u.LastName = updates.LastName
 	u.Email = updates.Email
+	u.Occupation = updates.Occupation
 
 	return nil
 }
 
 // PassUpdate allows for the changing of a password given knowledge of the old password
 func (u *User) PassUpdate(updates *PasswordUpdate) error {
-	// TODO finish this
+	// The user should be authenticated already
+	// Check password and password conf
+	if len(updates.NewPassword) == 0 || len(updates.NewPasswordConf) == 0 {
+		return fmt.Errorf("Invalid Input: New Password cannot be length 0")
+	}
+
+	if subtle.ConstantTimeCompare([]byte(updates.NewPassword), []byte(updates.NewPasswordConf)) != 1 {
+		return fmt.Errorf("Password and password conf do not match")
+	}
+
+	// Set Password since we confirmed
+	u.SetPassword(updates.NewPassword)
+
+	// No problems setting the new password so we can return no error
 	return nil
 }
