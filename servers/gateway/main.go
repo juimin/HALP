@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
+	"github.com/go-redis/redis"
 )
 
 func main() {
@@ -30,6 +31,31 @@ func main() {
 		// Exit with a non zero exit code
 		os.Exit(1)
 	}
+
+	// Connection to the Session Store
+	redisAddr := os.Getenv("REDISADDR")
+
+	// Check redis addr being set in the terminal
+	if len(redisAddr) == 0 {
+		// Default to localhost
+		redisAddr = "localhost:6379"
+	}
+
+	// Prepare the redis client
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     redisAddr,
+		Password: "", //no password set
+		DB:       0,  //use default DB
+	})
+
+	// temp usage of redisClient so the build doesn't die
+	if redisClient != nil {
+		fmt.Println("The client is there lol")
+	}
+
+	// Create a new redis store
+	// Set the session store to be a redis store with the given time duration
+	// redisSess := sessions.NewRedisStore(redisClient, time.Duration(time.Second)*time.Second)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
