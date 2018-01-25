@@ -20,9 +20,6 @@ type Store interface {
 	// GetByID returns the User with the given ID
 	GetByID(id bson.ObjectId) (*User, error)
 
-	// GetByIDs gets multiple users by their ids
-	GetByIDs(id []*bson.ObjectId) ([]*User, error)
-
 	//GetByUserName returns the User with the given Username
 	GetByUserName(username string) (*User, error)
 
