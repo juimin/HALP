@@ -122,3 +122,50 @@ func TestInsert(t *testing.T) {
 		}
 	}
 }
+
+func TestGetByEmail(t *testing.T) {
+
+	cases := []struct {
+		name           string
+		email          string
+		expectedOutput error
+	}{
+		{
+			name:           "Valid User Request - Known User",
+			email:          "test@test.com",
+			expectedOutput: nil,
+		},
+		{
+			name:           "Valid User Request - User Doesn't Exist",
+			email:          "test@gg.com",
+			expectedOutput: fmt.Errorf("error getting users by email: %v", "not found"),
+		},
+		{
+			name:           "Valid User Request - No Search  Input",
+			email:          "",
+			expectedOutput: fmt.Errorf("error getting users by email: %v", "not found"),
+		},
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	for _, c := range cases {
+		_, err := mongoStore.GetByEmail(c.email)
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %v but got %v", c.name, expected, errText)
+		}
+	}
+}
