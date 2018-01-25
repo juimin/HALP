@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"gopkg.in/mgo.v2/bson"
+
 	mgo "gopkg.in/mgo.v2"
 )
-
-//TODO: add tests for the various functions in user.go, as described in the assignment.
-//use `go test -cover` to ensure that you are covering all or nearly all of your code paths.
 
 func TestNewMongoStore(t *testing.T) {
 
@@ -203,6 +202,64 @@ func TestGetByUserName(t *testing.T) {
 
 	for _, c := range cases {
 		_, err := mongoStore.GetByUserName(c.username)
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %v but got %v", c.name, expected, errText)
+		}
+	}
+}
+
+func TestGetByID(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Errorf("Error putting the user into the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		expectedOutput error
+	}{
+		{
+			name:           "Valid User Request - Known User",
+			id:             usr.ID,
+			expectedOutput: nil,
+		},
+		{
+			name:           "Valid User Request - User Doesn't Exist",
+			id:             bson.NewObjectId(),
+			expectedOutput: fmt.Errorf("error getting users by id: %v", "not found"),
+		},
+	}
+
+	for _, c := range cases {
+		_, err = mongoStore.GetByID(c.id)
 		errText := ""
 		expected := ""
 		if err != nil {

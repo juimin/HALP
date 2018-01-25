@@ -86,26 +86,10 @@ func (s *MongoStore) GetByID(id bson.ObjectId) (*User, error) {
 	user := &User{}
 	filter := &idFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter).One(user); err != nil {
+	if err := col.FindId(filter.ID).One(user); err != nil {
 		return nil, fmt.Errorf("error getting users by id: %v", err)
 	}
 	return user, nil
-}
-
-// GetByIDs takes a slice of user ids and returns the user objects
-func (s *MongoStore) GetByIDs(ids []*bson.ObjectId) ([]*User, error) {
-	col := s.session.DB(s.dbname).C(s.colname)
-	output := []*User{}
-	for _, id := range ids {
-		var user User
-		// filter := &idFilter{id}
-		if err := col.Find(bson.M{"_id": id}).One(&user); err != nil {
-			fmt.Printf("...error getting users by id: %v\n", err)
-		} else {
-			output = append(output, &user)
-		}
-	}
-	return output, nil
 }
 
 // Delete removes a user from the database
