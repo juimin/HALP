@@ -1,7 +1,6 @@
 package users
 
 import (
-	"errors"
 	"fmt"
 
 	mgo "gopkg.in/mgo.v2"
@@ -105,28 +104,6 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 
 // UserUpdate updates the user with the general information
 func (s *MongoStore) UserUpdate(userID bson.ObjectId, updates *UserUpdate) error {
-	if userID == "" {
-		return errors.New("ID cannot be empty")
-	}
-
-	change := mgo.Change{
-		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
-		ReturnNew: true,
-	}
-	user := &User{}
-	col := s.session.DB(s.dbname).C(s.colname)
-	if _, err := col.FindId(userID).Apply(change, user); err != nil {
-		return err
-	}
-	return nil
-}
-
-// PassUpdate  updates user level to staff
-func (s *MongoStore) PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) error {
-	if userID == "" {
-		return errors.New("ID cannot be empty")
-	}
-
 	change := mgo.Change{
 		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
 		ReturnNew: true,

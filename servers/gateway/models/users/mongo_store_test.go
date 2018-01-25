@@ -331,3 +331,97 @@ func TestDelete(t *testing.T) {
 		}
 	}
 }
+
+// TestUserUpdate tests the updating of user information
+func TestUserUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		email          string
+		firstname      string
+		lastname       string
+		occupation     string
+		expectedOutput error
+	}{
+		{
+			name:           "Test Updating User with Valid Update",
+			id:             usr.ID,
+			email:          "newemail@gmail.com",
+			firstname:      "newname",
+			lastname:       "newlastname",
+			occupation:     "newjob",
+			expectedOutput: nil,
+		},
+		{
+			name:           "Test User Not found",
+			id:             bson.NewObjectId(),
+			email:          "got nothing",
+			firstname:      "got nothing",
+			lastname:       "got nothing",
+			occupation:     "got nothing",
+			expectedOutput: fmt.Errorf("not found"),
+		},
+	}
+
+	for _, c := range cases {
+		err = mongoStore.UserUpdate(c.id, &UserUpdate{
+			Email:      c.email,
+			FirstName:  c.firstname,
+			LastName:   c.lastname,
+			Occupation: c.occupation,
+		})
+		// Test Error
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %v but got %v", c.name, expected, errText)
+		}
+		// Test Results
+		usr, err := mongoStore.GetByID(c.id)
+
+		if err == nil && usr != nil {
+			if usr.Occupation != c.occupation {
+				t.Errorf("%s Failed: Occupation Expected to be %s but found %s", c.name, c.occupation, usr.Occupation)
+			}
+			if usr.Email != c.email {
+				t.Errorf("%s Failed: Email Expected to be %s but found %s", c.name, c.email, usr.Email)
+			}
+			if usr.FirstName != c.firstname {
+				t.Errorf("%s Failed: First Name Expected to be %s but found %s", c.name, c.firstname, usr.FirstName)
+			}
+			if usr.LastName != c.lastname {
+				t.Errorf("%s Failed: Last Name Expected to be %s but found %s", c.name, c.lastname, usr.LastName)
+			}
+		}
+	}
+}
