@@ -273,3 +273,61 @@ func TestGetByID(t *testing.T) {
 		}
 	}
 }
+
+func TestDelete(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Errorf("Error putting the user into the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		expectedOutput error
+	}{
+		{
+			name:           "Valid User Request - Known User",
+			id:             usr.ID,
+			expectedOutput: nil,
+		},
+		{
+			name:           "Valid User Request - User Doesn't Exist",
+			id:             bson.NewObjectId(),
+			expectedOutput: fmt.Errorf("%v", "not found"),
+		},
+	}
+
+	for _, c := range cases {
+		err = mongoStore.Delete(c.id)
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %v but got %v", c.name, expected, errText)
+		}
+	}
+}
