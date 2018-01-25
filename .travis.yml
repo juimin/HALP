@@ -13,3 +13,5 @@ env:
 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
+
+services: mongodb
