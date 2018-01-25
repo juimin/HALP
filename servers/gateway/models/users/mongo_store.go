@@ -7,6 +7,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// Define Filters for mongo search
 type emailFilter struct {
 	Email string
 }
@@ -19,9 +20,11 @@ type userNameFilter struct {
 	UserName string
 }
 
+// Define Updates for update statements
 type updateUser struct {
 	FirstName string
 	LastName  string
+	Email     string
 }
 
 // MongoStore outlines the storage struct for mongo db
