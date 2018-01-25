@@ -41,11 +41,84 @@ func TestNewMongoStore(t *testing.T) {
 			mongoSess, err := mgo.Dial("localhost")
 			if err != nil {
 				t.Errorf("Error on %s: Expected %s but got %s", c.name, c.expectedOutput, err.Error())
+			} else {
+				mongoStore = NewMongoStore(mongoSess, "users", "user") // Sess, database, collection
 			}
-			mongoStore = NewMongoStore(mongoSess, "users", "user")
 		}
 		if mongoStore == nil {
 			t.Errorf("nil mongostore")
+		}
+	}
+}
+
+// Test Insertion of User into the database
+func TestInsert(t *testing.T) {
+
+	cases := []struct {
+		name           string
+		email          string
+		password       string
+		passwordConf   string
+		username       string
+		firstname      string
+		lastname       string
+		occupation     string
+		expectedOutput error
+	}{
+		{
+			name:           "Valid New User",
+			email:          "test@test.com",
+			password:       "potato123",
+			passwordConf:   "potato123",
+			username:       "test23",
+			firstname:      "testname",
+			lastname:       "testlastname",
+			occupation:     "Welder",
+			expectedOutput: nil,
+		},
+		{
+			name:           "Invalid User Error",
+			email:          "",
+			password:       "potato123",
+			passwordConf:   "potato123",
+			username:       "test23",
+			firstname:      "testname",
+			lastname:       "testlastname",
+			occupation:     "Welder",
+			expectedOutput: fmt.Errorf("Email does not exist"),
+		},
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	for _, c := range cases {
+		// Define a new user by the input
+		newUser := &NewUser{
+			Email:        c.email,
+			Password:     c.password,
+			PasswordConf: c.passwordConf,
+			UserName:     c.username,
+			FirstName:    c.firstname,
+			LastName:     c.lastname,
+			Occupation:   c.occupation,
+		}
+
+		_, err := mongoStore.Insert(newUser)
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %s but got %s", c.name, c.expectedOutput, err)
 		}
 	}
 }
