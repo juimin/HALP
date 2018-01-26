@@ -127,7 +127,7 @@ func (s *MongoStore) PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) e
 	if err != nil {
 		return fmt.Errorf("Bcrypt error")
 	}
-	update := &passUpdate{
+	update := &PassUpdate{
 		PassHash: pass,
 	}
 	change := mgo.Change{
