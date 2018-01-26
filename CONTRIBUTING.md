@@ -16,6 +16,6 @@
 8. REVIEWER will merge the code upon approval
 
 ## Pull Request Merge Requirements
-- Code Coverage > 90%
+- Code Coverage > 80%
 - Build must be passing
 - Ideally 2 Code Reviews (sometimes 1 will be sufficient)
