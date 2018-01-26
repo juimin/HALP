@@ -5,8 +5,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
+	"github.com/go-redis/redis"
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -214,7 +217,17 @@ func TestContextHandler(t *testing.T) {
 		}
 
 		mongoStore := users.NewMongoStore(mongoSession, "test_users", "user")
-		_, err = NewContextReceiver(c.key, mongoStore)
+
+		// Prepare the redis client
+		redisClient := redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "", //no password set
+			DB:       1,  //use default DB
+		})
+
+		redisStore := sessions.NewRedisStore(redisClient, time.Minute*30)
+
+		_, err = NewContextReceiver(c.key, mongoStore, redisStore)
 
 		if err != nil {
 			actualErr = err.Error()
