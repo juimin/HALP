@@ -425,3 +425,92 @@ func TestUserUpdate(t *testing.T) {
 		}
 	}
 }
+
+func TestPassUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		newPass        string
+		newPassConf    string
+		expectedOutput error
+	}{
+		{
+			name:           "Test Updating User with Valid Update",
+			id:             usr.ID,
+			newPass:        "potato2",
+			newPassConf:    "potato2",
+			expectedOutput: nil,
+		},
+		{
+			name:           "Test User Not found",
+			id:             bson.NewObjectId(),
+			newPass:        "tomato",
+			newPassConf:    "tomato",
+			expectedOutput: fmt.Errorf("not found"),
+		},
+		{
+			name:           "New Password does not match conf",
+			id:             bson.NewObjectId(),
+			newPass:        "facebook",
+			newPassConf:    "google",
+			expectedOutput: fmt.Errorf("Password and password conf do not match"),
+		},
+		{
+			name:           "New Password is not given",
+			id:             bson.NewObjectId(),
+			newPass:        "",
+			newPassConf:    "",
+			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
+		},
+		{
+			name:           "New Password Conf is not given",
+			id:             bson.NewObjectId(),
+			newPass:        "google",
+			newPassConf:    "",
+			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
+		},
+	}
+
+	for _, c := range cases {
+		err = mongoStore.PassUpdate(c.id, &PasswordUpdate{
+			NewPassword:     c.newPass,
+			NewPasswordConf: c.newPassConf,
+		})
+		// Test Error
+		errText := ""
+		expected := ""
+		if err != nil {
+			errText = err.Error()
+		}
+		if c.expectedOutput != nil {
+			expected = c.expectedOutput.Error()
+		}
+		if expected != errText {
+			t.Errorf("%s Failed: Expected %v but got %v", c.name, expected, errText)
+		}
+	}
+}

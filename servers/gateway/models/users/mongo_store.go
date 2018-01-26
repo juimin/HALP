@@ -1,8 +1,10 @@
 package users
 
 import (
+	"crypto/subtle"
 	"fmt"
 
+	"golang.org/x/crypto/bcrypt"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -20,11 +22,8 @@ type userNameFilter struct {
 	UserName string
 }
 
-// Define Updates for update statements
-type updateUser struct {
-	FirstName string
-	LastName  string
-	Email     string
+type passUpdate struct {
+	PassHash []byte
 }
 
 // MongoStore outlines the storage struct for mongo db
@@ -106,6 +105,37 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 func (s *MongoStore) UserUpdate(userID bson.ObjectId, updates *UserUpdate) error {
 	change := mgo.Change{
 		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+	user := &User{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return err
+	}
+	return nil
+}
+
+// PassUpdate updates the password of the given user
+func (s *MongoStore) PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) error {
+	// The user should be authenticated already
+	// Check password and password conf
+	if len(updates.NewPassword) == 0 || len(updates.NewPasswordConf) == 0 {
+		return fmt.Errorf("Invalid Input: New Password cannot be length 0")
+	}
+
+	if subtle.ConstantTimeCompare([]byte(updates.NewPassword), []byte(updates.NewPasswordConf)) != 1 {
+		return fmt.Errorf("Password and password conf do not match")
+	}
+
+	pass, err := bcrypt.GenerateFromPassword([]byte(updates.NewPassword), bcryptCost)
+	if err != nil {
+		return fmt.Errorf("Bcrypt error")
+	}
+	update := &passUpdate{
+		PassHash: pass,
+	}
+	change := mgo.Change{
+		Update:    bson.M{"$set": update}, //bson.M is map of string, to some value
 		ReturnNew: true,
 	}
 	user := &User{}
