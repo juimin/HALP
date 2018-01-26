@@ -1,7 +1,8 @@
-#!/usr/bin/env bash
+
+#!/usr/bin/env bash
 
 # Move to the above directory
-cd ../
+cd $GOPATH/src/github.com/JuiMin/HALP/servers/gateway/
 
 # Create a tls folder
 mkdir -p tls

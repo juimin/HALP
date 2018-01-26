@@ -3,14 +3,17 @@ language: go
 sudo: false
 
 go:
-  - 1.9.X
+  - 1.9
 
-before_install: 
-  - ./servers/gateway/scripts/gencert.sh
+before_install:
   - go get github.com/mattn/goveralls
 
 env:
-  - ADDR=":443" TLSCERT="/server/gateway/tls/fullchain.pem" TLSKEY="/server/gateway/tls/privkey.pem" COVERALLS_TOKEN="pXG7s1nhA2iTD6qlq7P1A964rFmZetMRM"
+  - ADDR=":4089" TLSCERT="$GOPATH/src/github.com/JuiMin/HALP/server/gateway/tls/fullchain.pem" TLSKEY="$GOPATH /src/github.com/JuiMin/HALP/server/gateway/tls/privkey.pem" COVERALLS_TOKEN="pXG7s1nhA2iTD6qlq7P1A964rFmZetMRM"
 
 script:
   - $GOPATH/bin/goveralls -service=travis-ci
+
+services: 
+  - mongodb
+  - redis
