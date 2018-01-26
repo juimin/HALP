@@ -84,6 +84,14 @@ func TestValidateID(t *testing.T) {
 			true,
 		},
 		{
+			"No Validation Key",
+			"If the key used for validation is nothing, there should be an error",
+			"test key",
+			"",
+			nil,
+			true,
+		},
+		{
 			"Mutated ID Portion",
 			"If the ID portion of the SessionID was mutated after it was generated, it should return an error",
 			"test key",
