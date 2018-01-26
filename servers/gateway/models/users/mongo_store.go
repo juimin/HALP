@@ -22,10 +22,6 @@ type userNameFilter struct {
 	UserName string
 }
 
-type passUpdate struct {
-	PassHash []byte
-}
-
 // MongoStore outlines the storage struct for mongo db
 type MongoStore struct {
 	session *mgo.Session

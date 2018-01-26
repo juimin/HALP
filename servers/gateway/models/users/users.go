@@ -64,6 +64,11 @@ type PasswordUpdate struct {
 	NewPasswordConf string `json:"newPasswordConf"`
 }
 
+// PassUpdate holds the hashed password for the new pass
+type PassUpdate struct {
+	PassHash []byte
+}
+
 // Validate confirms that a new user contains information that we
 // can work with
 // If everything is good input, we can return nil, else return an
@@ -86,7 +91,7 @@ func (nu *NewUser) Validate() error {
 	}
 
 	// Check password and password conf
-	if subtle.ConstantTimeCompare([]byte(nu.Password), []byte(nu.PasswordConf)) != 1 {
+	if nu.Password != nu.PasswordConf {
 		return fmt.Errorf("Password and password conf do not match")
 	}
 
@@ -165,12 +170,6 @@ func (u *User) SetPassword(password string) error {
 //Authenticate compares the plaintext password against the stored hash
 //and returns an error if they don't match, or nil if they do
 func (u *User) Authenticate(password string) error {
-	//TODO: use the bcrypt package to compare the supplied
-	//password with the stored PassHash
-	//https://godoc.org/golang.org/x/crypto/bcrypt
-	if len(password) == 0 {
-		return fmt.Errorf("Cannot authenticate no password")
-	}
 	err := bcrypt.CompareHashAndPassword(u.PassHash, []byte(password))
 	if err != nil {
 		return fmt.Errorf("Bcrypt hash error")
@@ -181,10 +180,6 @@ func (u *User) Authenticate(password string) error {
 //ApplyUpdates applies the updates to the user. An error
 //is returned if the updates are invalid
 func (u *User) ApplyUpdates(updates *UserUpdate) error {
-	//TODO: set the fields of `u` to the values of the related
-	//field in the `updates` struct, enforcing the following rules:
-	//- the FirstName must be non-zero-length
-	//- the LastName must be non-zero-length
 	if len(updates.FirstName) == 0 || len(updates.LastName) == 0 {
 		return fmt.Errorf("Invalid input. First and last name must both have a non-zero length")
 	}
