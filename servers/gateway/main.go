@@ -10,35 +10,60 @@ import (
 	"github.com/go-redis/redis"
 )
 
-func main() {
-	// Get the port addressd that we want the gateway to run on
-	// This should be set to the envirnoment variable in the container we run this on
-	port := os.Getenv("ADDR")
+// getEnvVariable takes in an environment variable as a string
+// and checks if the variable is set, if it is not set, return the defaul
+// If the error message is set, display and exit since these are vital
+func getEnvVariable(name string, defaultValue string, errorMessage string) (string, error) {
+	envVariable := os.Getenv(name)
+	if len(envVariable) == 0 {
+		// Check if a default is set
+		if len(defaultValue) != 0 {
+			return defaultValue, nil
+		}
+		return "", fmt.Errorf(errorMessage)
+	}
+	return envVariable, nil
+}
 
+func main() {
 	// Check if the port is set
+	port, err := getEnvVariable("ADDR", ":443", "Port Variable Not Set")
+
 	// If it is not set, default the port to be the 443 Https ENABLED port
-	if len(port) == 0 {
-		port = ":443"
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "ADDR", err)
+		os.Exit(1)
 	}
 
 	// Get the TLS Cert and TLS Key from the environment variables
-	tlskey := os.Getenv("TLSKEY")
-	tlscert := os.Getenv("TLSCERT")
+	tlskey, err := getEnvVariable("TLSKEY", "", "TLS Key not Set")
 
-	// Check that both the TLS Cert and the TLS Key are available
-	if len(tlskey) == 0 || len(tlscert) == 0 {
-		fmt.Println("TLS Key or TLS Cert not set")
-		// Exit with a non zero exit code
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSKEY", err)
+		os.Exit(1)
+	}
+
+	tlscert, err := getEnvVariable("TLSCERT", "", "TLS Cert Not Set")
+
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
 		os.Exit(1)
 	}
 
 	// Connection to the Session Store
-	redisAddr := os.Getenv("REDISADDR")
+	redisAddr, err := getEnvVariable("REDISADDR", "localhost:6379", "Redis Address Not Set")
 
-	// Check redis addr being set in the terminal
-	if len(redisAddr) == 0 {
-		// Default to localhost
-		redisAddr = "localhost:6379"
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
+		os.Exit(1)
+	}
+
+	// Connection to the Session Store
+	mongoAddr, err := getEnvVariable("REDISADDR", "localhost:27017", "Mongo Address Not Set")
+
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
+		os.Exit(1)
 	}
 
 	// Prepare the redis client
@@ -48,9 +73,10 @@ func main() {
 		DB:       0,  //use default DB
 	})
 
-	// temp usage of redisClient so the build doesn't die
+	// temp usage of variables so the build doesn't die
 	if redisClient != nil {
 		fmt.Println("The client is there lol")
+		fmt.Printf("%s", mongoAddr)
 	}
 
 	// Create a new redis store
