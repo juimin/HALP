@@ -5,8 +5,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
+	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
+	"github.com/JuiMin/HALP/servers/gateway/models/users"
 	"github.com/go-redis/redis"
 	mgo "gopkg.in/mgo.v2"
 )
@@ -67,6 +70,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Ge tthe variable for the session key
+	sessionKey, err := getEnvVariable("SESSIONKEY", "", "Session Key Not Set")
+
+	if err != nil {
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "SESSIONKEY", err)
+		os.Exit(1)
+	}
+
 	// Prepare the redis client
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
@@ -74,22 +85,19 @@ func main() {
 		DB:       0,  //use default DB
 	})
 
-	// temp usage of variables so the build doesn't die
-	if redisClient != nil {
-		fmt.Println("The client is there lol")
-		fmt.Printf("%s", mongoAddr)
-	}
+	redisStore := sessions.NewRedisStore(redisClient, time.Minute*30)
 
 	// Dial the mongo Server
-	_, err = mgo.Dial(mongoAddr)
+	mongoSession, err := mgo.Dial(mongoAddr)
+	// Check if there was an error dialing the mongo server
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	// Create a new redis store
-	// Set the session store to be a redis store with the given time duration
-	// redisSess := sessions.NewRedisStore(redisClient, time.Duration(time.Second)*time.Second)
+	mongoStore := users.NewMongoStore(mongoSession, "users", "user")
+
+	_, err = handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
