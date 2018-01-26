@@ -8,6 +8,7 @@ import (
 
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
 	"github.com/go-redis/redis"
+	mgo "gopkg.in/mgo.v2"
 )
 
 // getEnvVariable takes in an environment variable as a string
@@ -77,6 +78,13 @@ func main() {
 	if redisClient != nil {
 		fmt.Println("The client is there lol")
 		fmt.Printf("%s", mongoAddr)
+	}
+
+	// Dial the mongo Server
+	_, err = mgo.Dial(mongoAddr)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 
 	// Create a new redis store
