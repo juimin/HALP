@@ -4,22 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 )
 
-//TODO: define HTTP handler functions as described in the
-//assignment description. Remember to use your handler context
-//struct as the receiver on these functions so that you have
-//access to things like the session store and user store.
-
 // UsersHandler handlers requests for the users resource and facilitates
-// account creation	fmt.Printf("success")
 func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) {
-	mx := sync.Mutex{}
 	if r.Method != "POST" {
 		// We only accept post to this handler
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -65,106 +57,11 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 
 			w.WriteHeader(http.StatusCreated)
 			json.NewEncoder(w).Encode(&thisUser)
-			mx.Lock()
-			err = cr.SearchTrie.Insert(thisUser.Email, thisUser.ID, 0)
-			if err != nil {
-				fmt.Errorf("Something was wrong entering trie data on email: %s", thisUser.ID)
-			}
-			err = cr.SearchTrie.Insert(thisUser.FirstName, thisUser.ID, 0)
-			if err != nil {
-				fmt.Errorf("Something was wrong entering trie data on first name: %s", thisUser.ID)
-			}
-			err = cr.SearchTrie.Insert(thisUser.LastName, thisUser.ID, 0)
-			if err != nil {
-				fmt.Errorf("Something was wrong entering trie data on last name: %s", thisUser.ID)
-			}
-			err = cr.SearchTrie.Insert(thisUser.UserName, thisUser.ID, 0)
-			if err != nil {
-				fmt.Errorf("Something was wrong entering trie data on username: %s", thisUser.ID)
-			}
-			mx.Unlock()
-			fmt.Printf("success adding user")
 		} else {
 			fmt.Printf(errorMessage)
 			w.WriteHeader(http.StatusAccepted)
 			w.Write([]byte(errorMessage))
 		}
-	}
-}
-
-// UsersMeHandler gets the current user or updates the current user
-func (cr *ContextReceiver) UsersMeHandler(w http.ResponseWriter, r *http.Request) {
-	mx := sync.Mutex{}
-	if r.Method == "GET" {
-		// Get request gets the current user
-		sid, err := sessions.GetSessionID(r, cr.SigningKey)
-		if err != nil {
-			w.WriteHeader(http.StatusForbidden)
-			fmt.Errorf("Error: Get current session error. %v", err)
-		}
-		state := &SessionState{}
-		err = cr.SessionStore.Get(sid, state)
-		if err != nil {
-			w.WriteHeader(http.StatusForbidden)
-			fmt.Errorf("Error: session store failed to get this sid: %s", sid)
-		}
-		// Encode the state's user into the response
-		json.NewEncoder(w).Encode(state.User)
-	} else if r.Method == "PATCH" {
-		// Patch
-		sid, err := sessions.GetSessionID(r, cr.SigningKey)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-		}
-		// Get current user
-		state := &SessionState{}
-		cr.SessionStore.Get(sid, state)
-
-		// Decode the request body into updates for the user
-		updates := &users.Updates{}
-		json.NewDecoder(r.Body).Decode(updates)
-		err = state.User.ApplyUpdates(updates)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		mx.Lock()
-		err = cr.SearchTrie.Remove(state.User.FirstName)
-		if err != nil {
-			fmt.Errorf("Something was wrong repvomg trie data on first name: %s", state.User.ID)
-		}
-		err = cr.SearchTrie.Remove(state.User.LastName)
-		if err != nil {
-			fmt.Errorf("Something was wrong removing trie data on last name: %s", state.User.ID)
-		}
-		mx.Unlock()
-		// UPdate user in the user store
-		err = cr.UserStore.Update(state.User.ID, updates)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		// Update the session store
-		err = cr.SessionStore.Delete(sid)
-		if err != nil {
-			fmt.Errorf("Could not delete sid from session store")
-		}
-		err = cr.SessionStore.Save(sid, state)
-		if err != nil {
-			fmt.Errorf("Could not save session state to sid")
-		}
-		// Write the new user out
-		json.NewEncoder(w).Encode(state.User)
-		mx.Lock()
-		err = cr.SearchTrie.Insert(state.User.FirstName, state.User.ID, 0)
-		if err != nil {
-			fmt.Errorf("Something was wrong entering trie data on first name: %s", state.User.ID)
-		}
-		err = cr.SearchTrie.Insert(state.User.LastName, state.User.ID, 0)
-		if err != nil {
-			fmt.Errorf("Something was wrong entering trie data on last name: %s", state.User.ID)
-		}
-		mx.Unlock()
-	} else {
-		w.WriteHeader(http.StatusUnauthorized)
 	}
 }
 
