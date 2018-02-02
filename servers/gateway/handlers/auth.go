@@ -7,12 +7,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/info344-a17/challenges-JuiMin/servers/gateway/sessions"
-
-	"github.com/info344-a17/challenges-JuiMin/servers/gateway/models/users"
+	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
+	"github.com/JuiMin/HALP/servers/gateway/models/users"
 )
 
+//TODO: define HTTP handler functions as described in the
+//assignment description. Remember to use your handler context
+//struct as the receiver on these functions so that you have
+//access to things like the session store and user store.
+
 // UsersHandler handlers requests for the users resource and facilitates
+// account creation	fmt.Printf("success")
 func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) {
 	mx := sync.Mutex{}
 	if r.Method != "POST" {
