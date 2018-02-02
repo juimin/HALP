@@ -32,3 +32,6 @@ Master <- Staging <- Development
 Development will be split into each client type (ios, android, web) and the server
 
 Code pushed to a development branch will be merged into staging. If everything passes in staging, it should be automatically merged to master
+
+![flow diagram](https://github.com/JuiMin/HALP/blob/master/development-flow.jpeg)
+
