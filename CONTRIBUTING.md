@@ -27,8 +27,5 @@
 ## Flow
 The project should do something like this so we don't get screwed. (Standard Dev path)
 
-Master <- Staging <- Development
+![flow diagram](https://github.com/JuiMin/HALP/blob/master/development-flow.jpeg)
 
-Development will be split into each client type (ios, android, web) and the server
-
-Code pushed to a development branch will be merged into staging. If everything passes in staging, it should be automatically merged to master
