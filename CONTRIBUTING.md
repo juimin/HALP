@@ -26,6 +26,3 @@
 
 ## Flow
 The project should do something like this so we don't get screwed. (Standard Dev path)
-
-![flow diagram](https://github.com/JuiMin/HALP/blob/master/development-flow.jpeg)
-
