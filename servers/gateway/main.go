@@ -63,7 +63,7 @@ func main() {
 	}
 
 	// Connection to the Session Store
-	mongoAddr, err := getEnvVariable("REDISADDR", "localhost:27017", "Mongo Address Not Set")
+	mongoAddr, err := getEnvVariable("DBADDR", "localhost:27017", "Mongo Address Not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
@@ -87,6 +87,8 @@ func main() {
 
 	redisStore := sessions.NewRedisStore(redisClient, time.Minute*30)
 
+	fmt.Printf("Redis Online...\n")
+
 	// Dial the mongo Server
 	mongoSession, err := mgo.Dial(mongoAddr)
 	// Check if there was an error dialing the mongo server
@@ -97,7 +99,9 @@ func main() {
 
 	mongoStore := users.NewMongoStore(mongoSession, "users", "user")
 
-	_, err = handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
+	fmt.Printf("Mongodb Online...\n")
+
+	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
@@ -106,11 +110,15 @@ func main() {
 
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)
+	mux.HandleFunc("/users", cr.UsersHandler)
+	mux.HandleFunc("/sessions", cr.SessionsHandler)
+	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
 
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
 	corsHandler := handlers.NewCORSHandler(mux)
-	fmt.Println("CORS Mounted Successfully")
+
+	fmt.Println("CORS Mounted Successfully...")
 
 	// Notify that the server is started
 	fmt.Printf("Server started on port %s\n", port)

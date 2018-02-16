@@ -20,6 +20,7 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 		err := json.NewDecoder(r.Body).Decode(newUser)
 		errorMessage := ""
 		canProceed := true
+		// Preflight checks for the new user
 		if err != nil {
 			errorMessage = "Error: could not decode request body"
 		}
@@ -62,6 +63,60 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			w.WriteHeader(http.StatusAccepted)
 			w.Write([]byte(errorMessage))
 		}
+	}
+}
+
+// UsersMeHandler gets the current user or updates the current user
+func (cr *ContextReceiver) UsersMeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		// Get request gets the current user
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			// Could not get the user's session
+			w.WriteHeader(http.StatusForbidden)
+		}
+		state := &SessionState{}
+		err = cr.SessionStore.Get(sid, state)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		}
+		// Encode the state's user into the response
+		json.NewEncoder(w).Encode(state.User)
+	} else if r.Method == "PATCH" {
+		// Patch
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+		}
+		// Get current user
+		state := &SessionState{}
+		cr.SessionStore.Get(sid, state)
+
+		// Decode the request body into updates for the user
+		updates := &users.UserUpdate{}
+		json.NewDecoder(r.Body).Decode(updates)
+		err = state.User.ApplyUpdates(updates)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		// Update user in the user store
+		err = cr.UserStore.UserUpdate(state.User.ID, updates)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		// Update the session store
+		err = cr.SessionStore.Delete(sid)
+		if err != nil {
+			fmt.Printf("Could not delete sid from session store")
+		}
+		err = cr.SessionStore.Save(sid, state)
+		if err != nil {
+			fmt.Printf("Could not save session state to sid")
+		}
+		// Write the new user out
+		json.NewEncoder(w).Encode(state.User)
+	} else {
+		w.WriteHeader(http.StatusUnauthorized)
 	}
 }
 
