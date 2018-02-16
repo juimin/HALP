@@ -5,7 +5,9 @@
 Capstone Project: Providing a mobile solution for community assistance on everyday problems
 
 ## Project Description
-_Someone put something here_
+The purpose of this project is to develop a service that allows users to provide assistance to each other through a mobile first application that allows for heavy use of photos and photo editing. Users can post questions that include a photo that they either take immediately or upload. Upon taking or loading the photo, the user can edit the photo by drawing on it to enhance the image or draw focus to specific segments. Users who wish to answer the question will be able to provide their own or further edits, which will aid them in providing assistance to the original poster.
+
+TLDR: Reddit + Snapchat
 
 ## Development Team
 | Name              | Role(s)                           |
