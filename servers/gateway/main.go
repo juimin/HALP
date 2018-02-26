@@ -58,7 +58,7 @@ func main() {
 	redisAddr, err := getEnvVariable("REDISADDR", "localhost:6379", "Redis Address Not Set")
 
 	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "REDISADDR", err)
 		os.Exit(1)
 	}
 
@@ -66,7 +66,7 @@ func main() {
 	mongoAddr, err := getEnvVariable("DBADDR", "localhost:27017", "Mongo Address Not Set")
 
 	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
+		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "DBADDR", err)
 		os.Exit(1)
 	}
 
