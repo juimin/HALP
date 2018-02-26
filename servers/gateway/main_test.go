@@ -56,3 +56,11 @@ func TestGetEnv(t *testing.T) {
 		}
 	}
 }
+
+func TestMain(t *testing.T) {
+	os.Setenv("ADDR", "localhost:8080")
+	os.Setenv("TLSKEY", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/privkey.pem")
+	os.Setenv("TLSCERT", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/fullchain.pem")
+	os.Setenv("SESSIONKEY", "spUPraqUgethu4AF?x")
+	// main()
+}
