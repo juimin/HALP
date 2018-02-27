@@ -2,6 +2,7 @@ package sessions
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -79,5 +80,120 @@ func TestRedisStore(t *testing.T) {
 
 	if err := store.Get(sid, &stateRet); err != ErrStateNotFound {
 		t.Fatalf("incorrect error when getting state that was deleted: expected %v but got %v", ErrStateNotFound, err)
+	}
+}
+
+func TestNewRedisStore(t *testing.T) {
+	cases := []struct {
+		name           string
+		client         *redis.Client
+		time           time.Duration
+		expectedOutput *RedisStore
+	}{
+		{
+			"Test Invalid Input",
+			nil,
+			time.Hour,
+			nil,
+		},
+	}
+
+	for _, c := range cases {
+		store := NewRedisStore(c.client, c.time)
+		if store != c.expectedOutput {
+			t.Errorf("Error testing redis store generation. Expected %v but got %v", c.expectedOutput, store)
+		}
+	}
+}
+
+func TestSave(t *testing.T) {
+	type sessionState struct {
+		Sval string
+		Ival int
+	}
+	redisaddr := os.Getenv("REDISADDR")
+	if len(redisaddr) == 0 {
+		redisaddr = "127.0.0.1:6379"
+	}
+
+	client := redis.NewClient(&redis.Options{
+		Addr: redisaddr,
+	})
+
+	store := NewRedisStore(client, time.Hour)
+
+	sid, err := NewSessionID("test key")
+	if err != nil {
+		t.Fatalf("Error generating Sid for save test: %v", err)
+	}
+
+	cases := []struct {
+		name          string
+		sid           SessionID
+		state         interface{}
+		expectedError error
+	}{
+		{
+			"Test Invalid Input sid",
+			"",
+			&sessionState{
+				Sval: "testing",
+				Ival: 99,
+			},
+			errors.New("Invalid arguments for Save"),
+		},
+		{
+			"Test Invalid Input session state",
+			sid,
+			nil,
+			errors.New("Invalid arguments for Save"),
+		},
+	}
+
+	for _, c := range cases {
+		err = store.Save(c.sid, c.state)
+		if err != nil {
+			if err.Error() != c.expectedError.Error() {
+				t.Errorf("Error testing redis store generation. Expected %v but got %v", c.expectedError, store)
+			}
+		}
+	}
+}
+
+func TestDelete(t *testing.T) {
+	type sessionState struct {
+		Sval string
+		Ival int
+	}
+	redisaddr := os.Getenv("REDISADDR")
+	if len(redisaddr) == 0 {
+		redisaddr = "127.0.0.1:6379"
+	}
+
+	client := redis.NewClient(&redis.Options{
+		Addr: redisaddr,
+	})
+
+	store := NewRedisStore(client, time.Hour)
+
+	cases := []struct {
+		name          string
+		sid           SessionID
+		expectedError error
+	}{
+		{
+			"Test Invalid Input sid",
+			"",
+			ErrStateNotFound,
+		},
+	}
+
+	for _, c := range cases {
+		err := store.Delete(c.sid)
+		if err != nil {
+			if err.Error() != c.expectedError.Error() {
+				t.Errorf("Error testing redis store generation. Expected %v but got %v", c.expectedError, store)
+			}
+		}
 	}
 }

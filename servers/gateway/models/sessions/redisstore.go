@@ -32,16 +32,10 @@ func NewRedisStore(client *redis.Client, sessionDuration time.Duration) *RedisSt
 	}
 }
 
-//Store implementation
-
 //Save saves the provided `sessionState` and associated SessionID to the store.
 //The `sessionState` parameter is typically a pointer to a struct containing
 //all the data you want to associated with the given SessionID.
 func (rs *RedisStore) Save(sid SessionID, sessionState interface{}) error {
-	//TODO: marshal the `sessionState` to JSON and save it in the redis database,
-	//using `sid.getRedisKey()` for the key.
-	//return any errors that occur along the way.
-
 	if len(sid) == 0 || sessionState == nil {
 		return errors.New("Invalid arguments for Save")
 	}
@@ -85,7 +79,6 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 
 //Delete deletes all state data associated with the SessionID from the store.
 func (rs *RedisStore) Delete(sid SessionID) error {
-	//TODO: delete the data stored in redis for the provided SessionID
 	_, err := rs.Client.Get(sid.getRedisKey()).Result()
 	if err != nil {
 		return ErrStateNotFound
@@ -99,8 +92,5 @@ func (rs *RedisStore) Delete(sid SessionID) error {
 
 //getRedisKey() returns the redis key to use for the SessionID
 func (sid SessionID) getRedisKey() string {
-	//convert the SessionID to a string and add the prefix "sid:" to keep
-	//SessionID keys separate from other keys that might end up in this
-	//redis instance
 	return "sid:" + sid.String()
 }
