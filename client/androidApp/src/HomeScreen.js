@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -13,6 +15,7 @@ export default class HomeScreen extends React.Component {
   render() {
     const {goBack} = this.props.navigation;
     if (this.state.loggedin) {
+      
       return(
         <View style={styles.container}>
           <Text>Dashboard</Text>
@@ -44,6 +47,43 @@ export default class HomeScreen extends React.Component {
               title="Try Me"
               onPress={() => this.setState({loggedin: true})}
             />
+        <Text></Text>
+        <Button
+              title="Canvas Test"
+              onPress={() => this.props.navigation.navigate('Canvas')}
+            />
+      <BottomNavigation
+        labelColor="white"
+        rippleColor="white"
+        backgroundColor="#F44336"
+        style={{
+          height: 56,
+          elevation: 8,
+          position: 'absolute',
+          left: 0,
+          bottom: 0,
+          right: 0
+        }}
+        onTabChange={newTabIndex => alert(`New Tab at position ${newTabIndex}`)}
+      >
+        <Tab
+          label="Home"
+          icon={<Icon size={24} color="white" name="home" />}
+        />
+        <Tab
+          label="Search"
+          icon={<Icon size={24} color="white" name="search" />}
+        />
+        <Tab
+          label="Boards"
+          icon={<Icon size={24} color="white" name="add-circle" />}
+        />
+        <Tab
+          label="Account"
+          icon={<Icon size={24} color="white" name="account-circle" />}
+        />
+        
+      </BottomNavigation>
       </View>
     );
   }
