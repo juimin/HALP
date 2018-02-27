@@ -93,7 +93,7 @@ func main() {
 	mongoSession, err := mgo.Dial(mongoAddr)
 	// Check if there was an error dialing the mongo server
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("Mongo " + err.Error())
 		os.Exit(1)
 	}
 
