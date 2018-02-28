@@ -8,14 +8,17 @@ then
 fi
 
 docker rmi -f d95wang/halp-gateway
+
 docker pull d95wang/halp-gateway:latest
+
 docker run -d \
 -p 443:443 \
+--network appnet \
 --name gateway \
 -v $GATEWAYPATH/tls:/tls:ro \
 -e TLSCERT=/tls/fullchain.pem \
 -e TLSKEY=/tls/privkey.pem \
--e REDISADDR=localhost:6379 \
--e DBADDR=localhost:27017 \
+-e REDISADDR=redisLocal:6379 \
+-e DBADDR=mongoLocal:27017 \
 -e SESSIONKEY='spUPraqUgethu4AF?x' \
 d95wang/halp-gateway
