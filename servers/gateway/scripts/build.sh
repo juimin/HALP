@@ -3,9 +3,12 @@
 # Move to the main folder
 cd ../
 
+docker rm -f gateway
+docker rmi -f d95wang/halp-gateway
+
 set -e
-echo "Gateway Building..."
-# This might need to change based on what Operating System you use
+echo "Building Halp Gateway..."
+# This mighewt need to change based on what Operating System you use
 CGO_ENABLED=0 go build -a
 
 # You might want to change this later

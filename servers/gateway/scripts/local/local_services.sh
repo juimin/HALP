@@ -6,21 +6,21 @@
 # Get to the main file one dir up to do the install and start gateway
 
 # Check if the local redis is running
-if [[ $(docker inspect -f {{.State.Running}} redislocal) -eq true ]]
+if [[ $(docker inspect -f {{.State.Running}} redisLocal) -eq true ]]
 then
    # Reset the mongo
-   docker rm -f redislocal
+   docker rm -f redisLocal
 fi
 
 # Check if the local mongo is running
-if [[ $(docker inspect -f {{.State.Running}} mongolocal) -eq true ]]
+if [[ $(docker inspect -f {{.State.Running}} mongoLocal) -eq true ]]
 then
    # Reset the mongo
-   docker rm -f mongolocal
+   docker rm -f mongoLocal
 fi
 
 # Start new instance of the redis and mongo services
-docker run -d -p 6379:6379 --name redislocal redis
+docker run -d -p 6379:6379 --name redisLocal --network appnet redis
 echo "Redis Local started successfully"
-docker run -d -p 27017:27017 --name mongolocal mongo
+docker run -d -p 27017:27017 --name mongoLocal --network appnet mongo
 echo "Mongo Local started successfully"
