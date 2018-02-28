@@ -1,0 +1,5 @@
+rootProject.name = 'HalpTest'
+include ':@terrylinla/react-native-sketch-canvas'
+project(':@terrylinla/react-native-sketch-canvas').projectDir = new File(rootProject.projectDir, '../node_modules/@terrylinla/react-native-sketch-canvas/android')
+
+include ':app'

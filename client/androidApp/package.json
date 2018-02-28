@@ -4,27 +4,27 @@
   "private": true,
   "devDependencies": {
     "babel-preset-react-native": "^2.1.0",
-    "jest-expo": "25.0.0",
-    "react-native-scripts": "1.11.1",
+    "jest-react-native": "^18.0.0",
     "react-test-renderer": "16.2.0"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js"
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "node node_modules/jest/bin/jest.js",
+    "postinstall": "rm ./node_modules/react-native/local-cli/core/__fixtures__/files/package.json -f"
+
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "react-native"
   },
   "dependencies": {
+    "@terrylinla/react-native-sketch-canvas": "^0.3.1",
     "babel-preset-react-native": "^2.1.0",
-    "expo": "^25.0.0",
     "react": "16.2.0",
     "react-native": "0.52.0",
-    "react-native-sketch-view": "^1.0.1",
+    "react-native-material-bottom-navigation": "^0.8.2",
+    "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.0.3",
     "react-redux": "^5.0.6"
   }
