@@ -2,4 +2,3 @@
 /build
 
 # Ignore Test Repositories in client
-/clients/*Test/
