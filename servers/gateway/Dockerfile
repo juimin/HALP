@@ -3,8 +3,8 @@
 # for your Go API gateway server
 # Put your docker build instructions here!
 FROM alpine
-COPY gateway gateway
+COPY gateway /gateway
 
 RUN apk update && apk add ca-certificates
 EXPOSE 443
-ENTRYPOINT [ "gateway"]
+ENTRYPOINT [ "/gateway"]
