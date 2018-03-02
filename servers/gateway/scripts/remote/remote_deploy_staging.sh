@@ -2,8 +2,8 @@
 ./build.sh
 
 SCRIPT='
-export TLSCERT=/etc/letsencrypt/live/api.halp.derekwang.net/fullchain.pem
-export TLSKEY=/etc/letsencrypt/live/api.halp.derekwang.net/privkey.pem
+export TLSCERT=/etc/letsencrypt/live/staging.halp.derekwang.net/fullchain.pem
+export TLSKEY=/etc/letsencrypt/live/staging.halp.derekwang.net/privkey.pem
 docker rm -f gateway
 docker rmi -f d95wang/halp-gateway
 docker pull d95wang/halp-gateway:latest
