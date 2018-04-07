@@ -20,14 +20,16 @@ var bcryptCost = 13
 
 // User represents a user account in the database
 type User struct {
-	ID         bson.ObjectId `json:"id" bson:"_id"`
-	Email      string        `json:"email"`
-	PassHash   []byte        `json:"-"` // Stored, but not encoded to clients
-	UserName   string        `json:"userName"`
-	FirstName  string        `json:"firstName"`
-	LastName   string        `json:"lastName"`
-	PhotoURL   string        `json:"photoURL"`
-	Occupation string        `json:"occupation"`
+	ID         bson.ObjectId   `json:"id" bson:"_id"`
+	Email      string          `json:"email"`
+	PassHash   []byte          `json:"-"` // Stored, but not encoded to clients
+	UserName   string          `json:"userName"`
+	FirstName  string          `json:"firstName"`
+	LastName   string          `json:"lastName"`
+	PhotoURL   string          `json:"photoURL"`
+	Occupation string          `json:"occupation"`
+	Favorites  []bson.ObjectId `json:"favorites"`
+	Bookmarks  []bson.ObjectId `json:"bookmarks"`
 }
 
 // Credentials represents user sign-in credentials
@@ -67,6 +69,16 @@ type PasswordUpdate struct {
 // PassUpdate holds the hashed password for the new pass
 type PassUpdate struct {
 	PassHash []byte
+}
+
+// FavoritesUpdate holds the new list of favorites from the clinet
+type FavoritesUpdate struct {
+	Favorites []bson.ObjectId `json:"favorites"`
+}
+
+// BookmarksUpdate holds the new list of favorites from the clinet
+type BookmarksUpdate struct {
+	Bookmarks []bson.ObjectId `json:"bookmarks"`
 }
 
 // Validate confirms that a new user contains information that we
@@ -129,6 +141,8 @@ func (nu *NewUser) ToUser() (*User, error) {
 		ID:         bson.NewObjectId(),               // Generate a new bson object ID
 		PhotoURL:   gravatarBasePhotoURL + emailHash, // Gravatar for the given email
 		Occupation: nu.Occupation,
+		Favorites:  []bson.ObjectId{},
+		Bookmarks:  []bson.ObjectId{},
 	}
 
 	// Set the password using the given hash from the password generator
@@ -174,6 +188,18 @@ func (u *User) Authenticate(password string) error {
 	if err != nil {
 		return fmt.Errorf("Bcrypt hash error")
 	}
+	return nil
+}
+
+// UpdateFavorite should add the given board to the favorites list for this user
+func (u *User) UpdateFavorite(updates *FavoritesUpdate) error {
+	u.Favorites = updates.Favorites
+	return nil
+}
+
+// UpdateBookmarks should add the given board to the favorites list for this user
+func (u *User) UpdateBookmarks(updates *BookmarksUpdate) error {
+	u.Favorites = updates.Bookmarks
 	return nil
 }
 
