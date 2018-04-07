@@ -411,3 +411,86 @@ func TestPassUpdates(t *testing.T) {
 		}
 	}
 }
+
+func TestUpdateFavorites(t *testing.T) {
+	cases := []struct {
+		name           string
+		user           *NewUser
+		expectedUpdate *FavoritesUpdate
+	}{
+		{
+			name: "Testing Update",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
+			},
+			expectedUpdate: &FavoritesUpdate{
+				Favorites: []bson.ObjectId{
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+				},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		u, err := c.user.ToUser()
+		if err != nil {
+			t.Errorf("Error on %s: %v", c.name, err)
+		}
+		u.UpdateFavorite(c.expectedUpdate)
+		for index := range u.Favorites {
+			if u.Favorites[index] != c.expectedUpdate.Favorites[index] {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.Favorites[index], index, u.Favorites[index])
+			}
+		}
+	}
+}
+
+// TestUpdateBookmarks tests the updating of bookmarks
+func TestUpdateBookmarks(t *testing.T) {
+	cases := []struct {
+		name           string
+		user           *NewUser
+		expectedUpdate *BookmarksUpdate
+	}{
+		{
+			name: "Testing Update",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
+			},
+			expectedUpdate: &BookmarksUpdate{
+				Bookmarks: []bson.ObjectId{
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+				},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		u, err := c.user.ToUser()
+		if err != nil {
+			t.Errorf("Error on %s: %v", c.name, err)
+		}
+		u.UpdateBookmarks(c.expectedUpdate)
+		for index := range u.Favorites {
+			if u.Favorites[index] != c.expectedUpdate.Bookmarks[index] {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.Bookmarks[index], index, u.Favorites[index])
+			}
+		}
+	}
+}
