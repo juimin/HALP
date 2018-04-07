@@ -106,6 +106,9 @@ func TestValidate(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, result, c.expectedOutput)
 			}
 		}
+		if (result == nil || c.expectedOutput == nil) && !(result == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, result, c.expectedOutput)
+		}
 	}
 }
 
@@ -148,6 +151,9 @@ func TestToUser(t *testing.T) {
 			if output.Error() != c.expectedOutput.Error() {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
+		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 		}
 	}
 }
@@ -228,7 +234,7 @@ func TestSetPassword(t *testing.T) {
 		{
 			name:           "bcrypt error",
 			input:          "-12312",
-			expectedOutput: fmt.Errorf("Bcrypt error."),
+			expectedOutput: fmt.Errorf("bcrypt error."),
 		},
 	}
 
@@ -239,6 +245,9 @@ func TestSetPassword(t *testing.T) {
 			if output.Error() != c.expectedOutput.Error() {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
+		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 		}
 	}
 }
@@ -287,6 +296,9 @@ func TestAuthenticate(t *testing.T) {
 				if output.Error() != c.expectedOutput.Error() {
 					t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 				}
+			}
+			if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
 		}
 	}
@@ -359,6 +371,9 @@ func TestApplyUpdates(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
 		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
+		}
 	}
 }
 
@@ -408,6 +423,9 @@ func TestPassUpdates(t *testing.T) {
 			if output.Error() != c.expectedOutput.Error() {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
+		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 		}
 	}
 }
