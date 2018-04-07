@@ -184,6 +184,9 @@ func (u *User) SetPassword(password string) error {
 //Authenticate compares the plaintext password against the stored hash
 //and returns an error if they don't match, or nil if they do
 func (u *User) Authenticate(password string) error {
+	if len(password) == 0 {
+		return fmt.Errorf("Cannot authenticate no password")
+	}
 	err := bcrypt.CompareHashAndPassword(u.PassHash, []byte(password))
 	if err != nil {
 		return fmt.Errorf("Bcrypt hash error")

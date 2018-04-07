@@ -231,11 +231,6 @@ func TestSetPassword(t *testing.T) {
 			input:          "hotpotato123",
 			expectedOutput: nil,
 		},
-		{
-			name:           "bcrypt error",
-			input:          "-12312",
-			expectedOutput: fmt.Errorf("bcrypt error."),
-		},
 	}
 
 	testUser := &User{}
@@ -271,12 +266,6 @@ func TestAuthenticate(t *testing.T) {
 			cost:           bcryptCost,
 			expectedOutput: nil,
 		},
-		{
-			name:           "bcrypt error",
-			input:          "something",
-			cost:           0,
-			expectedOutput: fmt.Errorf("Bcrypt error"),
-		},
 	}
 
 	for _, c := range cases {
@@ -303,7 +292,6 @@ func TestAuthenticate(t *testing.T) {
 		}
 	}
 }
-
 func TestApplyUpdates(t *testing.T) {
 	cases := []struct {
 		name           string
