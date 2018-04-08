@@ -48,12 +48,14 @@ func (np *NewPost) Validate() error {
 		return fmt.Errorf("Please enter a title")
 	}
 	//Check for either caption or image
-	if len(np.Caption) == 0 || len(np.ImageURL) == 0 {
+	if len(np.Caption) == 0 && len(np.ImageURL) == 0 {
 		return fmt.Errorf("Please use either an image or a caption")
 	}
 	//if image, verify url
-	if _, err := url.ParseRequestURI(np.ImageURL); err != nil {
-		return fmt.Errorf("Invalid Photo URL")
+	if len(np.ImageURL) > 0 {
+		if _, err := url.ParseRequestURI(np.ImageURL); err != nil {
+			return fmt.Errorf("Invalid Photo URL")
+		}
 	}
 	return nil
 }
@@ -107,8 +109,12 @@ func (p *Post) Upvote(author bson.ObjectId) {
 	if p.HasVote(author) == -1 {
 		p.Downvotes[author] = false
 	}
-	p.Upvotes[author] = true
-	p.TotalVotes++
+	if p.HasVote(author) != 1 {
+		//checks if already upvoted
+		p.Upvotes[author] = true
+		p.TotalVotes++
+
+	}
 }
 
 //Downvote downvotes the post
@@ -116,8 +122,10 @@ func (p *Post) Downvote(author bson.ObjectId) {
 	if p.HasVote(author) == 1 {
 		p.Downvotes[author] = false
 	}
-	p.Upvotes[author] = true
-	p.TotalVotes--
+	if p.HasVote(author) != -1 {
+		p.Upvotes[author] = true
+		p.TotalVotes--
+	}
 }
 
 //ApplyUpdates applies the post updates to the post
