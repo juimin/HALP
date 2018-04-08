@@ -12,6 +12,16 @@ type Board struct {
 	Posts       int           `json:"posts"`
 }
 
+// UpdateSubscriber represents the increment or decrement of subscribers
+type UpdateSubscriber struct {
+	Sub bool `json:"sub"`
+}
+
+// UpdatePost represents the increment or decrement of posts
+type UpdatePost struct {
+	Post bool `json:"post"`
+}
+
 // ChangeSubscriberCount takes in a boolean value to represent a change in subscribers
 func (b *Board) ChangeSubscriberCount(update bool) {
 	if b.Subscribers >= 0 {
