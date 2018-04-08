@@ -141,3 +141,35 @@ func (s *MongoStore) PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) e
 	}
 	return nil
 }
+
+// FavoritesUpdate takes the user and a list of favorites and replaces the current list with the new list
+func (s *MongoStore) FavoritesUpdate(userID bson.ObjectId, updates *FavoritesUpdate) (*User, error) {
+	user := &User{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update:    bson.M{"$set": updates},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}
+
+// BookmarksUpdate takes the user's list of bookmarks and replaces it with the given list of bookmarks
+func (s *MongoStore) BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error) {
+	user := &User{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update:    bson.M{"$set": updates},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}

@@ -514,3 +514,149 @@ func TestPassUpdate(t *testing.T) {
 		}
 	}
 }
+
+// TestFavoritesUpdate tests the mongo storage updating of the favorites for a user
+func TestFavoritesUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		newFavorites   []bson.ObjectId
+		expectedOutput error
+	}{
+		{
+			name: "Test Updating User with Valid Update",
+			id:   usr.ID,
+			newFavorites: []bson.ObjectId{
+				bson.NewObjectId(),
+				bson.NewObjectId(),
+			},
+			expectedOutput: nil,
+		},
+		{
+			name: "Test Updating User That doesn't exist",
+			id:   bson.NewObjectId(),
+			newFavorites: []bson.ObjectId{
+				bson.NewObjectId(),
+			},
+			expectedOutput: fmt.Errorf("not found"),
+		},
+	}
+
+	for _, c := range cases {
+		updatedUser, err := mongoStore.FavoritesUpdate(c.id, &FavoritesUpdate{
+			Favorites: c.newFavorites,
+		})
+		if err != nil && c.expectedOutput != nil {
+			if err.Error() != c.expectedOutput.Error() {
+				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+			}
+		}
+		if !(err == nil && c.expectedOutput == nil) && (err == nil || c.expectedOutput == nil) {
+			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+		}
+		if updatedUser != nil {
+			for idx := range updatedUser.Favorites {
+				if idx >= len(c.newFavorites) || updatedUser.Favorites[idx] != c.newFavorites[idx] {
+					t.Errorf("Error Matching Favorites on %s: Expected %v but got %v", c.name, c.newFavorites, updatedUser.Favorites)
+				}
+			}
+		}
+	}
+}
+
+// TestBookmarksUpdate tests the mongo updating of user's bookmarks
+func TestBookmarksUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		newBookmarks   []bson.ObjectId
+		expectedOutput error
+	}{
+		{
+			name: "Test Updating User with Valid Update",
+			id:   usr.ID,
+			newBookmarks: []bson.ObjectId{
+				bson.NewObjectId(),
+				bson.NewObjectId(),
+			},
+			expectedOutput: nil,
+		},
+		{
+			name: "Test Updating User That doesn't exist",
+			id:   bson.NewObjectId(),
+			newBookmarks: []bson.ObjectId{
+				bson.NewObjectId(),
+			},
+			expectedOutput: fmt.Errorf("not found"),
+		},
+	}
+
+	for _, c := range cases {
+		updatedUser, err := mongoStore.BookmarksUpdate(c.id, &BookmarksUpdate{
+			Bookmarks: c.newBookmarks,
+		})
+		if err != nil && c.expectedOutput != nil {
+			if err.Error() != c.expectedOutput.Error() {
+				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+			}
+		}
+		if !(err == nil && c.expectedOutput == nil) && (err == nil || c.expectedOutput == nil) {
+			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+		}
+		if updatedUser != nil {
+			for idx := range updatedUser.Favorites {
+				if idx >= len(c.newBookmarks) || updatedUser.Bookmarks[idx] != c.newBookmarks[idx] {
+					t.Errorf("Error Matching Favorites on %s: Expected %v but got %v", c.name, c.newBookmarks, updatedUser.Bookmarks)
+				}
+			}
+		}
+	}
+}
