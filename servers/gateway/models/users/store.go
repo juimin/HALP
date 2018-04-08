@@ -40,5 +40,5 @@ type Store interface {
 	FavoritesUpdate(userID bson.ObjectId, updates *FavoritesUpdate) (*User, error)
 
 	// UpdateBookmarks allows for updating the list of bookmarks the user has
-	BookmarksUpdate(userID bson.ObjectId, updates *FavoritesUpdate) (*User, error)
+	BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error)
 }
