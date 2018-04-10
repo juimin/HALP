@@ -35,9 +35,12 @@ type NewPost struct {
 
 //PostUpdate represents allowed updates to a post
 type PostUpdate struct {
-	Title    string `json:"title"`
-	Caption  string `json:"caption"`
-	ImageURL string `json:"image_url"`
+	Title      string                 `json:"title"`
+	Caption    string                 `json:"caption"`
+	ImageURL   string                 `json:"image_url"`
+	Upvotes    map[bson.ObjectId]bool `json:"upvotes"`
+	Downvotes  map[bson.ObjectId]bool `json:"downvotes"`
+	TotalVotes int                    `json:"total_votes"`
 }
 
 //Validate confirms that a new post contains a title
@@ -105,27 +108,46 @@ func (p *Post) HasVote(author bson.ObjectId) int {
 
 //Upvote modifies the current score (count of
 //upvotes) for the post
-func (p *Post) Upvote(author bson.ObjectId) {
+//It returns a new PostUpdate
+func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
+	update := &PostUpdate{
+		Title:      p.Title,
+		ImageURL:   p.ImageURL,
+		Caption:    p.Caption,
+		Upvotes:    p.Upvotes,
+		Downvotes:  p.Downvotes,
+		TotalVotes: p.TotalVotes,
+	}
 	if p.HasVote(author) == -1 {
-		p.Downvotes[author] = false
+		update.Downvotes[author] = false
 	}
 	if p.HasVote(author) != 1 {
 		//checks if already upvoted
-		p.Upvotes[author] = true
-		p.TotalVotes++
+		update.Upvotes[author] = true
+		update.TotalVotes++
 
 	}
+	return update
 }
 
 //Downvote downvotes the post
-func (p *Post) Downvote(author bson.ObjectId) {
+func (p *Post) Downvote(author bson.ObjectId) *PostUpdate {
+	update := &PostUpdate{
+		Title:      p.Title,
+		ImageURL:   p.ImageURL,
+		Caption:    p.Caption,
+		Upvotes:    p.Upvotes,
+		Downvotes:  p.Downvotes,
+		TotalVotes: p.TotalVotes,
+	}
 	if p.HasVote(author) == 1 {
-		p.Downvotes[author] = false
+		update.Downvotes[author] = false
 	}
 	if p.HasVote(author) != -1 {
-		p.Upvotes[author] = true
-		p.TotalVotes--
+		update.Upvotes[author] = true
+		update.TotalVotes--
 	}
+	return update
 }
 
 //ApplyUpdates applies the post updates to the post
@@ -148,6 +170,9 @@ func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 		}
 		p.ImageURL = updates.ImageURL
 	}
+	p.TotalVotes = updates.TotalVotes
+	p.Upvotes = updates.Upvotes
+	p.Downvotes = updates.Downvotes
 	p.TimeEdited = time.Now()
 	return nil
 }

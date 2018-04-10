@@ -233,11 +233,16 @@ func TestUpvote(t *testing.T) {
 		},
 	}
 	testPost := &Post{
+		Title:     "testing",
+		Caption:   "testing",
 		Upvotes:   map[bson.ObjectId]bool{},
 		Downvotes: map[bson.ObjectId]bool{},
 	}
 	for _, c := range cases {
-		testPost.Upvote(c.input)
+		//testpost.upvote should return a postupdate
+		//with the updated upvotes map and total votes
+		//then appy that to testpost
+		testPost.ApplyUpdates(testPost.Upvote(c.input))
 		output := testPost.TotalVotes
 		if output != c.expectedOutput {
 			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
@@ -280,11 +285,13 @@ func TestDownvote(t *testing.T) {
 		},
 	}
 	testPost := &Post{
+		Title:     "testing",
+		Caption:   "testing",
 		Upvotes:   map[bson.ObjectId]bool{},
 		Downvotes: map[bson.ObjectId]bool{},
 	}
 	for _, c := range cases {
-		testPost.Downvote(c.input)
+		testPost.ApplyUpdates(testPost.Downvote(c.input))
 		output := testPost.TotalVotes
 		if output != c.expectedOutput {
 			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
