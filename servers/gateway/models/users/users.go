@@ -2,7 +2,6 @@ package users
 
 import (
 	"crypto/md5"
-	"crypto/subtle"
 	"fmt"
 	"net/mail"
 	"strings"
@@ -229,24 +228,5 @@ func (u *User) ApplyUpdates(updates *UserUpdate) error {
 	u.Email = updates.Email
 	u.Occupation = updates.Occupation
 
-	return nil
-}
-
-// PassUpdate allows for the changing of a password given knowledge of the old password
-func (u *User) PassUpdate(updates *PasswordUpdate) error {
-	// The user should be authenticated already
-	// Check password and password conf
-	if len(updates.NewPassword) == 0 || len(updates.NewPasswordConf) == 0 {
-		return fmt.Errorf("Invalid Input: New Password cannot be length 0")
-	}
-
-	if subtle.ConstantTimeCompare([]byte(updates.NewPassword), []byte(updates.NewPasswordConf)) != 1 {
-		return fmt.Errorf("Password and password conf do not match")
-	}
-
-	// Set Password since we confirmed
-	u.SetPassword(updates.NewPassword)
-
-	// No problems setting the new password so we can return no error
 	return nil
 }

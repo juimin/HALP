@@ -31,7 +31,7 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			// Preflight checks for the new user
 			// Bad request for new user. Need the proper new user
 			if err != nil {
-				errorMessage = "Error: could not decode request body"
+				errorMessage = "Error: Could not decode request body"
 				status = http.StatusBadRequest
 				canProceed = false
 			}
@@ -89,6 +89,126 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			w.WriteHeader(status)
 			w.Write([]byte(errorMessage))
 		}
+	}
+}
+
+// FavoritesHandler allows the user to update their favorites
+func (cr *ContextReceiver) FavoritesHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PATCH" {
+		// Get request gets the current user
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		} else {
+			state := &SessionState{}
+			// Get the sesssion
+			err = cr.SessionStore.Get(sid, state)
+			// Check the session is in play
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			} else {
+				// Now that we have a valid session we can update the user
+				updates := &users.FavoritesUpdate{}
+				// Check if the r body is there
+				if r.Body == nil {
+					w.WriteHeader(http.StatusBadRequest)
+				} else {
+					err = json.NewDecoder(r.Body).Decode(updates)
+					// Check if the object is the right format
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					} else {
+						err = state.User.UpdateFavorite(updates)
+						if err != nil {
+							w.WriteHeader(http.StatusInternalServerError)
+						} else {
+							_, err = cr.UserStore.FavoritesUpdate(state.User.ID, updates)
+							if err != nil {
+								w.WriteHeader(http.StatusInternalServerError)
+							} else {
+								// Create new session
+								err = cr.SessionStore.Delete(sid)
+								if err != nil {
+									w.WriteHeader(http.StatusInternalServerError)
+								} else {
+									err = cr.SessionStore.Save(sid, state)
+									if err != nil {
+										w.WriteHeader(http.StatusInternalServerError)
+									} else {
+										// Everything was good
+										w.WriteHeader(http.StatusOK)
+										json.NewEncoder(w).Encode(state.User)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	} else {
+		// We only handle updates here
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// BookmarksHandler allows the user to update their favorites
+func (cr *ContextReceiver) BookmarksHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PATCH" {
+		// Get request gets the current user
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		} else {
+			state := &SessionState{}
+			// Get the sesssion
+			err = cr.SessionStore.Get(sid, state)
+			// Check the session is in play
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			} else {
+				// Now that we have a valid session we can update the user
+				updates := &users.BookmarksUpdate{}
+				// Check if the r body is there
+				if r.Body == nil {
+					w.WriteHeader(http.StatusBadRequest)
+				} else {
+					err = json.NewDecoder(r.Body).Decode(updates)
+					// Check if the object is the right format
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					} else {
+						err = state.User.UpdateBookmarks(updates)
+						if err != nil {
+							w.WriteHeader(http.StatusInternalServerError)
+						} else {
+							_, err = cr.UserStore.BookmarksUpdate(state.User.ID, updates)
+							if err != nil {
+								w.WriteHeader(http.StatusInternalServerError)
+							} else {
+								// Create new session
+								err = cr.SessionStore.Delete(sid)
+								if err != nil {
+									w.WriteHeader(http.StatusInternalServerError)
+								} else {
+									err = cr.SessionStore.Save(sid, state)
+									if err != nil {
+										w.WriteHeader(http.StatusInternalServerError)
+									} else {
+										// Everything was good
+										w.WriteHeader(http.StatusOK)
+										json.NewEncoder(w).Encode(state.User)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	} else {
+		// We only handle updates here
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 

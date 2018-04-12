@@ -500,3 +500,259 @@ func TestSessionHandlers(t *testing.T) {
 		}
 	}
 }
+
+// TestFavoritesHandler tests updates to the favorites
+func TestFavoritesHandler(t *testing.T) {
+	// Get Context Instance
+	cr := prepTestCR()
+	// Generate the handlers
+	usersHandler := http.HandlerFunc(cr.UsersHandler)
+	usersMeHandler := http.HandlerFunc(cr.UsersMeHandler)
+	favoritesHandler := http.HandlerFunc(cr.FavoritesHandler)
+
+	cases := []struct {
+		name         string
+		method       string
+		expectedCode int
+		handler      http.HandlerFunc
+		body         io.Reader
+		destination  string
+	}{
+		{
+			name:         "Test PATCH for no/bad session",
+			method:       "PATCH",
+			expectedCode: http.StatusForbidden,
+			handler:      favoritesHandler,
+			body:         nil,
+			destination:  "/favorites/update",
+		},
+		{
+			name:         "Test bad method",
+			method:       "POST",
+			expectedCode: http.StatusMethodNotAllowed,
+			handler:      favoritesHandler,
+			body:         nil,
+			destination:  "/favorites/update",
+		},
+		{
+			name:         "Generate Users for testing",
+			method:       "POST",
+			expectedCode: http.StatusCreated,
+			handler:      usersHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+				"email":"r22d@potato.com",
+				"password": "potatopass",
+				"passwordConf": "potatopass",
+				"userName": "dd3",
+				"firstName":"firstPotato",
+				"lastName": "lastPotato",
+				"occupation": "vegetable"
+			}`)),
+			destination: "/users",
+		},
+		{
+			name:         "Test Get for valid session",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      usersMeHandler,
+			body:         nil,
+			destination:  "/users/me",
+		},
+		{
+			name:         "Test PATCH for invalid input",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      favoritesHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"firstName": "newFirstName"sdsd
+					"lastName": "newLastName",
+					"occupation": "spud",
+					"email": "test@potato.com"
+			}`)),
+			destination: "/favorites/update",
+		},
+		{
+			name:         "Test PATCH for nil update",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      favoritesHandler,
+			body:         nil,
+			destination:  "/favorites/update",
+		},
+		{
+			name:         "Test PATCH for valid input (empty)",
+			method:       "PATCH",
+			expectedCode: http.StatusOK,
+			handler:      favoritesHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"favorites": []
+			}`)),
+			destination: "/favorites/update",
+		},
+		{
+			name:         "Test PATCH for valid input (data)",
+			method:       "PATCH",
+			expectedCode: http.StatusOK,
+			handler:      favoritesHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"favorites": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+			}`)),
+			destination: "/favorites/update",
+		},
+	}
+
+	authHeader := ""
+
+	for _, c := range cases {
+		// Generate a new recorder
+		recorder := httptest.NewRecorder()
+		// Generate the request
+		req, err := http.NewRequest(c.method, c.destination, c.body)
+		if authHeader != "" {
+			req.Header.Add("Authorization", authHeader)
+		}
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			c.handler.ServeHTTP(recorder, req)
+			if recorder.Header().Get("Authorization") != "" {
+				authHeader = recorder.Header().Get("Authorization")
+			}
+			if recorder.Code != c.expectedCode {
+				t.Errorf("%s Failed. Expected %d but got %d", c.name, c.expectedCode, recorder.Code)
+			}
+		}
+	}
+}
+
+// TestBookmarksHandler Tests for the updating of bookmarks for a user
+func TestBookmarksHandler(t *testing.T) {
+	// Get Context Instance
+	cr := prepTestCR()
+	// Generate the handlers
+	usersHandler := http.HandlerFunc(cr.UsersHandler)
+	usersMeHandler := http.HandlerFunc(cr.UsersMeHandler)
+	bookmarksHandler := http.HandlerFunc(cr.BookmarksHandler)
+
+	cases := []struct {
+		name         string
+		method       string
+		expectedCode int
+		handler      http.HandlerFunc
+		body         io.Reader
+		destination  string
+	}{
+		{
+			name:         "Test PATCH for no/bad session",
+			method:       "PATCH",
+			expectedCode: http.StatusForbidden,
+			handler:      bookmarksHandler,
+			body:         nil,
+			destination:  "/bookmarks/update",
+		},
+		{
+			name:         "Test Bad Method",
+			method:       "POST",
+			expectedCode: http.StatusMethodNotAllowed,
+			handler:      bookmarksHandler,
+			body:         nil,
+			destination:  "/bookmarks/update",
+		},
+		{
+			name:         "Generate Users for testing",
+			method:       "POST",
+			expectedCode: http.StatusCreated,
+			handler:      usersHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+				"email":"peeople@potato.com",
+				"password": "potatopass",
+				"passwordConf": "potatopass",
+				"userName": "dfds",
+				"firstName":"firstPotato",
+				"lastName": "lastPotato",
+				"occupation": "vegetable"
+			}`)),
+			destination: "/users",
+		},
+		{
+			name:         "Test Get for valid session",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      usersMeHandler,
+			body:         nil,
+			destination:  "/users/me",
+		},
+		{
+			name:         "Test PATCH for invalid input",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      bookmarksHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"firstName": "newFirstName"sdsd
+					"lastName": "newLastName",
+					"occupation": "spud",
+					"email": "test@potato.com"
+			}`)),
+			destination: "/bookmarks/update",
+		},
+		{
+			name:         "Test PATCH for nil update",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      bookmarksHandler,
+			body:         nil,
+			destination:  "/bookmarks/update",
+		},
+		{
+			name:         "Test PATCH for valid input (empty)",
+			method:       "PATCH",
+			expectedCode: http.StatusOK,
+			handler:      bookmarksHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"favorites": []
+			}`)),
+			destination: "/bookmarks/update",
+		},
+		{
+			name:         "Test PATCH for valid input (data)",
+			method:       "PATCH",
+			expectedCode: http.StatusOK,
+			handler:      bookmarksHandler,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"favorites": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+			}`)),
+			destination: "/bookmarks/update",
+		},
+	}
+
+	authHeader := ""
+
+	for _, c := range cases {
+		// Generate a new recorder
+		recorder := httptest.NewRecorder()
+		// Generate the request
+		req, err := http.NewRequest(c.method, c.destination, c.body)
+		if authHeader != "" {
+			req.Header.Add("Authorization", authHeader)
+		}
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			c.handler.ServeHTTP(recorder, req)
+			if recorder.Header().Get("Authorization") != "" {
+				authHeader = recorder.Header().Get("Authorization")
+			}
+			if recorder.Code != c.expectedCode {
+				t.Errorf("%s Failed. Expected %d but got %d", c.name, c.expectedCode, recorder.Code)
+			}
+		}
+	}
+}

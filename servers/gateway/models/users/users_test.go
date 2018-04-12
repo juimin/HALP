@@ -365,59 +365,6 @@ func TestApplyUpdates(t *testing.T) {
 	}
 }
 
-func TestPassUpdates(t *testing.T) {
-	cases := []struct {
-		name           string
-		input          *PasswordUpdate
-		expectedOutput error
-	}{
-		{
-			name: "Invalid New Password Input",
-			input: &PasswordUpdate{
-				NewPassword:     "",
-				NewPasswordConf: "potato",
-			},
-			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
-		},
-		{
-			name: "Invalid New Password Conf Input",
-			input: &PasswordUpdate{
-				NewPassword:     "potato",
-				NewPasswordConf: "",
-			},
-			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
-		},
-		{
-			name: "Password Conf does not match",
-			input: &PasswordUpdate{
-				NewPassword:     "pieces",
-				NewPasswordConf: "gooodddcd",
-			},
-			expectedOutput: fmt.Errorf("Password and password conf do not match"),
-		},
-		{
-			name: "Good Input",
-			input: &PasswordUpdate{
-				NewPassword:     "monkey",
-				NewPasswordConf: "monkey",
-			},
-			expectedOutput: nil,
-		},
-	}
-	testUser := &User{}
-	for _, c := range cases {
-		output := testUser.PassUpdate(c.input)
-		if output != nil && c.expectedOutput != nil {
-			if output.Error() != c.expectedOutput.Error() {
-				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
-			}
-		}
-		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
-			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
-		}
-	}
-}
-
 func TestUpdateFavorites(t *testing.T) {
 	cases := []struct {
 		name           string
