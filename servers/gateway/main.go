@@ -104,6 +104,7 @@ func main() {
 	fmt.Printf("Mongodb Online...\n")
 
 	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
+
 	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore, postStore)
 
 	// Create a new mux to start the server

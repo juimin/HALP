@@ -22,10 +22,10 @@ type Store interface {
 	GetByID(id bson.ObjectId) (*Post, error)
 
 	//GetByAuthorID returns all Posts by a given author by ID
-	GetByAuthorID(id bson.ObjectId) (*[]Post, error)
+	GetByAuthorID(id bson.ObjectId) ([]*Post, error)
 
 	//GetByBoardID returns all Posts for a given board by ID
-	GetByBoardID(id bson.ObjectId) (*[]Post, error)
+	GetByBoardID(id bson.ObjectId) ([]*Post, error)
 
 	//Delete deletes the post with the given ID
 	Delete(id bson.ObjectId) error
