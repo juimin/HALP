@@ -95,4 +95,15 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 }
 
 //PostUpdate updates the post with general information
-//fix postupdate in posts.go to apply up/down/total votes
+func (s *MongoStore) PostUpdate(id bson.ObjectId, update *PostUpdate) error {
+	change := mgo.Change{
+		Update:    bson.M{"$set": update},
+		ReturnNew: true,
+	}
+	post := &Post{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(id).Apply(change, post); err != nil {
+		return err
+	}
+	return nil
+}

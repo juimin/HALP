@@ -107,8 +107,7 @@ func (p *Post) HasVote(author bson.ObjectId) int {
 }
 
 //Upvote modifies the current score (count of
-//upvotes) for the post
-//It returns a new PostUpdate
+//upvotes) for the post, returning a *PostUpdate
 func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
 	update := &PostUpdate{
 		Title:      p.Title,
@@ -178,6 +177,8 @@ func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 }
 
 //AddComments adds comment IDs to the Post
+//TODO: DOES NOT ACTUALLY GET STORED TO DB AT ALL SO... FIX
+//change to "reply"? also can i just lump this into PostUpdate?
 func (p *Post) AddComments(comment bson.ObjectId) {
 	p.Comments = append(p.Comments, comment)
 }
