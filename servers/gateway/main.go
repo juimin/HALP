@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/posts"
+
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
@@ -101,7 +103,8 @@ func main() {
 
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
+	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
+	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore, postStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
@@ -113,6 +116,9 @@ func main() {
 	mux.HandleFunc("/users", cr.UsersHandler)
 	mux.HandleFunc("/sessions", cr.SessionsHandler)
 	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
+	mux.HandleFunc("/posts/new", cr.NewPostHandler)
+	mux.HandleFunc("/posts/update", cr.UpdatePostHandler)
+	mux.HandleFunc("/posts/get", cr.GetPostHandler)
 
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
