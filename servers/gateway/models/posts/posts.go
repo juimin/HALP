@@ -10,18 +10,18 @@ import (
 
 //Post is a post
 type Post struct {
-	ID          bson.ObjectId          `json:"id" bson:"_id"`
-	Title       string                 `json:"title"`
-	ImageURL    string                 `json:"image_url"`
-	Caption     string                 `json:"caption"`
-	AuthorID    bson.ObjectId          `json:"author_id"`
-	Comments    []bson.ObjectId        `json:"comments"`
-	BoardID     bson.ObjectId          `json:"board_id"`
-	Upvotes     map[bson.ObjectId]bool `json:"upvotes"`
-	Downvotes   map[bson.ObjectId]bool `json:"downvotes"`
-	TotalVotes  int                    `json:"total_votes"`
-	TimeCreated time.Time              `json:"time_created"`
-	TimeEdited  time.Time              `json:"time_edited"`
+	ID          bson.ObjectId   `json:"id" bson:"_id"`
+	Title       string          `json:"title"`
+	ImageURL    string          `json:"image_url"`
+	Caption     string          `json:"caption"`
+	AuthorID    bson.ObjectId   `json:"author_id"`
+	Comments    []bson.ObjectId `json:"comments"`
+	BoardID     bson.ObjectId   `json:"board_id"`
+	Upvotes     map[string]bool `json:"upvotes"`
+	Downvotes   map[string]bool `json:"downvotes"`
+	TotalVotes  int             `json:"total_votes"`
+	TimeCreated time.Time       `json:"time_created"`
+	TimeEdited  time.Time       `json:"time_edited"`
 }
 
 //NewPost is a new post
@@ -35,12 +35,12 @@ type NewPost struct {
 
 //PostUpdate represents allowed updates to a post
 type PostUpdate struct {
-	Title      string                 `json:"title"`
-	Caption    string                 `json:"caption"`
-	ImageURL   string                 `json:"image_url"`
-	Upvotes    map[bson.ObjectId]bool `json:"upvotes"`
-	Downvotes  map[bson.ObjectId]bool `json:"downvotes"`
-	TotalVotes int                    `json:"total_votes"`
+	Title      string          `json:"title"`
+	Caption    string          `json:"caption"`
+	ImageURL   string          `json:"image_url"`
+	Upvotes    map[string]bool `json:"upvotes"`
+	Downvotes  map[string]bool `json:"downvotes"`
+	TotalVotes int             `json:"total_votes"`
 }
 
 //Validate confirms that a new post contains a title
@@ -77,8 +77,8 @@ func (np *NewPost) ToPost() (*Post, error) {
 		AuthorID:    np.AuthorID,
 		Comments:    []bson.ObjectId{},
 		BoardID:     bson.NewObjectId(),
-		Upvotes:     map[bson.ObjectId]bool{},
-		Downvotes:   map[bson.ObjectId]bool{},
+		Upvotes:     map[string]bool{},
+		Downvotes:   map[string]bool{},
 		TotalVotes:  0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
@@ -97,10 +97,10 @@ func (np *NewPost) ToPost() (*Post, error) {
 //a user has downvoted, and 0 if a user has not
 //voted
 func (p *Post) HasVote(author bson.ObjectId) int {
-	if val, ok := p.Upvotes[author]; ok && val == true {
+	if val, ok := p.Upvotes[author.Hex()]; ok && val == true {
 		return 1
 	}
-	if val, ok := p.Downvotes[author]; ok && val == true {
+	if val, ok := p.Downvotes[author.Hex()]; ok && val == true {
 		return -1
 	}
 	return 0
@@ -118,11 +118,11 @@ func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
 		TotalVotes: p.TotalVotes,
 	}
 	if p.HasVote(author) == -1 {
-		update.Downvotes[author] = false
+		update.Downvotes[author.Hex()] = false
 	}
 	if p.HasVote(author) != 1 {
 		//checks if already upvoted
-		update.Upvotes[author] = true
+		update.Upvotes[author.Hex()] = true
 		update.TotalVotes++
 
 	}
@@ -140,10 +140,10 @@ func (p *Post) Downvote(author bson.ObjectId) *PostUpdate {
 		TotalVotes: p.TotalVotes,
 	}
 	if p.HasVote(author) == 1 {
-		update.Downvotes[author] = false
+		update.Downvotes[author.Hex()] = false
 	}
 	if p.HasVote(author) != -1 {
-		update.Upvotes[author] = true
+		update.Upvotes[author.Hex()] = true
 		update.TotalVotes--
 	}
 	return update

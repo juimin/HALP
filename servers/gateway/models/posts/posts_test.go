@@ -139,8 +139,8 @@ func TestToPost(t *testing.T) {
 //TestHasUpvote tests getting how the user has voted on a post
 func TestHasUpvote(t *testing.T) {
 	testuser := bson.NewObjectId()
-	mapwithuser := map[bson.ObjectId]bool{}
-	mapwithuser[testuser] = true
+	mapwithuser := map[string]bool{}
+	mapwithuser[testuser.Hex()] = true
 	cases := []struct {
 		name           string
 		input          *Post
@@ -155,8 +155,8 @@ func TestHasUpvote(t *testing.T) {
 				Caption:     "",
 				Comments:    []bson.ObjectId{},
 				BoardID:     bson.NewObjectId(),
-				Upvotes:     map[bson.ObjectId]bool{},
-				Downvotes:   map[bson.ObjectId]bool{},
+				Upvotes:     map[string]bool{},
+				Downvotes:   map[string]bool{},
 				TotalVotes:  0,
 				TimeCreated: time.Now(),
 				TimeEdited:  time.Now()},
@@ -172,7 +172,7 @@ func TestHasUpvote(t *testing.T) {
 				Comments:    []bson.ObjectId{},
 				BoardID:     bson.NewObjectId(),
 				Upvotes:     mapwithuser,
-				Downvotes:   map[bson.ObjectId]bool{},
+				Downvotes:   map[string]bool{},
 				TotalVotes:  0,
 				TimeCreated: time.Now(),
 				TimeEdited:  time.Now(),
@@ -188,7 +188,7 @@ func TestHasUpvote(t *testing.T) {
 				Caption:     "",
 				Comments:    []bson.ObjectId{},
 				BoardID:     bson.NewObjectId(),
-				Upvotes:     map[bson.ObjectId]bool{},
+				Upvotes:     map[string]bool{},
 				Downvotes:   mapwithuser,
 				TotalVotes:  0,
 				TimeCreated: time.Now(),
@@ -208,16 +208,16 @@ func TestHasUpvote(t *testing.T) {
 func TestUpvote(t *testing.T) {
 	testuser1 := bson.NewObjectId()
 	testuser2 := bson.NewObjectId()
-	testmap1 := map[bson.ObjectId]bool{}
-	testmap1[testuser1] = true
-	testmap2 := map[bson.ObjectId]bool{}
-	testmap2[testuser1] = true
-	testmap2[testuser2] = true
+	testmap1 := map[string]bool{}
+	testmap1[testuser1.Hex()] = true
+	testmap2 := map[string]bool{}
+	testmap2[testuser1.Hex()] = true
+	testmap2[testuser2.Hex()] = true
 	cases := []struct {
 		name           string
 		input          bson.ObjectId
 		expectedOutput int //represents total votes
-		expectedMap    map[bson.ObjectId]bool
+		expectedMap    map[string]bool
 	}{
 		{
 			name:           "first upvote",
@@ -235,8 +235,8 @@ func TestUpvote(t *testing.T) {
 	testPost := &Post{
 		Title:     "testing",
 		Caption:   "testing",
-		Upvotes:   map[bson.ObjectId]bool{},
-		Downvotes: map[bson.ObjectId]bool{},
+		Upvotes:   map[string]bool{},
+		Downvotes: map[string]bool{},
 	}
 	for _, c := range cases {
 		//testpost.upvote should return a postupdate
@@ -260,16 +260,16 @@ func TestUpvote(t *testing.T) {
 func TestDownvote(t *testing.T) {
 	testuser1 := bson.NewObjectId()
 	testuser2 := bson.NewObjectId()
-	testmap1 := map[bson.ObjectId]bool{}
-	testmap1[testuser1] = true
-	testmap2 := map[bson.ObjectId]bool{}
-	testmap2[testuser1] = true
-	testmap2[testuser2] = true
+	testmap1 := map[string]bool{}
+	testmap1[testuser1.Hex()] = true
+	testmap2 := map[string]bool{}
+	testmap2[testuser1.Hex()] = true
+	testmap2[testuser2.Hex()] = true
 	cases := []struct {
 		name           string
 		input          bson.ObjectId
 		expectedOutput int //represents total votes
-		expectedMap    map[bson.ObjectId]bool
+		expectedMap    map[string]bool
 	}{
 		{
 			name:           "first downvote",
@@ -287,8 +287,8 @@ func TestDownvote(t *testing.T) {
 	testPost := &Post{
 		Title:     "testing",
 		Caption:   "testing",
-		Upvotes:   map[bson.ObjectId]bool{},
-		Downvotes: map[bson.ObjectId]bool{},
+		Upvotes:   map[string]bool{},
+		Downvotes: map[string]bool{},
 	}
 	for _, c := range cases {
 		testPost.ApplyUpdates(testPost.Downvote(c.input))
