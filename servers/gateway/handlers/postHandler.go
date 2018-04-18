@@ -88,11 +88,6 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 		if canProceed {
 			postid := bson.ObjectIdHex(id)
 
-			//NOT A VALID OBJECT ID AHHHHHHHHHH
-			if !postid.Valid() {
-				w.WriteHeader(69)
-			}
-
 			//get post from db
 			post, err := cr.PostStore.GetByID(postid)
 			if err != nil {

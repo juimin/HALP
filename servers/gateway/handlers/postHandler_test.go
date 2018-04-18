@@ -135,7 +135,23 @@ func TestUpdatePostHandler(t *testing.T) {
 			destination: "/posts/new",
 		},
 		{
-			name:         "test updating users for valid input",
+			name:         "test updating nonexistent post",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass",
+					"image_url": "http://google.com",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update?id=507f1f77bcf86cd799439011",
+		},
+		{
+			name:         "test updating posts for valid input",
 			method:       "PATCH",
 			expectedCode: http.StatusAccepted,
 			handler:      uph,
@@ -151,7 +167,7 @@ func TestUpdatePostHandler(t *testing.T) {
 			destination: "/posts/update?id=5ad7838d9137245e1228435d",
 		},
 		{
-			name:         "test updating users for invalid input",
+			name:         "test updating posts for invalid input",
 			method:       "PATCH",
 			expectedCode: http.StatusInternalServerError,
 			handler:      uph,
@@ -167,7 +183,23 @@ func TestUpdatePostHandler(t *testing.T) {
 			destination: "/posts/update?id=5ad7838d9137245e1228435d",
 		},
 		{
-			name:         "test updating users for invalid id in url",
+			name:         "test updating posts for invalid JSON",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass2"LoL,
+					"image_url": "",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update?id=5ad7838d9137245e1228435d",
+		},
+		{
+			name:         "test updating posts for invalid id in url",
 			method:       "PATCH",
 			expectedCode: http.StatusBadRequest,
 			handler:      uph,
@@ -183,7 +215,7 @@ func TestUpdatePostHandler(t *testing.T) {
 			destination: "/posts/update?id=5ad7838d913",
 		},
 		{
-			name:         "test updating users for no id param in url",
+			name:         "test updating posts for no id param in url",
 			method:       "PATCH",
 			expectedCode: http.StatusBadRequest,
 			handler:      uph,
@@ -199,7 +231,7 @@ func TestUpdatePostHandler(t *testing.T) {
 			destination: "/posts/update",
 		},
 		{
-			name:         "test updating users for nil update",
+			name:         "test updating posts for nil update",
 			method:       "PATCH",
 			expectedCode: http.StatusBadRequest,
 			handler:      uph,
