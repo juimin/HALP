@@ -140,7 +140,7 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 //GetPostHandler returns the content of a single post
 //GET /posts/get?id=<id>
 func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
 		if len(id) == 0 || !bson.IsObjectIdHex(id) {
 			w.WriteHeader(http.StatusBadRequest)
@@ -156,6 +156,6 @@ func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request
 		}
 
 	} else {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }

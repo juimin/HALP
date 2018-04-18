@@ -148,10 +148,133 @@ func TestUpdatePostHandler(t *testing.T) {
 					"downvotes": {},
 					"total_votes": 1
 				}`)),
-			destination: "/posts/update?id=5ad69dc49137242fc9b6fdc7",
+			destination: "/posts/update?id=5ad7838d9137245e1228435d",
+		},
+		{
+			name:         "test updating users for invalid input",
+			method:       "PATCH",
+			expectedCode: http.StatusInternalServerError,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass2",
+					"image_url": "",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update?id=5ad7838d9137245e1228435d",
+		},
+		{
+			name:         "test updating users for invalid id in url",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass2",
+					"image_url": "",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update?id=5ad7838d913",
+		},
+		{
+			name:         "test updating users for no id param in url",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass2",
+					"image_url": "",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update",
+		},
+		{
+			name:         "test updating users for nil update",
+			method:       "PATCH",
+			expectedCode: http.StatusBadRequest,
+			handler:      uph,
+			body:         nil,
+			destination:  "/posts/update?id=5ad7838d9137245e1228435d",
 		},
 	}
 
+	for _, c := range cases {
+		recorder := httptest.NewRecorder()
+		req, err := http.NewRequest(c.method, c.destination, c.body)
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			c.handler.ServeHTTP(recorder, req)
+			if recorder.Code != c.expectedCode {
+				t.Errorf("%s Failed. Expected %d but got %d", c.name, c.expectedCode, recorder.Code)
+			}
+		}
+	}
+}
+
+func TestGetPostHandler(t *testing.T) {
+	cr := prepTestCR()
+	gph := http.HandlerFunc(cr.GetPostHandler)
+
+	cases := []struct {
+		name         string
+		method       string
+		expectedCode int
+		handler      http.HandlerFunc
+		body         io.Reader
+		destination  string
+	}{
+		{
+			name:         "test getting a nonexistent post",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=507f1f77bcf86cd799439011",
+		},
+		{
+			name:         "test getting a valid post",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
+		},
+		{
+			name:         "test getting an invalid id",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9",
+		},
+		{
+			name:         "test getting an invalid url parameter",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?hello=5ad7838d9",
+		},
+		{
+			name:         "test getting a post with invalid method POST",
+			method:       "POST",
+			expectedCode: http.StatusMethodNotAllowed,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
+		},
+	}
 	for _, c := range cases {
 		recorder := httptest.NewRecorder()
 		req, err := http.NewRequest(c.method, c.destination, c.body)
