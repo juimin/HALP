@@ -134,6 +134,22 @@ func TestUpdatePostHandler(t *testing.T) {
 				}`)),
 			destination: "/posts/new",
 		},
+		{
+			name:         "test updating users for valid input",
+			method:       "PATCH",
+			expectedCode: http.StatusAccepted,
+			handler:      uph,
+			body: bytes.NewBuffer([]byte(
+				`{
+					"title": "potatopass",
+					"image_url": "http://google.com",
+					"caption": "",
+					"upvotes": {"507f1f77bcf86cd799439011":true},
+					"downvotes": {},
+					"total_votes": 1
+				}`)),
+			destination: "/posts/update?id=5ad69dc49137242fc9b6fdc7",
+		},
 	}
 
 	for _, c := range cases {

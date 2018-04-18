@@ -86,7 +86,12 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 			canProceed = false
 		}
 		if canProceed {
-			postid := bson.ObjectId(id)
+			postid := bson.ObjectIdHex(id)
+
+			//NOT A VALID OBJECT ID AHHHHHHHHHH
+			if !postid.Valid() {
+				w.WriteHeader(69)
+			}
 
 			//get post from db
 			post, err := cr.PostStore.GetByID(postid)
@@ -140,7 +145,7 @@ func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request
 		if len(id) == 0 || !bson.IsObjectIdHex(id) {
 			w.WriteHeader(http.StatusBadRequest)
 		} else {
-			postid := bson.ObjectId(id)
+			postid := bson.ObjectIdHex(id)
 			post, err := cr.PostStore.GetByID(postid)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
