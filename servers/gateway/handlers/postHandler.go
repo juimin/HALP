@@ -137,19 +137,18 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		id := r.URL.Query().Get("id")
-		if len(id) == 0 {
+		if len(id) == 0 || !bson.IsObjectIdHex(id) {
 			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			postid := bson.ObjectId(id)
+			post, err := cr.PostStore.GetByID(postid)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.WriteHeader(http.StatusAccepted)
+			json.NewEncoder(w).Encode(post)
+
 		}
-		if !bson.IsObjectIdHex(id) {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		postid := bson.ObjectId(id)
-		post, err := cr.PostStore.GetByID(postid)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		w.WriteHeader(http.StatusAccepted)
-		json.NewEncoder(w).Encode(post)
 
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
