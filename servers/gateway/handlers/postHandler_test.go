@@ -8,6 +8,7 @@ import (
 	"testing"
 )
 
+//Change validID to a valid id from the posts db
 var validID = "5ad7f1bf9137241ece23152d"
 
 func TestNewPostHandler(t *testing.T) {
@@ -302,13 +303,14 @@ func TestGetPostHandler(t *testing.T) {
 		},
 		{
 			name:         "test getting a post with invalid method POST",
-			method:       "POST",
+			method:       "PATCH",
 			expectedCode: http.StatusMethodNotAllowed,
 			handler:      gph,
 			body:         nil,
 			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
 		},
 	}
+	//CHANGE INVALID METHOD ABOVE to prevent test caching
 	for _, c := range cases {
 		recorder := httptest.NewRecorder()
 		req, err := http.NewRequest(c.method, c.destination, c.body)
