@@ -8,6 +8,8 @@ import (
 	"testing"
 )
 
+var validID = "5ad7f1bf9137241ece23152d"
+
 func TestNewPostHandler(t *testing.T) {
 	cr := prepTestCR()
 	nph := http.HandlerFunc(cr.NewPostHandler)
@@ -164,7 +166,7 @@ func TestUpdatePostHandler(t *testing.T) {
 					"downvotes": {},
 					"total_votes": 1
 				}`)),
-			destination: "/posts/update?id=5ad7838d9137245e1228435d",
+			destination: "/posts/update?id=" + validID,
 		},
 		{
 			name:         "test updating posts for invalid input",
@@ -180,7 +182,7 @@ func TestUpdatePostHandler(t *testing.T) {
 					"downvotes": {},
 					"total_votes": 1
 				}`)),
-			destination: "/posts/update?id=5ad7838d9137245e1228435d",
+			destination: "/posts/update?id=" + validID,
 		},
 		{
 			name:         "test updating posts for invalid JSON",
@@ -280,7 +282,7 @@ func TestGetPostHandler(t *testing.T) {
 			expectedCode: http.StatusAccepted,
 			handler:      gph,
 			body:         nil,
-			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
+			destination:  "/posts/get?id=" + validID,
 		},
 		{
 			name:         "test getting an invalid id",
