@@ -113,6 +113,10 @@ func main() {
 	mux.HandleFunc("/users", cr.UsersHandler)
 	mux.HandleFunc("/sessions", cr.SessionsHandler)
 	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
+	mux.HandleFunc("/boards", cr.BoardsAllHandler)
+	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
+	mux.HandleFunc("/boards/updatepost", cr.UpdatePostHandler)
+	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberHandler)
 
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs

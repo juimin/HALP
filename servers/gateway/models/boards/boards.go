@@ -14,12 +14,17 @@ type Board struct {
 
 // UpdateSubscriber represents the increment or decrement of subscribers
 type UpdateSubscriber struct {
-	Sub bool `json:"sub"`
+	Sub int `json:"sub"`
 }
 
 // UpdatePost represents the increment or decrement of posts
 type UpdatePost struct {
-	Post bool `json:"post"`
+	Post int `json:"post"`
+}
+
+// TempBoolStore represents the initial value given to the server from an HTTP request
+type TempBoolStore struct {
+	TempSubPost bool `json:"temp"`
 }
 
 // ChangeSubscriberCount takes in a boolean value to represent a change in subscribers
