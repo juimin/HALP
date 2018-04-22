@@ -15,8 +15,8 @@ type Comment struct {
 	AuthorID    bson.ObjectId   `json:"author_id"`
 	Comments    []bson.ObjectId `json:"comments"`
 	PostID      bson.ObjectId   `json:"board_id"`
-	Upvotes     map[string]bool `json:"upvotes"`
-	Downvotes   map[string]bool `json:"downvotes"`
+	Upvotes     int             `json:"upvotes"`
+	Downvotes   int             `json:"downvotes"`
 	TotalVotes  int             `json:"total_votes"`
 	TimeCreated time.Time       `json:"time_created"`
 	TimeEdited  time.Time       `json:"time_edited"`
@@ -39,7 +39,8 @@ type CommentUpdate struct {
 
 // CommentVote contains an integer that represents the vote of this user
 type CommentVote struct {
-	Vote int `json:"vote"`
+	Upvote   int `json:"upvote"`
+	Downvote int `json:"downvote"`
 }
 
 // Validate should validate the new comment object to confirm that we have a proper comment
@@ -68,13 +69,39 @@ func (nc *NewComment) ToComment() (*Comment, error) {
 		AuthorID:    nc.AuthorID,
 		Comments:    []bson.ObjectId{},
 		PostID:      nc.PostID,
-		Upvotes:     map[string]bool{},
-		Downvotes:   map[string]bool{},
-		TotalVotes:  0,
+		Upvotes:     0,
+		Downvotes:   0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
 	}
 
 	// Return the created comment
 	return comment, nil
+}
+
+// Update alters the composition of a comment based on the attributes in the update struct
+// The alterable components are changed here.
+func (c *Comment) Update(updates *CommentUpdate) error {
+	// Check for valid updates
+	if len(updates.Content) == 0 && len(updates.ImageURL) == 0 {
+		return fmt.Errorf("We cannot set the comment to contain nothing")
+	}
+
+	// Valid updates
+	c.ImageURL = updates.ImageURL
+	c.Comments = updates.Comments
+	c.Content = updates.Content
+	// Update the time stamps
+	c.TimeEdited = time.Now()
+
+	// No errors to report
+	return nil
+}
+
+// Vote allows for the shifting of the votes on a comment
+// In reality these values should be determined by the handler
+func (c *Comment) Vote(v *CommentVote) {
+	// Alter the votes based on the input from the update
+	c.Upvotes += v.Upvote
+	c.Downvotes += v.Downvote
 }
