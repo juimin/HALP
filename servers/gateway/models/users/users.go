@@ -19,16 +19,18 @@ var bcryptCost = 13
 
 // User represents a user account in the database
 type User struct {
-	ID         bson.ObjectId   `json:"id" bson:"_id"`
-	Email      string          `json:"email"`
-	PassHash   []byte          `json:"-"` // Stored, but not encoded to clients
-	UserName   string          `json:"userName"`
-	FirstName  string          `json:"firstName"`
-	LastName   string          `json:"lastName"`
-	PhotoURL   string          `json:"photoURL"`
-	Occupation string          `json:"occupation"`
-	Favorites  []bson.ObjectId `json:"favorites"`
-	Bookmarks  []bson.ObjectId `json:"bookmarks"`
+	ID           bson.ObjectId   `json:"id" bson:"_id"`
+	Email        string          `json:"email"`
+	PassHash     []byte          `json:"-"` // Stored, but not encoded to clients
+	UserName     string          `json:"userName"`
+	FirstName    string          `json:"firstName"`
+	LastName     string          `json:"lastName"`
+	PhotoURL     string          `json:"photoURL"`
+	Occupation   string          `json:"occupation"`
+	Favorites    []bson.ObjectId `json:"favorites"`
+	Bookmarks    []bson.ObjectId `json:"bookmarks"`
+	PostVotes    map[string]bool `json:"postvotes"`
+	CommentVotes map[string]bool `json:"commentvotes"`
 }
 
 // Credentials represents user sign-in credentials
@@ -46,38 +48,6 @@ type NewUser struct {
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
 	Occupation   string `json:"occupation"`
-}
-
-// UserUpdate represents allowed updates to a user profile
-// Updatable Elements:
-// - Name Elements (First and Last)
-// - Email
-type UserUpdate struct {
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	Occupation string `json:"occupation"`
-	Email      string `json:"email"`
-}
-
-// PasswordUpdate represents requirements for changing the user's password
-type PasswordUpdate struct {
-	NewPassword     string `json:"newPassword"`
-	NewPasswordConf string `json:"newPasswordConf"`
-}
-
-// PassUpdate holds the hashed password for the new pass
-type PassUpdate struct {
-	PassHash []byte
-}
-
-// FavoritesUpdate holds the new list of favorites from the clinet
-type FavoritesUpdate struct {
-	Favorites []bson.ObjectId `json:"favorites"`
-}
-
-// BookmarksUpdate holds the new list of favorites from the clinet
-type BookmarksUpdate struct {
-	Bookmarks []bson.ObjectId `json:"bookmarks"`
 }
 
 // Validate confirms that a new user contains information that we
@@ -133,36 +103,23 @@ func (nu *NewUser) ToUser() (*User, error) {
 
 	// We have a valid new user so we can generate a user object
 	user := &User{
-		Email:      nu.Email,
-		UserName:   nu.UserName,
-		FirstName:  nu.FirstName,
-		LastName:   nu.LastName,
-		ID:         bson.NewObjectId(),               // Generate a new bson object ID
-		PhotoURL:   gravatarBasePhotoURL + emailHash, // Gravatar for the given email
-		Occupation: nu.Occupation,
-		Favorites:  []bson.ObjectId{},
-		Bookmarks:  []bson.ObjectId{},
+		Email:        nu.Email,
+		UserName:     nu.UserName,
+		FirstName:    nu.FirstName,
+		LastName:     nu.LastName,
+		ID:           bson.NewObjectId(),               // Generate a new bson object ID
+		PhotoURL:     gravatarBasePhotoURL + emailHash, // Gravatar for the given email
+		Occupation:   nu.Occupation,
+		Favorites:    []bson.ObjectId{},
+		Bookmarks:    []bson.ObjectId{},
+		PostVotes:    map[string]bool{},
+		CommentVotes: map[string]bool{},
 	}
 
 	// Set the password using the given hash from the password generator
 	user.SetPassword(nu.Password)
 	// Return the user and no error
 	return user, nil
-}
-
-// FullName outputs the full name of the given user
-// Empty string is returned if no name is seen
-func (u *User) FullName() string {
-	if len(u.FirstName) > 0 {
-		if len(u.LastName) > 0 {
-			return u.FirstName + " " + u.LastName
-		}
-		return u.FirstName
-	}
-	if len(u.LastName) > 0 {
-		return u.LastName
-	}
-	return ""
 }
 
 // SetPassword hashes the password and stores it in the PassHash field
@@ -190,43 +147,5 @@ func (u *User) Authenticate(password string) error {
 	if err != nil {
 		return fmt.Errorf("Bcrypt hash error")
 	}
-	return nil
-}
-
-// UpdateFavorite should add the given board to the favorites list for this user
-func (u *User) UpdateFavorite(updates *FavoritesUpdate) error {
-	u.Favorites = updates.Favorites
-	return nil
-}
-
-// UpdateBookmarks should add the given board to the favorites list for this user
-func (u *User) UpdateBookmarks(updates *BookmarksUpdate) error {
-	u.Favorites = updates.Bookmarks
-	return nil
-}
-
-//ApplyUpdates applies the updates to the user. An error
-//is returned if the updates are invalid
-func (u *User) ApplyUpdates(updates *UserUpdate) error {
-	if len(updates.FirstName) == 0 || len(updates.LastName) == 0 {
-		return fmt.Errorf("Invalid input. First and last name must both have a non-zero length")
-	}
-
-	// We can't deal with empty emails either because this is not optional
-	if len(updates.Email) == 0 {
-		return fmt.Errorf("Invalid Input. Email cannot be empty")
-	}
-
-	// Check Email valid
-	if _, err := mail.ParseAddress(updates.Email); err != nil {
-		return fmt.Errorf("Invalid input. Email not a valid email")
-	}
-
-	// We aren't dealing with occupation because it is optional
-	u.FirstName = updates.FirstName
-	u.LastName = updates.LastName
-	u.Email = updates.Email
-	u.Occupation = updates.Occupation
-
 	return nil
 }
