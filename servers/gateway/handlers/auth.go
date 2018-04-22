@@ -118,7 +118,7 @@ func (cr *ContextReceiver) FavoritesHandler(w http.ResponseWriter, r *http.Reque
 					if err != nil {
 						w.WriteHeader(http.StatusBadRequest)
 					} else {
-						err = state.User.UpdateFavorite(updates)
+						err = state.User.UpdateFavorites(updates)
 						if err != nil {
 							w.WriteHeader(http.StatusInternalServerError)
 						} else {
