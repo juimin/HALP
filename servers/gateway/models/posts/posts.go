@@ -10,18 +10,18 @@ import (
 
 //Post is a post
 type Post struct {
-	ID          bson.ObjectId   `json:"id" bson:"_id"`
-	Title       string          `json:"title"`
-	ImageURL    string          `json:"image_url"`
-	Caption     string          `json:"caption"`
-	AuthorID    bson.ObjectId   `json:"author_id"`
-	Comments    []bson.ObjectId `json:"comments"`
-	BoardID     bson.ObjectId   `json:"board_id"`
-	Upvotes     map[string]bool `json:"upvotes"`
-	Downvotes   map[string]bool `json:"downvotes"`
-	TotalVotes  int             `json:"total_votes"`
-	TimeCreated time.Time       `json:"time_created"`
-	TimeEdited  time.Time       `json:"time_edited"`
+	ID        bson.ObjectId   `json:"id" bson:"_id"`
+	Title     string          `json:"title"`
+	ImageURL  string          `json:"image_url"`
+	Caption   string          `json:"caption"`
+	AuthorID  bson.ObjectId   `json:"author_id"`
+	Comments  []bson.ObjectId `json:"comments"`
+	BoardID   bson.ObjectId   `json:"board_id"`
+	Upvotes   int             `json:"upvotes"`
+	Downvotes int             `json:"downvotes"`
+	//TotalVotes  int             `json:"total_votes"`
+	TimeCreated time.Time `json:"time_created"`
+	TimeEdited  time.Time `json:"time_edited"`
 }
 
 //NewPost is a new post
@@ -35,12 +35,12 @@ type NewPost struct {
 
 //PostUpdate represents allowed updates to a post
 type PostUpdate struct {
-	Title      string          `json:"title"`
-	Caption    string          `json:"caption"`
-	ImageURL   string          `json:"image_url"`
-	Upvotes    map[string]bool `json:"upvotes"`
-	Downvotes  map[string]bool `json:"downvotes"`
-	TotalVotes int             `json:"total_votes"`
+	Title    string `json:"title"`
+	Caption  string `json:"caption"`
+	ImageURL string `json:"image_url"`
+	//Upvotes    map[string]bool `json:"upvotes"`
+	//Downvotes  map[string]bool `json:"downvotes"`
+	TotalVotes int `json:"total_votes"`
 }
 
 //Validate confirms that a new post contains a title
@@ -70,16 +70,16 @@ func (np *NewPost) ToPost() (*Post, error) {
 		return nil, err
 	}
 	post := &Post{
-		ID:          bson.NewObjectId(),
-		Title:       np.Title,
-		ImageURL:    "",
-		Caption:     "",
-		AuthorID:    np.AuthorID,
-		Comments:    []bson.ObjectId{},
-		BoardID:     bson.NewObjectId(),
-		Upvotes:     map[string]bool{},
-		Downvotes:   map[string]bool{},
-		TotalVotes:  0,
+		ID:        bson.NewObjectId(),
+		Title:     np.Title,
+		ImageURL:  "",
+		Caption:   "",
+		AuthorID:  np.AuthorID,
+		Comments:  []bson.ObjectId{},
+		BoardID:   bson.NewObjectId(),
+		Upvotes:   0,
+		Downvotes: 0,
+		//TotalVotes:  0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
 	}
@@ -93,61 +93,61 @@ func (np *NewPost) ToPost() (*Post, error) {
 	return post, nil
 }
 
-//HasVote returns 1 if a user has upvoted, -1 if
-//a user has downvoted, and 0 if a user has not
-//voted
-func (p *Post) HasVote(author bson.ObjectId) int {
-	if val, ok := p.Upvotes[author.Hex()]; ok && val == true {
-		return 1
-	}
-	if val, ok := p.Downvotes[author.Hex()]; ok && val == true {
-		return -1
-	}
-	return 0
-}
+// //HasVote returns 1 if a user has upvoted, -1 if
+// //a user has downvoted, and 0 if a user has not
+// //voted
+// func (p *Post) HasVote(author bson.ObjectId) int {
+// 	if val, ok := p.Upvotes[author.Hex()]; ok && val == true {
+// 		return 1
+// 	}
+// 	if val, ok := p.Downvotes[author.Hex()]; ok && val == true {
+// 		return -1
+// 	}
+// 	return 0
+// }
 
-//Upvote modifies the current score (count of
-//upvotes) for the post, returning a *PostUpdate
-func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
-	update := &PostUpdate{
-		Title:      p.Title,
-		ImageURL:   p.ImageURL,
-		Caption:    p.Caption,
-		Upvotes:    p.Upvotes,
-		Downvotes:  p.Downvotes,
-		TotalVotes: p.TotalVotes,
-	}
-	if p.HasVote(author) == -1 {
-		update.Downvotes[author.Hex()] = false
-	}
-	if p.HasVote(author) != 1 {
-		//checks if already upvoted
-		update.Upvotes[author.Hex()] = true
-		update.TotalVotes++
+// //Upvote modifies the current score (count of
+// //upvotes) for the post, returning a *PostUpdate
+// func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
+// 	update := &PostUpdate{
+// 		Title:      p.Title,
+// 		ImageURL:   p.ImageURL,
+// 		Caption:    p.Caption,
+// 		// Upvotes:    p.Upvotes,
+// 		// Downvotes:  p.Downvotes,
+// 		TotalVotes: p.TotalVotes,
+// 	}
+// 	if p.HasVote(author) == -1 {
+// 		update.Downvotes[author.Hex()] = false
+// 	}
+// 	if p.HasVote(author) != 1 {
+// 		//checks if already upvoted
+// 		update.Upvotes[author.Hex()] = true
+// 		update.TotalVotes++
 
-	}
-	return update
-}
+// 	}
+// 	return update
+// }
 
-//Downvote downvotes the post
-func (p *Post) Downvote(author bson.ObjectId) *PostUpdate {
-	update := &PostUpdate{
-		Title:      p.Title,
-		ImageURL:   p.ImageURL,
-		Caption:    p.Caption,
-		Upvotes:    p.Upvotes,
-		Downvotes:  p.Downvotes,
-		TotalVotes: p.TotalVotes,
-	}
-	if p.HasVote(author) == 1 {
-		update.Downvotes[author.Hex()] = false
-	}
-	if p.HasVote(author) != -1 {
-		update.Upvotes[author.Hex()] = true
-		update.TotalVotes--
-	}
-	return update
-}
+// //Downvote downvotes the post
+// func (p *Post) Downvote(author bson.ObjectId) *PostUpdate {
+// 	update := &PostUpdate{
+// 		Title:      p.Title,
+// 		ImageURL:   p.ImageURL,
+// 		Caption:    p.Caption,
+// 		Upvotes:    p.Upvotes,
+// 		Downvotes:  p.Downvotes,
+// 		TotalVotes: p.TotalVotes,
+// 	}
+// 	if p.HasVote(author) == 1 {
+// 		update.Downvotes[author.Hex()] = false
+// 	}
+// 	if p.HasVote(author) != -1 {
+// 		update.Upvotes[author.Hex()] = true
+// 		update.TotalVotes--
+// 	}
+// 	return update
+// }
 
 //ApplyUpdates applies the post updates to the post
 func (p *Post) ApplyUpdates(updates *PostUpdate) error {
@@ -169,11 +169,31 @@ func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 		}
 		p.ImageURL = updates.ImageURL
 	}
-	p.TotalVotes = updates.TotalVotes
-	p.Upvotes = updates.Upvotes
-	p.Downvotes = updates.Downvotes
+	// p.TotalVotes = updates.TotalVotes
+	// p.Upvotes = updates.Upvotes
+	// p.Downvotes = updates.Downvotes
 	p.TimeEdited = time.Now()
 	return nil
+}
+
+//Upvote upvotes the post
+func (p *Post) Upvote() {
+	p.Upvotes++
+}
+
+//Downvote downvotes the post
+func (p *Post) Downvote() {
+	p.Downvotes++
+}
+
+//RemoveUpvote removes an upvote from the post
+func (p *Post) RemoveUpvote() {
+	p.Upvotes--
+}
+
+//RemoveDownvote removes a downvote from the post
+func (p *Post) RemoveDownvote() {
+	p.Downvotes--
 }
 
 //AddComments adds comment IDs to the Post

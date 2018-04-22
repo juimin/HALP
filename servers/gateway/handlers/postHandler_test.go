@@ -9,7 +9,7 @@ import (
 )
 
 //Change validID to a valid id from the posts db
-var validID = "5ad7f1bf9137241ece23152d"
+var validID = "5adbde089137245e02feab46"
 
 func TestNewPostHandler(t *testing.T) {
 	cr := prepTestCR()
@@ -147,8 +147,6 @@ func TestUpdatePostHandler(t *testing.T) {
 					"title": "potatopass",
 					"image_url": "http://google.com",
 					"caption": "",
-					"upvotes": {"507f1f77bcf86cd799439011":true},
-					"downvotes": {},
 					"total_votes": 1
 				}`)),
 			destination: "/posts/update?id=507f1f77bcf86cd799439011",
@@ -163,8 +161,6 @@ func TestUpdatePostHandler(t *testing.T) {
 					"title": "potatopass",
 					"image_url": "http://google.com",
 					"caption": "",
-					"upvotes": {"507f1f77bcf86cd799439011":true},
-					"downvotes": {},
 					"total_votes": 1
 				}`)),
 			destination: "/posts/update?id=" + validID,
@@ -179,8 +175,6 @@ func TestUpdatePostHandler(t *testing.T) {
 					"title": "potatopass2",
 					"image_url": "",
 					"caption": "",
-					"upvotes": {"507f1f77bcf86cd799439011":true},
-					"downvotes": {},
 					"total_votes": 1
 				}`)),
 			destination: "/posts/update?id=" + validID,
@@ -211,8 +205,6 @@ func TestUpdatePostHandler(t *testing.T) {
 					"title": "potatopass2",
 					"image_url": "",
 					"caption": "",
-					"upvotes": {"507f1f77bcf86cd799439011":true},
-					"downvotes": {},
 					"total_votes": 1
 				}`)),
 			destination: "/posts/update?id=5ad7838d913",
@@ -227,8 +219,6 @@ func TestUpdatePostHandler(t *testing.T) {
 					"title": "potatopass2",
 					"image_url": "",
 					"caption": "",
-					"upvotes": {"507f1f77bcf86cd799439011":true},
-					"downvotes": {},
 					"total_votes": 1
 				}`)),
 			destination: "/posts/update",

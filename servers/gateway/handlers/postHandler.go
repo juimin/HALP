@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
+	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 )
 
 //NewPostHandler handles requests related to Posts
@@ -93,6 +94,27 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				canProceed = false
+			}
+			//authenticate
+			if canProceed {
+				sid, err := sessions.GetSessionID(r, cr.SigningKey)
+				if err != nil {
+					// No we don't have a session so we can't do this
+					w.WriteHeader(http.StatusForbidden)
+					canProceed = false
+				}
+				if canProceed {
+					state := &SessionState{}
+					err := cr.SessionStore.Get(sid, state)
+					if err != nil {
+						w.WriteHeader(http.StatusInternalServerError)
+						canProceed = false
+					}
+					if state.User.ID != post.AuthorID {
+						w.WriteHeader(http.StatusForbidden)
+						canProceed = false
+					}
+				}
 			}
 
 			//postnew := &posts.Post{post}

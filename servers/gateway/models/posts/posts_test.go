@@ -2,9 +2,7 @@ package posts
 
 import (
 	"fmt"
-	"strconv"
 	"testing"
-	"time"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -136,174 +134,174 @@ func TestToPost(t *testing.T) {
 	}
 }
 
-//TestHasUpvote tests getting how the user has voted on a post
-func TestHasUpvote(t *testing.T) {
-	testuser := bson.NewObjectId()
-	mapwithuser := map[string]bool{}
-	mapwithuser[testuser.Hex()] = true
-	cases := []struct {
-		name           string
-		input          *Post
-		expectedOutput int
-	}{
-		{
-			name: "no votes",
-			input: &Post{
-				ID:          bson.NewObjectId(),
-				Title:       "",
-				ImageURL:    "",
-				Caption:     "",
-				Comments:    []bson.ObjectId{},
-				BoardID:     bson.NewObjectId(),
-				Upvotes:     map[string]bool{},
-				Downvotes:   map[string]bool{},
-				TotalVotes:  0,
-				TimeCreated: time.Now(),
-				TimeEdited:  time.Now()},
-			expectedOutput: 0,
-		},
-		{
-			name: "user has upvote",
-			input: &Post{
-				ID:          bson.NewObjectId(),
-				Title:       "",
-				ImageURL:    "",
-				Caption:     "",
-				Comments:    []bson.ObjectId{},
-				BoardID:     bson.NewObjectId(),
-				Upvotes:     mapwithuser,
-				Downvotes:   map[string]bool{},
-				TotalVotes:  0,
-				TimeCreated: time.Now(),
-				TimeEdited:  time.Now(),
-			},
-			expectedOutput: 1,
-		},
-		{
-			name: "user has downvote",
-			input: &Post{
-				ID:          bson.NewObjectId(),
-				Title:       "",
-				ImageURL:    "",
-				Caption:     "",
-				Comments:    []bson.ObjectId{},
-				BoardID:     bson.NewObjectId(),
-				Upvotes:     map[string]bool{},
-				Downvotes:   mapwithuser,
-				TotalVotes:  0,
-				TimeCreated: time.Now(),
-				TimeEdited:  time.Now(),
-			},
-			expectedOutput: -1,
-		},
-	}
-	for _, c := range cases {
-		if output := c.input.HasVote(testuser); c.expectedOutput != output {
-			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
-		}
-	}
-}
+// //TestHasUpvote tests getting how the user has voted on a post
+// func TestHasUpvote(t *testing.T) {
+// 	testuser := bson.NewObjectId()
+// 	mapwithuser := map[string]bool{}
+// 	mapwithuser[testuser.Hex()] = true
+// 	cases := []struct {
+// 		name           string
+// 		input          *Post
+// 		expectedOutput int
+// 	}{
+// 		{
+// 			name: "no votes",
+// 			input: &Post{
+// 				ID:          bson.NewObjectId(),
+// 				Title:       "",
+// 				ImageURL:    "",
+// 				Caption:     "",
+// 				Comments:    []bson.ObjectId{},
+// 				BoardID:     bson.NewObjectId(),
+// 				Upvotes:     map[string]bool{},
+// 				Downvotes:   map[string]bool{},
+// 				TotalVotes:  0,
+// 				TimeCreated: time.Now(),
+// 				TimeEdited:  time.Now()},
+// 			expectedOutput: 0,
+// 		},
+// 		{
+// 			name: "user has upvote",
+// 			input: &Post{
+// 				ID:          bson.NewObjectId(),
+// 				Title:       "",
+// 				ImageURL:    "",
+// 				Caption:     "",
+// 				Comments:    []bson.ObjectId{},
+// 				BoardID:     bson.NewObjectId(),
+// 				Upvotes:     mapwithuser,
+// 				Downvotes:   map[string]bool{},
+// 				TotalVotes:  0,
+// 				TimeCreated: time.Now(),
+// 				TimeEdited:  time.Now(),
+// 			},
+// 			expectedOutput: 1,
+// 		},
+// 		{
+// 			name: "user has downvote",
+// 			input: &Post{
+// 				ID:          bson.NewObjectId(),
+// 				Title:       "",
+// 				ImageURL:    "",
+// 				Caption:     "",
+// 				Comments:    []bson.ObjectId{},
+// 				BoardID:     bson.NewObjectId(),
+// 				Upvotes:     map[string]bool{},
+// 				Downvotes:   mapwithuser,
+// 				TotalVotes:  0,
+// 				TimeCreated: time.Now(),
+// 				TimeEdited:  time.Now(),
+// 			},
+// 			expectedOutput: -1,
+// 		},
+// 	}
+// 	for _, c := range cases {
+// 		if output := c.input.HasVote(testuser); c.expectedOutput != output {
+// 			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
+// 		}
+// 	}
+// }
 
-//TestUpvote tests upvoting a post
-func TestUpvote(t *testing.T) {
-	testuser1 := bson.NewObjectId()
-	testuser2 := bson.NewObjectId()
-	testmap1 := map[string]bool{}
-	testmap1[testuser1.Hex()] = true
-	testmap2 := map[string]bool{}
-	testmap2[testuser1.Hex()] = true
-	testmap2[testuser2.Hex()] = true
-	cases := []struct {
-		name           string
-		input          bson.ObjectId
-		expectedOutput int //represents total votes
-		expectedMap    map[string]bool
-	}{
-		{
-			name:           "first upvote",
-			input:          testuser1,
-			expectedOutput: 1,
-			expectedMap:    testmap1,
-		},
-		{
-			name:           "second upvote",
-			input:          testuser2,
-			expectedOutput: 2,
-			expectedMap:    testmap2,
-		},
-	}
-	testPost := &Post{
-		Title:     "testing",
-		Caption:   "testing",
-		Upvotes:   map[string]bool{},
-		Downvotes: map[string]bool{},
-	}
-	for _, c := range cases {
-		//testpost.upvote should return a postupdate
-		//with the updated upvotes map and total votes
-		//then appy that to testpost
-		testPost.ApplyUpdates(testPost.Upvote(c.input))
-		output := testPost.TotalVotes
-		if output != c.expectedOutput {
-			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
-		}
-		outmap := testPost.Upvotes
-		for k, v := range outmap {
-			if v != c.expectedMap[k] {
-				t.Errorf("%s: got (%s, %s) but expected (%s, %s)", c.name, k, strconv.FormatBool(v), k, strconv.FormatBool(c.expectedMap[k]))
-			}
-		}
-	}
-}
+// //TestUpvote tests upvoting a post
+// func TestUpvote(t *testing.T) {
+// 	testuser1 := bson.NewObjectId()
+// 	testuser2 := bson.NewObjectId()
+// 	testmap1 := map[string]bool{}
+// 	testmap1[testuser1.Hex()] = true
+// 	testmap2 := map[string]bool{}
+// 	testmap2[testuser1.Hex()] = true
+// 	testmap2[testuser2.Hex()] = true
+// 	cases := []struct {
+// 		name           string
+// 		input          bson.ObjectId
+// 		expectedOutput int //represents total votes
+// 		expectedMap    map[string]bool
+// 	}{
+// 		{
+// 			name:           "first upvote",
+// 			input:          testuser1,
+// 			expectedOutput: 1,
+// 			expectedMap:    testmap1,
+// 		},
+// 		{
+// 			name:           "second upvote",
+// 			input:          testuser2,
+// 			expectedOutput: 2,
+// 			expectedMap:    testmap2,
+// 		},
+// 	}
+// 	testPost := &Post{
+// 		Title:     "testing",
+// 		Caption:   "testing",
+// 		Upvotes:   map[string]bool{},
+// 		Downvotes: map[string]bool{},
+// 	}
+// 	for _, c := range cases {
+// 		//testpost.upvote should return a postupdate
+// 		//with the updated upvotes map and total votes
+// 		//then appy that to testpost
+// 		testPost.ApplyUpdates(testPost.Upvote(c.input))
+// 		output := testPost.TotalVotes
+// 		if output != c.expectedOutput {
+// 			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
+// 		}
+// 		outmap := testPost.Upvotes
+// 		for k, v := range outmap {
+// 			if v != c.expectedMap[k] {
+// 				t.Errorf("%s: got (%s, %s) but expected (%s, %s)", c.name, k, strconv.FormatBool(v), k, strconv.FormatBool(c.expectedMap[k]))
+// 			}
+// 		}
+// 	}
+// }
 
-//TestDownvote tests downvoting a post
-func TestDownvote(t *testing.T) {
-	testuser1 := bson.NewObjectId()
-	testuser2 := bson.NewObjectId()
-	testmap1 := map[string]bool{}
-	testmap1[testuser1.Hex()] = true
-	testmap2 := map[string]bool{}
-	testmap2[testuser1.Hex()] = true
-	testmap2[testuser2.Hex()] = true
-	cases := []struct {
-		name           string
-		input          bson.ObjectId
-		expectedOutput int //represents total votes
-		expectedMap    map[string]bool
-	}{
-		{
-			name:           "first downvote",
-			input:          testuser1,
-			expectedOutput: -1,
-			expectedMap:    testmap1,
-		},
-		{
-			name:           "second downvote",
-			input:          testuser2,
-			expectedOutput: -2,
-			expectedMap:    testmap2,
-		},
-	}
-	testPost := &Post{
-		Title:     "testing",
-		Caption:   "testing",
-		Upvotes:   map[string]bool{},
-		Downvotes: map[string]bool{},
-	}
-	for _, c := range cases {
-		testPost.ApplyUpdates(testPost.Downvote(c.input))
-		output := testPost.TotalVotes
-		if output != c.expectedOutput {
-			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
-		}
-		outmap := testPost.Downvotes
-		for k, v := range outmap {
-			if v != c.expectedMap[k] {
-				t.Errorf("%s: got (%s, %s) but expected (%s, %s)", c.name, k, strconv.FormatBool(v), k, strconv.FormatBool(c.expectedMap[k]))
-			}
-		}
-	}
-}
+// //TestDownvote tests downvoting a post
+// func TestDownvote(t *testing.T) {
+// 	testuser1 := bson.NewObjectId()
+// 	testuser2 := bson.NewObjectId()
+// 	testmap1 := map[string]bool{}
+// 	testmap1[testuser1.Hex()] = true
+// 	testmap2 := map[string]bool{}
+// 	testmap2[testuser1.Hex()] = true
+// 	testmap2[testuser2.Hex()] = true
+// 	cases := []struct {
+// 		name           string
+// 		input          bson.ObjectId
+// 		expectedOutput int //represents total votes
+// 		expectedMap    map[string]bool
+// 	}{
+// 		{
+// 			name:           "first downvote",
+// 			input:          testuser1,
+// 			expectedOutput: -1,
+// 			expectedMap:    testmap1,
+// 		},
+// 		{
+// 			name:           "second downvote",
+// 			input:          testuser2,
+// 			expectedOutput: -2,
+// 			expectedMap:    testmap2,
+// 		},
+// 	}
+// 	testPost := &Post{
+// 		Title:     "testing",
+// 		Caption:   "testing",
+// 		Upvotes:   map[string]bool{},
+// 		Downvotes: map[string]bool{},
+// 	}
+// 	for _, c := range cases {
+// 		testPost.ApplyUpdates(testPost.Downvote(c.input))
+// 		output := testPost.TotalVotes
+// 		if output != c.expectedOutput {
+// 			t.Errorf("%s: got %d but expected %d", c.name, output, c.expectedOutput)
+// 		}
+// 		outmap := testPost.Downvotes
+// 		for k, v := range outmap {
+// 			if v != c.expectedMap[k] {
+// 				t.Errorf("%s: got (%s, %s) but expected (%s, %s)", c.name, k, strconv.FormatBool(v), k, strconv.FormatBool(c.expectedMap[k]))
+// 			}
+// 		}
+// 	}
+// }
 
 //TestApplyUpdates tests applying updates to an existing post
 func TestApplyUpdates(t *testing.T) {
@@ -397,5 +395,93 @@ func TestAddComments(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, num, c.expectedOutput[i])
 			}
 		}
+	}
+}
+
+//Test Upvoting
+func TestUpvote(t *testing.T) {
+	cases := []struct {
+		name           string
+		expectedOutput int
+	}{
+		{
+			name:           "add upvote",
+			expectedOutput: 1,
+		},
+	}
+	testPost := &Post{}
+	for _, c := range cases {
+		testPost.Upvote()
+		if testPost.Upvotes != c.expectedOutput {
+			t.Errorf("%s: got %d upvotes but expected %d upvotes", c.name, testPost.Upvotes, c.expectedOutput)
+		}
+
+	}
+}
+
+//Test removing updates from post
+func TestRemoveUpvote(t *testing.T) {
+	cases := []struct {
+		name           string
+		expectedOutput int
+	}{
+		{
+			name:           "removing upvote",
+			expectedOutput: 0,
+		},
+	}
+	testPost := &Post{
+		Upvotes: 1,
+	}
+	for _, c := range cases {
+		testPost.RemoveUpvote()
+		if testPost.Upvotes != c.expectedOutput {
+			t.Errorf("%s: got %d upvotes but expected %d upvotes", c.name, testPost.Upvotes, c.expectedOutput)
+		}
+
+	}
+}
+
+//Test Downvoting
+func TestDownvote(t *testing.T) {
+	cases := []struct {
+		name           string
+		expectedOutput int
+	}{
+		{
+			name:           "add downvote",
+			expectedOutput: 1,
+		},
+	}
+	testPost := &Post{}
+	for _, c := range cases {
+		testPost.Downvote()
+		if testPost.Downvotes != c.expectedOutput {
+			t.Errorf("%s: got %d downvotes but expected %d upvotes", c.name, testPost.Upvotes, c.expectedOutput)
+		}
+
+	}
+}
+
+//Test removing downvotes from post
+func TestRemoveDownvote(t *testing.T) {
+	cases := []struct {
+		name           string
+		expectedOutput int
+	}{
+		{
+			name:           "removing downvote",
+			expectedOutput: 0,
+		},
+	}
+	testPost := &Post{
+		Downvotes: 1,
+	}
+	for _, c := range cases {
+		testPost.RemoveDownvote()
+		if testPost.Downvotes != c.expectedOutput {
+			t.Errorf("%s: got %d downvotes but expected %d downvotes", c.name, testPost.Downvotes, c.expectedOutput)
+		}
+
 	}
 }
