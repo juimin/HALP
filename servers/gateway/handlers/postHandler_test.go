@@ -233,6 +233,8 @@ func TestUpdatePostHandler(t *testing.T) {
 		},
 	}
 
+	//test author_id = 507f1f77bcf86cd799439011
+
 	for _, c := range cases {
 		recorder := httptest.NewRecorder()
 		req, err := http.NewRequest(c.method, c.destination, c.body)
