@@ -113,16 +113,6 @@ func (s *MongoStore) DeleteComment(commentID bson.ObjectId) error {
 	return nil
 }
 
-// DeleteSecondaryComment removes a secondary comment from the database
-func (s *MongoStore) DeleteSecondaryComment(secondaryID bson.ObjectId) error {
-	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.RemoveId(secondaryID); err != nil {
-		return err
-	}
-	// No error so delete must have been a success
-	return nil
-}
-
 // UpdateComment updates the parent level comments
 func (s *MongoStore) UpdateComment(commentID bson.ObjectId, updates *CommentUpdate) (*Comment, error) {
 	change := mgo.Change{

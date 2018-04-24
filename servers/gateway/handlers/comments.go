@@ -64,7 +64,15 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 	case "POST":
 	case "PATCH":
 	case "DELETE":
-
+		id := r.URL.Query().Get("id")
+		if bson.IsObjectIdHex(id) {
+			err := cr.CommentStore.DeleteComment(bson.ObjectIdHex(id))
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			} else {
+				w.WriteHeader(http.StatusOK)
+			}
+		}
 	default:
 		// We only accept GET, POST and PATCH here
 		w.WriteHeader(http.StatusMethodNotAllowed)

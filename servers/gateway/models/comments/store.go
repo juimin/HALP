@@ -29,9 +29,6 @@ type Store interface {
 	// DeleteComment removes a primary comment from a store
 	DeleteComment(commentID bson.ObjectId) error
 
-	// DeleteSecondaryComment removes a secondary comment from the store
-	DeleteSecondaryComment(secondaryID bson.ObjectId) error
-
 	// UpdateComment updates the parent level comments
 	UpdateComment(commentID bson.ObjectId, updates *CommentUpdate) (*Comment, error)
 
