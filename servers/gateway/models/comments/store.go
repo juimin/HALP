@@ -9,16 +9,16 @@ import (
 type Store interface {
 
 	// GetCommentsByPostId retrieves all the comments associated with the given post id
-	GetCommentsByPostId(postID bson.ObjectId) (*[]Comment, error)
+	GetCommentsByPostID(postID bson.ObjectId) (*[]Comment, error)
 
 	// GetByParentId takes a comment id and returns all secondary comments assoicated with it
-	GetByParentId(commentID bson.ObjectId) ([]SecondaryComment, error)
+	GetByParentID(commentID bson.ObjectId) (*[]SecondaryComment, error)
 
 	// GetByCommentId retreives a primary comment by its Id
-	GetByCommentId(commentID bson.ObjectId) (*Comment, error)
+	GetByCommentID(commentID bson.ObjectId) (*Comment, error)
 
 	// GetBySecondaryId retreives a secondary comment by its Id
-	GetBySecondaryId(secondaryID bson.ObjectId) (*SecondaryComment, error)
+	GetBySecondaryID(secondaryID bson.ObjectId) (*SecondaryComment, error)
 
 	// InsertComment inserts a new comment into the store
 	InsertComment(newComment *NewComment) (*Comment, error)
