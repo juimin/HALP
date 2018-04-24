@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
+
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 	"github.com/go-redis/redis"
@@ -74,9 +76,11 @@ func prepTestCR() *ContextReceiver {
 		os.Exit(1)
 	}
 
-	mongoStore := users.NewMongoStore(mongoSession, "test", "Authtest")
+	mongoStore := users.NewMongoStore(mongoSession, "test", "user")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore)
+	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
+
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, boardStore)
 
 	return cr
 }

@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 	"github.com/go-redis/redis"
@@ -227,7 +228,9 @@ func TestContextHandler(t *testing.T) {
 
 		redisStore := sessions.NewRedisStore(redisClient, time.Minute*30)
 
-		_, err = NewContextReceiver(c.key, mongoStore, redisStore)
+		boardStore := boards.NewMongoStore(mongoSession, "test", "board")
+
+		_, err = NewContextReceiver(c.key, mongoStore, redisStore, boardStore)
 
 		if err != nil {
 			actualErr = err.Error()
