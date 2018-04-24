@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
+
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
@@ -99,9 +101,11 @@ func main() {
 
 	mongoStore := users.NewMongoStore(mongoSession, "users", "user")
 
+	boardStore := boards.NewMongoStore(mongoSession, "boards", "board")
+
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
+	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore, boardStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()

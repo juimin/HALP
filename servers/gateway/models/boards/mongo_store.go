@@ -68,7 +68,7 @@ func (s *MongoStore) GetAllBoards() ([]*Board, error) {
 }
 
 //UpdateSubscriberCount updates the subscriber count in MongoDB
-func (s *MongoStore) UpdateSubscriberCount(BoardID bson.ObjectId, subs *UpdateSubscriber) error {
+func (s *MongoStore) UpdateSubscriberCount(BoardID bson.ObjectId, subs *UpdateSubscriber) (*Board, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": subs},
 		ReturnNew: true,
@@ -76,13 +76,13 @@ func (s *MongoStore) UpdateSubscriberCount(BoardID bson.ObjectId, subs *UpdateSu
 	board := &Board{}
 	col := s.session.DB(s.dbname).C(s.colname)
 	if _, err := col.FindId(BoardID).Apply(change, board); err != nil {
-		return fmt.Errorf("error adding subs to Board by id: %v", err)
+		return nil, fmt.Errorf("error adding subs to Board by id: %v", err)
 	}
-	return nil
+	return board, nil
 }
 
 //UpdatePostCount updates the subscriber count in MongoDB
-func (s *MongoStore) UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) error {
+func (s *MongoStore) UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) (*Board, error) {
 	change := mgo.Change{
 		Update:    bson.M{"$set": posts},
 		ReturnNew: true,
@@ -90,7 +90,7 @@ func (s *MongoStore) UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) e
 	board := &Board{}
 	col := s.session.DB(s.dbname).C(s.colname)
 	if _, err := col.FindId(BoardID).Apply(change, board); err != nil {
-		return fmt.Errorf("error adding posts to Board by id: %v", err)
+		return nil, fmt.Errorf("error adding posts to Board by id: %v", err)
 	}
-	return nil
+	return board, nil
 }
