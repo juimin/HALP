@@ -541,37 +541,40 @@ func TestFavoritesUpdate(t *testing.T) {
 		t.Error("There was an issue adding the test user to the database")
 	}
 
+	filler := bson.NewObjectId()
+
 	cases := []struct {
 		name           string
 		id             bson.ObjectId
-		newFavorites   []bson.ObjectId
 		addition       *FavoritesUpdate
 		expectedOutput error
 	}{
 		{
-			name: "Test Updating User with Valid Update",
+			name: "Test Updating User with Valid Update Addition",
 			id:   usr.ID,
-			newFavorites: []bson.ObjectId{
-				bson.NewObjectId(),
-				bson.NewObjectId(),
-			},
 			addition: &FavoritesUpdate{
 				Adding:   true,
-				UpdateID: bson.NewObjectId(),
+				UpdateID: filler,
 			},
 			expectedOutput: nil,
 		},
 		{
 			name: "Test Updating User That doesn't exist",
 			id:   bson.NewObjectId(),
-			newFavorites: []bson.ObjectId{
-				bson.NewObjectId(),
-			},
 			addition: &FavoritesUpdate{
 				Adding:   true,
 				UpdateID: bson.NewObjectId(),
 			},
-			expectedOutput: fmt.Errorf("not found"),
+			expectedOutput: fmt.Errorf("error getting users by id: not found"),
+		},
+		{
+			name: "Test Updating User with Valid Update Remove",
+			id:   usr.ID,
+			addition: &FavoritesUpdate{
+				Adding:   false,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
 		},
 	}
 
@@ -586,9 +589,13 @@ func TestFavoritesUpdate(t *testing.T) {
 			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
 		}
 		if updatedUser != nil {
-			for idx := range updatedUser.Favorites {
-				if idx >= len(c.newFavorites) || updatedUser.Favorites[idx] != c.newFavorites[idx] {
-					t.Errorf("Error Matching Favorites on %s: Expected %v but got %v", c.name, c.newFavorites, updatedUser.Favorites)
+			if c.addition.Adding {
+				if len(updatedUser.Favorites) != 1 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 1, len(updatedUser.Favorites))
+				}
+			} else {
+				if len(updatedUser.Favorites) != 0 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 0, len(updatedUser.Favorites))
 				}
 			}
 		}
@@ -621,37 +628,40 @@ func TestBookmarksUpdate(t *testing.T) {
 		t.Error("There was an issue adding the test user to the database")
 	}
 
+	filler := bson.NewObjectId()
+
 	cases := []struct {
 		name           string
 		id             bson.ObjectId
-		newBookmarks   []bson.ObjectId
 		addition       *BookmarksUpdate
 		expectedOutput error
 	}{
 		{
-			name: "Test Updating User with Valid Update",
+			name: "Test Updating User with Valid Update Addition",
 			id:   usr.ID,
-			newBookmarks: []bson.ObjectId{
-				bson.NewObjectId(),
-				bson.NewObjectId(),
-			},
 			addition: &BookmarksUpdate{
 				Adding:   true,
-				UpdateID: bson.NewObjectId(),
+				UpdateID: filler,
 			},
 			expectedOutput: nil,
 		},
 		{
 			name: "Test Updating User That doesn't exist",
 			id:   bson.NewObjectId(),
-			newBookmarks: []bson.ObjectId{
-				bson.NewObjectId(),
-			},
 			addition: &BookmarksUpdate{
 				Adding:   true,
 				UpdateID: bson.NewObjectId(),
 			},
-			expectedOutput: fmt.Errorf("not found"),
+			expectedOutput: fmt.Errorf("error getting users by id: not found"),
+		},
+		{
+			name: "Test Updating User with Valid Update Remove",
+			id:   usr.ID,
+			addition: &BookmarksUpdate{
+				Adding:   false,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
 		},
 	}
 
@@ -666,9 +676,13 @@ func TestBookmarksUpdate(t *testing.T) {
 			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
 		}
 		if updatedUser != nil {
-			for idx := range updatedUser.Favorites {
-				if idx >= len(c.newBookmarks) || updatedUser.Bookmarks[idx] != c.newBookmarks[idx] {
-					t.Errorf("Error Matching Favorites on %s: Expected %v but got %v", c.name, c.newBookmarks, updatedUser.Bookmarks)
+			if c.addition.Adding {
+				if len(updatedUser.Bookmarks) != 1 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 1, len(updatedUser.Bookmarks))
+				}
+			} else {
+				if len(updatedUser.Bookmarks) != 0 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 0, len(updatedUser.Bookmarks))
 				}
 			}
 		}
