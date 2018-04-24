@@ -1,10 +1,8 @@
 package users
 
 import (
-	"crypto/md5"
 	"fmt"
 	"net/mail"
-	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
@@ -97,9 +95,9 @@ func (nu *NewUser) ToUser() (*User, error) {
 	}
 
 	// MD5 hasher
-	hash := md5.New()
+	// hash := md5.New()
 	// Hash the email using md5
-	emailHash := string(hash.Sum([]byte(strings.ToLower(strings.Trim(nu.Email, " ")))))
+	// emailHash := string(hash.Sum([]byte(strings.ToLower(strings.Trim(nu.Email, " ")))))
 
 	// We have a valid new user so we can generate a user object
 	user := &User{
@@ -107,8 +105,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 		UserName:     nu.UserName,
 		FirstName:    nu.FirstName,
 		LastName:     nu.LastName,
-		ID:           bson.NewObjectId(),               // Generate a new bson object ID
-		PhotoURL:     gravatarBasePhotoURL + emailHash, // Gravatar for the given email
+		ID:           bson.NewObjectId(), // Generate a new bson object ID
 		Occupation:   nu.Occupation,
 		Favorites:    []bson.ObjectId{},
 		Bookmarks:    []bson.ObjectId{},
