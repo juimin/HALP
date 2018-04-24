@@ -21,6 +21,12 @@ type MongoStore struct {
 	colname string
 }
 
+// VoteInjector is a temporary update object that allows for updates to votes
+type VoteInjector struct {
+	Upvotes   int
+	Downvotes int
+}
+
 //NewMongoStore constructs a new MongoStore
 func NewMongoStore(sess *mgo.Session, dbName string, collectionName string) *MongoStore {
 	if sess == nil {
@@ -136,6 +142,58 @@ func (s *MongoStore) UpdateSecondaryComment(secondaryID bson.ObjectId, updates *
 	comment := &SecondaryComment{}
 	col := s.session.DB(s.dbname).C(s.colname)
 	if _, err := col.FindId(secondaryID).Apply(change, comment); err != nil {
+		return nil, err
+	}
+	return comment, nil
+}
+
+// CommentVote deals with comment votes
+func (s *MongoStore) CommentVote(id bson.ObjectId, updates *CommentVote) (*Comment, error) {
+	// Get the comment in question
+	comment, err := s.GetByCommentID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Change the votes
+	comment.Vote(updates)
+
+	change := mgo.Change{
+		Update: bson.M{"$set": &VoteInjector{
+			Upvotes:   comment.Upvotes,
+			Downvotes: comment.Downvotes,
+		}}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(id).Apply(change, comment); err != nil {
+		return nil, err
+	}
+	return comment, nil
+}
+
+// SecondaryCommentVote deals with comment votes
+func (s *MongoStore) SecondaryCommentVote(id bson.ObjectId, updates *SecondaryCommentVote) (*SecondaryComment, error) {
+	// Get the comment in question
+	comment, err := s.GetBySecondaryID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Change the votes
+	comment.Vote(updates)
+
+	change := mgo.Change{
+		Update: bson.M{"$set": &VoteInjector{
+			Upvotes:   comment.Upvotes,
+			Downvotes: comment.Downvotes,
+		}}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(id).Apply(change, comment); err != nil {
 		return nil, err
 	}
 	return comment, nil

@@ -34,4 +34,10 @@ type Store interface {
 
 	// UpdateSecondaryComment updates a secondary level comment
 	UpdateSecondaryComment(secondaryID bson.ObjectId, updates *SecondaryCommentUpdate) (*SecondaryComment, error)
+
+	// CommentVote deals with comment votes
+	CommentVote(id bson.ObjectId, vote *CommentVote) (*Comment, error)
+
+	// CommentVote deals with comment votes
+	SecondaryCommentVote(id bson.ObjectId, vote *SecondaryCommentVote) (*SecondaryComment, error)
 }
