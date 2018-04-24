@@ -76,3 +76,77 @@ func (s *MongoStore) GetByParentID(id bson.ObjectId) (*[]SecondaryComment, error
 	}
 	return sc, nil
 }
+
+//InsertComment inserts a new comment into the store
+func (s *MongoStore) InsertComment(newComment *NewComment) (*Comment, error) {
+	comm, err := newComment.ToComment()
+	if err != nil {
+		return nil, err
+	}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if err := col.Insert(comm); err != nil {
+		return nil, fmt.Errorf("error inserting comment: %v", err)
+	}
+	return comm, nil
+}
+
+//InsertSecondaryComment inserts a new comment into the store
+func (s *MongoStore) InsertSecondaryComment(newSecondary *NewSecondaryComment) (*SecondaryComment, error) {
+	comm, err := newSecondary.ToSecondaryComment()
+	if err != nil {
+		return nil, err
+	}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if err := col.Insert(comm); err != nil {
+		return nil, fmt.Errorf("error inserting secondary comment: %v", err)
+	}
+	return comm, nil
+}
+
+// DeleteComment removes a comment from the database
+func (s *MongoStore) DeleteComment(commentID bson.ObjectId) error {
+	col := s.session.DB(s.dbname).C(s.colname)
+	if err := col.RemoveId(commentID); err != nil {
+		return err
+	}
+	// No error so delete must have been a success
+	return nil
+}
+
+// DeleteSecondaryComment removes a secondary comment from the database
+func (s *MongoStore) DeleteSecondaryComment(secondaryID bson.ObjectId) error {
+	col := s.session.DB(s.dbname).C(s.colname)
+	if err := col.RemoveId(secondaryID); err != nil {
+		return err
+	}
+	// No error so delete must have been a success
+	return nil
+}
+
+// UpdateComment updates the parent level comments
+func (s *MongoStore) UpdateComment(commentID bson.ObjectId, updates *CommentUpdate) (*Comment, error) {
+	change := mgo.Change{
+		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+	comment := &Comment{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(commentID).Apply(change, comment); err != nil {
+		return nil, err
+	}
+	return comment, nil
+}
+
+// UpdateSecondaryComment updates a secondary level comment
+func (s *MongoStore) UpdateSecondaryComment(secondaryID bson.ObjectId, updates *SecondaryCommentUpdate) (*SecondaryComment, error) {
+	change := mgo.Change{
+		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+	comment := &SecondaryComment{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(secondaryID).Apply(change, comment); err != nil {
+		return nil, err
+	}
+	return comment, nil
+}

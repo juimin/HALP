@@ -33,8 +33,8 @@ type Store interface {
 	DeleteSecondaryComment(secondaryID bson.ObjectId) error
 
 	// UpdateComment updates the parent level comments
-	UpdateComment(commentID bson.ObjectId, updates *CommentUpdate)
+	UpdateComment(commentID bson.ObjectId, updates *CommentUpdate) (*Comment, error)
 
 	// UpdateSecondaryComment updates a secondary level comment
-	UpdateSecondaryComment(secondaryID bson.ObjectId, updates *SecondaryCommentUpdate)
+	UpdateSecondaryComment(secondaryID bson.ObjectId, updates *SecondaryCommentUpdate) (*SecondaryComment, error)
 }
