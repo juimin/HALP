@@ -59,20 +59,19 @@ func (u *User) UpdateFavorites(updates *FavoritesUpdate) error {
 	if updates.Adding {
 		u.Favorites = append(u.Favorites, updates.UpdateID)
 		return nil
-	} else {
-		success := false
-		for idx, item := range u.Favorites {
-			if item == updates.UpdateID {
-				// Eliminate the item from the slice
-				u.Favorites = append(u.Favorites[:idx], u.Favorites[idx+1:]...)
-				success = true
-			}
-		}
-		if !success {
-			return fmt.Errorf("Could not remove the item from the favorites")
-		}
-		return nil
 	}
+	success := false
+	for idx, item := range u.Favorites {
+		if item == updates.UpdateID {
+			// Eliminate the item from the slice
+			u.Favorites = append(u.Favorites[:idx], u.Favorites[idx+1:]...)
+			success = true
+		}
+	}
+	if !success {
+		return fmt.Errorf("Could not remove the item from the favorites")
+	}
+	return nil
 }
 
 // UpdateBookmarks updates the user's favorites with the given update
@@ -80,18 +79,17 @@ func (u *User) UpdateBookmarks(updates *BookmarksUpdate) error {
 	if updates.Adding {
 		u.Bookmarks = append(u.Bookmarks, updates.UpdateID)
 		return nil
-	} else {
-		success := false
-		for idx, item := range u.Favorites {
-			if item == updates.UpdateID {
-				// Eliminate the item from the slice
-				u.Bookmarks = append(u.Bookmarks[:idx], u.Bookmarks[idx+1:]...)
-				success = true
-			}
-		}
-		if !success {
-			return fmt.Errorf("Could not remove the item from the favorites")
-		}
-		return nil
 	}
+	success := false
+	for idx, item := range u.Bookmarks {
+		if item == updates.UpdateID {
+			// Eliminate the item from the slice
+			u.Bookmarks = append(u.Bookmarks[:idx], u.Bookmarks[idx+1:]...)
+			success = true
+		}
+	}
+	if !success {
+		return fmt.Errorf("Could not remove the item from the favorites")
+	}
+	return nil
 }

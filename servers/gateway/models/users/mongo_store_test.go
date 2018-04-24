@@ -545,6 +545,7 @@ func TestFavoritesUpdate(t *testing.T) {
 		name           string
 		id             bson.ObjectId
 		newFavorites   []bson.ObjectId
+		addition       *FavoritesUpdate
 		expectedOutput error
 	}{
 		{
@@ -554,6 +555,10 @@ func TestFavoritesUpdate(t *testing.T) {
 				bson.NewObjectId(),
 				bson.NewObjectId(),
 			},
+			addition: &FavoritesUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
 			expectedOutput: nil,
 		},
 		{
@@ -562,14 +567,16 @@ func TestFavoritesUpdate(t *testing.T) {
 			newFavorites: []bson.ObjectId{
 				bson.NewObjectId(),
 			},
+			addition: &FavoritesUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
 			expectedOutput: fmt.Errorf("not found"),
 		},
 	}
 
 	for _, c := range cases {
-		updatedUser, err := mongoStore.FavoritesUpdate(c.id, &FavoritesUpdate{
-			Favorites: c.newFavorites,
-		})
+		updatedUser, err := mongoStore.FavoritesUpdate(c.id, c.addition)
 		if err != nil && c.expectedOutput != nil {
 			if err.Error() != c.expectedOutput.Error() {
 				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
@@ -618,6 +625,7 @@ func TestBookmarksUpdate(t *testing.T) {
 		name           string
 		id             bson.ObjectId
 		newBookmarks   []bson.ObjectId
+		addition       *BookmarksUpdate
 		expectedOutput error
 	}{
 		{
@@ -627,6 +635,10 @@ func TestBookmarksUpdate(t *testing.T) {
 				bson.NewObjectId(),
 				bson.NewObjectId(),
 			},
+			addition: &BookmarksUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
 			expectedOutput: nil,
 		},
 		{
@@ -635,14 +647,16 @@ func TestBookmarksUpdate(t *testing.T) {
 			newBookmarks: []bson.ObjectId{
 				bson.NewObjectId(),
 			},
+			addition: &BookmarksUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
 			expectedOutput: fmt.Errorf("not found"),
 		},
 	}
 
 	for _, c := range cases {
-		updatedUser, err := mongoStore.BookmarksUpdate(c.id, &BookmarksUpdate{
-			Bookmarks: c.newBookmarks,
-		})
+		updatedUser, err := mongoStore.BookmarksUpdate(c.id, c.addition)
 		if err != nil && c.expectedOutput != nil {
 			if err.Error() != c.expectedOutput.Error() {
 				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
