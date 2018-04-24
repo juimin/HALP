@@ -35,4 +35,10 @@ type Store interface {
 
 	// Delete deletes the user with the given ID
 	Delete(userID bson.ObjectId) error
+
+	// UpdateFavorites facilitates the updating of the users favorite boards
+	FavoritesUpdate(userID bson.ObjectId, updates *FavoritesUpdate) (*User, error)
+
+	// UpdateBookmarks allows for updating the list of bookmarks the user has
+	BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error)
 }

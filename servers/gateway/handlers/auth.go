@@ -31,7 +31,7 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			// Preflight checks for the new user
 			// Bad request for new user. Need the proper new user
 			if err != nil {
-				errorMessage = "Error: could not decode request body"
+				errorMessage = "Error: Could not decode request body"
 				status = http.StatusBadRequest
 				canProceed = false
 			}
