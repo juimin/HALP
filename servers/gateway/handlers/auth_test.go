@@ -582,24 +582,26 @@ func TestFavoritesHandler(t *testing.T) {
 			destination:  "/favorites/update",
 		},
 		{
-			name:         "Test PATCH for valid input (empty)",
+			name:         "Test PATCH for valid input (adding)",
 			method:       "PATCH",
 			expectedCode: http.StatusOK,
 			handler:      favoritesHandler,
 			body: bytes.NewBuffer([]byte(
 				`{
-					"favorites": []
+					"adding": true,
+					"updateID": "507f1f77bcf86cd799439011"
 			}`)),
 			destination: "/favorites/update",
 		},
 		{
-			name:         "Test PATCH for valid input (data)",
+			name:         "Test PATCH for valid input (remove)",
 			method:       "PATCH",
 			expectedCode: http.StatusOK,
 			handler:      favoritesHandler,
 			body: bytes.NewBuffer([]byte(
 				`{
-					"favorites": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+					"adding": false,
+					"updateID": "507f1f77bcf86cd799439011"
 			}`)),
 			destination: "/favorites/update",
 		},
@@ -710,24 +712,26 @@ func TestBookmarksHandler(t *testing.T) {
 			destination:  "/bookmarks/update",
 		},
 		{
-			name:         "Test PATCH for valid input (empty)",
+			name:         "Test PATCH for valid input (add)",
 			method:       "PATCH",
 			expectedCode: http.StatusOK,
 			handler:      bookmarksHandler,
 			body: bytes.NewBuffer([]byte(
 				`{
-					"favorites": []
+					"adding": true,
+					"updateID": "507f1f77bcf86cd799439011"
 			}`)),
 			destination: "/bookmarks/update",
 		},
 		{
-			name:         "Test PATCH for valid input (data)",
+			name:         "Test PATCH for valid input (remove)",
 			method:       "PATCH",
 			expectedCode: http.StatusOK,
 			handler:      bookmarksHandler,
 			body: bytes.NewBuffer([]byte(
 				`{
-					"favorites": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
+					"adding": false,
+					"updateID": "507f1f77bcf86cd799439011"
 			}`)),
 			destination: "/bookmarks/update",
 		},
