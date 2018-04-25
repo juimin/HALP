@@ -12,7 +12,7 @@ import (
 type SecondaryComment struct {
 	ID          bson.ObjectId `json:"id" bson:"_id"`
 	ImageURL    string        `json:"image_url"`
-	Content     string        `json:"caption"`
+	Content     string        `json:"content"`
 	Parent      bson.ObjectId `json:"parent"`
 	AuthorID    bson.ObjectId `json:"author_id"`
 	PostID      bson.ObjectId `json:"post_id"`
@@ -26,7 +26,7 @@ type SecondaryComment struct {
 // NewSecondaryComment contains the information required for a secondary comment
 type NewSecondaryComment struct {
 	ImageURL string        `json:"image_url"`
-	Content  string        `json:"caption"`
+	Content  string        `json:"content"`
 	PostID   bson.ObjectId `json:"post_id"`
 	Parent   bson.ObjectId `json:"parent"`
 	AuthorID bson.ObjectId `json:"author_id"`
@@ -35,7 +35,7 @@ type NewSecondaryComment struct {
 // SecondaryCommentUpdate contains all the information that could be updated in a comment
 type SecondaryCommentUpdate struct {
 	ImageURL string `json:"image_url"`
-	Content  string `json:"caption"`
+	Content  string `json:"content"`
 }
 
 // SecondaryCommentVote contains an integer that represents the vote of this user

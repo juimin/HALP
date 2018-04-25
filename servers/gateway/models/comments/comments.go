@@ -11,7 +11,7 @@ import (
 type Comment struct {
 	ID          bson.ObjectId   `json:"id" bson:"_id"`
 	ImageURL    string          `json:"image_url"`
-	Content     string          `json:"caption"`
+	Content     string          `json:"content"`
 	AuthorID    bson.ObjectId   `json:"author_id"`
 	Comments    []bson.ObjectId `json:"comments"`
 	PostID      bson.ObjectId   `json:"board_id"`
@@ -25,7 +25,7 @@ type Comment struct {
 // NewComment contains the information required to create a new comment
 type NewComment struct {
 	AuthorID bson.ObjectId `json:"author_id"`
-	Content  string        `json:"caption"`
+	Content  string        `json:"content"`
 	PostID   bson.ObjectId `json:"post_id"`
 	ImageURL string        `json:"image_url"`
 }
@@ -34,7 +34,7 @@ type NewComment struct {
 type CommentUpdate struct {
 	ImageURL string          `json:"image_url"`
 	Comments []bson.ObjectId `json:"comments"`
-	Content  string          `json:"caption"`
+	Content  string          `json:"content"`
 }
 
 // CommentVote contains an integer that represents the vote of this user

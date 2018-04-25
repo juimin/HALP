@@ -14,6 +14,16 @@ type IDFilter struct {
 	ID bson.ObjectId
 }
 
+// ParentFilter Allows for filtering by Parent
+type ParentFilter struct {
+	Parent bson.ObjectId
+}
+
+// PostFilter Allows for filtering by Parent
+type PostFilter struct {
+	PostID bson.ObjectId
+}
+
 // MongoStore outlines the storage struct for mongo db
 type MongoStore struct {
 	session *mgo.Session
@@ -64,7 +74,7 @@ func (s *MongoStore) GetBySecondaryID(id bson.ObjectId) (*SecondaryComment, erro
 //GetCommentsByPostID gets all the comments associated with a given post
 func (s *MongoStore) GetCommentsByPostID(id bson.ObjectId) (*[]Comment, error) {
 	comments := &[]Comment{}
-	filter := &IDFilter{id}
+	filter := &PostFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
 	if err := col.Find(filter).All(comments); err != nil {
 		return nil, fmt.Errorf("error getting comments by post: %v", err)
@@ -75,7 +85,7 @@ func (s *MongoStore) GetCommentsByPostID(id bson.ObjectId) (*[]Comment, error) {
 //GetByParentID gets all the comments associated with a given parent comment
 func (s *MongoStore) GetByParentID(id bson.ObjectId) (*[]SecondaryComment, error) {
 	sc := &[]SecondaryComment{}
-	filter := &IDFilter{id}
+	filter := &ParentFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
 	if err := col.Find(filter).All(sc); err != nil {
 		return nil, fmt.Errorf("error getting comments by parent comment: %v", err)
