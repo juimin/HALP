@@ -95,7 +95,7 @@ func (nc *NewSecondaryComment) ToSecondaryComment() (*SecondaryComment, error) {
 
 // Update alters the composition of a comment based on the attributes in the update struct
 // The alterable components are changed here.
-func (c *SecondaryComment) Update(updates *CommentUpdate) error {
+func (c *SecondaryComment) Update(updates *SecondaryCommentUpdate) error {
 	// Check for valid updates
 	if len(updates.Content) == 0 && len(updates.ImageURL) == 0 {
 		return fmt.Errorf("We cannot set the comment to contain nothing")

@@ -383,3 +383,53 @@ func TestVoteSecondary(t *testing.T) {
 		}
 	}
 }
+
+func TestUpdateCommentSecondary(t *testing.T) {
+
+	cases := []struct {
+		name          string
+		comment       *SecondaryComment
+		updates       *SecondaryCommentUpdate
+		expectedError error
+	}{
+		{
+			name:    "Valid Update",
+			comment: &SecondaryComment{},
+			updates: &SecondaryCommentUpdate{
+				ImageURL: "https://potato.com",
+				Content:  "Something",
+			},
+			expectedError: nil,
+		},
+		{
+			name:    "Bad Update",
+			comment: &SecondaryComment{},
+			updates: &SecondaryCommentUpdate{
+				ImageURL: "",
+				Content:  "",
+			},
+			expectedError: fmt.Errorf("We cannot set the comment to contain nothing"),
+		},
+	}
+
+	for _, c := range cases {
+		err := c.comment.Update(c.updates)
+		if err != c.expectedError {
+			if err != nil {
+				if c.expectedError != nil {
+					if c.expectedError.Error() != err.Error() {
+						t.Errorf("%s Failed: Expected %v but got %v", c.name, c.expectedError, err)
+					}
+				}
+			}
+		}
+		if err == nil {
+			if c.comment.ImageURL != c.updates.ImageURL {
+				t.Errorf("Error updating image url")
+			}
+			if c.comment.Content != c.updates.Content {
+				t.Errorf("Error updating Content")
+			}
+		}
+	}
+}

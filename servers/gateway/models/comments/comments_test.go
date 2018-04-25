@@ -351,4 +351,63 @@ func TestVote(t *testing.T) {
 // Test Update Functions
 func TestUpdateComment(t *testing.T) {
 
+	cases := []struct {
+		name          string
+		comment       *Comment
+		updates       *CommentUpdate
+		expectedError error
+	}{
+		{
+			name:    "Valid Update",
+			comment: &Comment{},
+			updates: &CommentUpdate{
+				ImageURL: "https://potato.com",
+				Comments: []bson.ObjectId{
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+				},
+				Content: "Something",
+			},
+			expectedError: nil,
+		},
+		{
+			name:    "Bad Update",
+			comment: &Comment{},
+			updates: &CommentUpdate{
+				ImageURL: "",
+				Comments: []bson.ObjectId{
+					bson.NewObjectId(),
+					bson.NewObjectId(),
+				},
+				Content: "",
+			},
+			expectedError: fmt.Errorf("We cannot set the comment to contain nothing"),
+		},
+	}
+
+	for _, c := range cases {
+		err := c.comment.Update(c.updates)
+		if err != c.expectedError {
+			if err != nil {
+				if c.expectedError != nil {
+					if c.expectedError.Error() != err.Error() {
+						t.Errorf("%s Failed: Expected %v but got %v", c.name, c.expectedError, err)
+					}
+				}
+			}
+		}
+		if err == nil {
+			if c.comment.ImageURL != c.updates.ImageURL {
+				t.Errorf("Error updating image url")
+			}
+			if c.comment.Content != c.updates.Content {
+				t.Errorf("Error updating Content")
+			}
+			for i, comm := range c.comment.Comments {
+				if c.updates.Comments[i] != comm {
+					t.Errorf("Error updating Comments list")
+				}
+			}
+		}
+	}
 }
