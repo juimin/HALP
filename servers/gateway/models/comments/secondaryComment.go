@@ -50,6 +50,18 @@ func (nc *NewSecondaryComment) Validate() error {
 	if len(nc.ImageURL) == 0 && len(nc.Content) == 0 {
 		return fmt.Errorf("Cannot have no image or content in comment")
 	}
+
+	if !bson.IsObjectIdHex(nc.AuthorID.Hex()) {
+		return fmt.Errorf("Error: Invalid Author ID")
+	}
+
+	if !bson.IsObjectIdHex(nc.PostID.Hex()) {
+		return fmt.Errorf("Error: Invalid Post ID")
+	}
+
+	if !bson.IsObjectIdHex(nc.Parent.Hex()) {
+		return fmt.Errorf("Error: Invalid Parent ID")
+	}
 	// Passed the validation
 	return nil
 }
@@ -100,8 +112,34 @@ func (c *SecondaryComment) Update(updates *CommentUpdate) error {
 }
 
 // Vote allows for the shifting of the votes on a comment
-func (c *SecondaryComment) Vote(v *SecondaryCommentVote) {
+func (c *SecondaryComment) Vote(v *SecondaryCommentVote) error {
 	// Alter the votes based on the input from the update
-	c.Upvotes += v.Upvote
-	c.Downvotes += v.Downvote
+
+	if c.Upvotes+v.Upvote <= 1 && c.Upvotes+v.Upvote >= -1 {
+		if c.Downvotes+v.Downvote <= 1 && c.Downvotes+v.Downvote >= -1 {
+
+			if v.Upvote == 1 && v.Downvote == 1 {
+				return fmt.Errorf("Can't increment upvote and downvote")
+			}
+
+			if v.Upvote == -1 && v.Downvote == -1 {
+				return fmt.Errorf("Can't decrement both upvote and downvote")
+			}
+
+			c.Upvotes += v.Upvote
+			c.Downvotes += v.Downvote
+
+			// Don't allow negatives
+			if c.Upvotes < 0 {
+				c.Upvotes = 0
+			}
+
+			if c.Downvotes < 0 {
+				c.Downvotes = 0
+			}
+		}
+		return nil
+	}
+
+	return fmt.Errorf("Invalid Votes Received, aborting changes")
 }

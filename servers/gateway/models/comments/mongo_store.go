@@ -166,7 +166,11 @@ func (s *MongoStore) CommentVote(id bson.ObjectId, updates *CommentVote) (*Comme
 	}
 
 	// Change the votes
-	comment.Vote(updates)
+	err = comment.Vote(updates)
+
+	if err != nil {
+		return nil, err
+	}
 
 	change := mgo.Change{
 		Update: bson.M{"$set": &VoteInjector{
@@ -192,7 +196,11 @@ func (s *MongoStore) SecondaryCommentVote(id bson.ObjectId, updates *SecondaryCo
 	}
 
 	// Change the votes
-	comment.Vote(updates)
+	err = comment.Vote(updates)
+
+	if err != nil {
+		return nil, err
+	}
 
 	change := mgo.Change{
 		Update: bson.M{"$set": &VoteInjector{
