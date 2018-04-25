@@ -347,3 +347,8 @@ func TestVote(t *testing.T) {
 		}
 	}
 }
+
+// Test Update Functions
+func TestUpdateComment(t *testing.T) {
+
+}
