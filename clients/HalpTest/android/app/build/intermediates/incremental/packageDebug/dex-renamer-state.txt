@@ -1,0 +1,4 @@
+#Mon Apr 23 17:15:57 PDT 2018
+base.0=/home/alex/go/src/github.com/JuiMin/HALP/clients/HalpTest/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+renamed.0=classes.dex
+file.0=/home/alex/go/src/github.com/JuiMin/HALP/clients/HalpTest/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
