@@ -10,6 +10,7 @@ import (
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
+	"github.com/JuiMin/HALP/servers/gateway/models/comments"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 	"github.com/go-redis/redis"
@@ -99,18 +100,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	mongoStore := users.NewMongoStore(mongoSession, "users", "user")
+	// User Store
+	userStore := users.NewMongoStore(mongoSession, "users", "user")
+
+	// Comment Store
+	commentStore := comments.NewMongoStore(mongoSession, "comments", "comment")
 
 	fmt.Printf("Mongodb Online...\n")
 
 	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
-
-	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore, postStore)
+	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
-
-	// TODO: DEFINE HANDLERS
 
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)
