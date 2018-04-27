@@ -115,11 +115,14 @@ func main() {
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)
 	mux.HandleFunc("/users", cr.UsersHandler)
+	mux.HandleFunc("/users/me", cr.UsersMeHandler)
 	mux.HandleFunc("/sessions", cr.SessionsHandler)
 	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
 	mux.HandleFunc("/posts/new", cr.NewPostHandler)
 	mux.HandleFunc("/posts/update", cr.UpdatePostHandler)
 	mux.HandleFunc("/posts/get", cr.GetPostHandler)
+	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
+	mux.HandleFunc("/favorites", cr.FavoritesHandler)
 
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
