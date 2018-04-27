@@ -19,14 +19,14 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 	sessionActive := true
 	status := http.StatusOK
 
+	// Session Get
+	session := &SessionState{}
 	if r.Method != "GET" {
 		sid, err := sessions.GetSessionID(r, cr.SigningKey)
 		if err != nil {
 			status = http.StatusForbidden
 			sessionActive = false
 		} else {
-			// Session Get
-			session := &SessionState{}
 			err = cr.SessionStore.Get(sid, session)
 			if err != nil {
 				status = http.StatusInternalServerError
@@ -129,13 +129,22 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 				if err != nil {
 					status = http.StatusBadRequest
 				} else {
-					c, err := cr.CommentStore.UpdateComment(bson.ObjectIdHex(id), comment)
+					original, err := cr.CommentStore.GetByCommentID(bson.ObjectIdHex(id))
 					if err != nil {
-						status = http.StatusBadRequest
+						status = http.StatusInternalServerError
 					} else {
-						// Return the comment
-						status = http.StatusOK
-						json.NewEncoder(w).Encode(&c)
+						if original.AuthorID == session.User.ID {
+							c, err := cr.CommentStore.UpdateComment(bson.ObjectIdHex(id), comment)
+							if err != nil {
+								status = http.StatusBadRequest
+							} else {
+								// Return the comment
+								status = http.StatusOK
+								json.NewEncoder(w).Encode(&c)
+							}
+						} else {
+							status = http.StatusForbidden
+						}
 					}
 				}
 			} else if commentType == "secondary" {
@@ -144,13 +153,22 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 				if err != nil {
 					status = http.StatusBadRequest
 				} else {
-					sc, err := cr.CommentStore.UpdateSecondaryComment(bson.ObjectIdHex(id), secondaryComment)
+					original, err := cr.CommentStore.GetByCommentID(bson.ObjectIdHex(id))
 					if err != nil {
-						status = http.StatusBadRequest
+						status = http.StatusInternalServerError
 					} else {
-						// Return the comment
-						status = http.StatusOK
-						json.NewEncoder(w).Encode(&sc)
+						if original.AuthorID == session.User.ID {
+							sc, err := cr.CommentStore.UpdateSecondaryComment(bson.ObjectIdHex(id), secondaryComment)
+							if err != nil {
+								status = http.StatusBadRequest
+							} else {
+								// Return the comment
+								status = http.StatusOK
+								json.NewEncoder(w).Encode(&sc)
+							}
+						} else {
+							status = http.StatusForbidden
+						}
 					}
 				}
 			} else {

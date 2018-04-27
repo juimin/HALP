@@ -106,7 +106,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 	// Testing this handler
 	commentsHandler := http.HandlerFunc(cr.CommentsHandler)
 	// Include users handler for adding a user
-	users := http.HandlerFunc(cr.UsersHandler)
+	userHandler := http.HandlerFunc(cr.UsersHandler)
 
 	// New User
 	newUser := bytes.NewBuffer([]byte(
@@ -133,7 +133,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 		t.Errorf("Failed Testing on Comments with Sessions - Generating Request")
 	} else {
 		// Insert the user
-		users.ServeHTTP(temp, req)
+		userHandler.ServeHTTP(temp, req)
 		if temp.Code != http.StatusCreated {
 			t.Errorf("Error inserting user into the database: Expect %d but got %d", http.StatusCreated, temp.Code)
 		}
@@ -142,9 +142,23 @@ func TestCommentsHandlerSession(t *testing.T) {
 			authHeader = temp.Header().Get("Authorization")
 		}
 
+		user := &users.User{}
+		err := json.NewDecoder(temp.Body).Decode(user)
+
 		// Insert Some Comments
 
 		comment, err := cr.CommentStore.InsertComment(&comments.NewComment{
+			AuthorID: user.ID,
+			Content:  "test content",
+			PostID:   bson.NewObjectId(),
+			ImageURL: "https://github.com",
+		})
+
+		if err != nil {
+			t.Errorf("Error inserting comment")
+		}
+
+		mysteryComment, err := cr.CommentStore.InsertComment(&comments.NewComment{
 			AuthorID: bson.NewObjectId(),
 			Content:  "test content",
 			PostID:   bson.NewObjectId(),
@@ -156,6 +170,18 @@ func TestCommentsHandlerSession(t *testing.T) {
 		}
 
 		secondaryComment, err := cr.CommentStore.InsertSecondaryComment(&comments.NewSecondaryComment{
+			AuthorID: user.ID,
+			Content:  "test content",
+			PostID:   bson.NewObjectId(),
+			ImageURL: "https://github.com",
+			Parent:   comment.ID,
+		})
+
+		if err != nil {
+			t.Errorf("Error inserting comment")
+		}
+
+		mysterySecondaryComment, err := cr.CommentStore.InsertSecondaryComment(&comments.NewSecondaryComment{
 			AuthorID: bson.NewObjectId(),
 			Content:  "test content",
 			PostID:   bson.NewObjectId(),
@@ -359,6 +385,18 @@ func TestCommentsHandlerSession(t *testing.T) {
 				code:    http.StatusOK,
 			},
 			{
+				name:     "Test SecondaryComment PATCH good forbidden",
+				endpoint: "/comments?id=" + mysterySecondaryComment.ID.Hex() + "&type=secondary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato"
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusForbidden,
+			},
+			{
 				name:     "Test SecondaryComment PATCH to not asecondary comment",
 				endpoint: "/comments?id=" + comment.ID.Hex() + "&type=secondary",
 				method:   "PATCH",
@@ -377,11 +415,23 @@ func TestCommentsHandlerSession(t *testing.T) {
 				body: bytes.NewBuffer([]byte(
 					`{
 						"image_url": "https://githubd.com",
+						"content": "I am a potato"
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusOK,
+			},
+			{
+				name:     "Test comment PATCH good request not allowed",
+				endpoint: "/comments?id=" + mysteryComment.ID.Hex() + "&type=primary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
 						"content": "I am a potato",
 						"comments": ["` + secondaryComment.ID.Hex() + `"]
 					}`)),
 				handler: commentsHandler,
-				code:    http.StatusOK,
+				code:    http.StatusForbidden,
 			},
 			{
 				name:     "Test comment PATCH sub secondary for primary",
