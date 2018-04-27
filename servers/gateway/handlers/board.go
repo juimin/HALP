@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
@@ -33,23 +34,21 @@ func (cr *ContextReceiver) BoardsAllHandler(w http.ResponseWriter, r *http.Reque
 
 // SingleBoardHandler gets a board ID and returns the corresponding board
 func (cr *ContextReceiver) SingleBoardHandler(w http.ResponseWriter, r *http.Request) {
-	status := http.StatusOK
-	canProceed := true
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		canProceed = false
-	}
-	if canProceed {
+	} else {
 		boardID := r.URL.Query().Get("id")
-		board, err := cr.BoardStore.GetByID(bson.ObjectIdHex(boardID))
-		if err != nil {
-			status = http.StatusInternalServerError
-			canProceed = false
-		}
-		if canProceed {
-			// Encodes the board into the response
-			json.NewEncoder(w).Encode(board)
-			w.WriteHeader(status)
+		if bson.IsObjectIdHex(boardID) {
+			board, err := cr.BoardStore.GetByID(bson.ObjectIdHex(boardID))
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				fmt.Fprintf(w, err.Error()+" "+boardID)
+			} else {
+				json.NewEncoder(w).Encode(board)
+				w.WriteHeader(http.StatusOK)
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
 	}
 }

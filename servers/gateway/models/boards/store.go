@@ -20,4 +20,7 @@ type Store interface {
 
 	//UpdatePostCount returns the board with a new post count
 	UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) (*Board, error)
+
+	//CreateBoard adds a new board to the database to use for testing
+	CreateBoard() (*Board, error)
 }

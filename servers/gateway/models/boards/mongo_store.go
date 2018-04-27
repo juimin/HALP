@@ -94,3 +94,21 @@ func (s *MongoStore) UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) (
 	}
 	return board, nil
 }
+
+//CreateBoard adds a new board to the database to use for testing
+func (s *MongoStore) CreateBoard() (*Board, error) {
+	newBoard := &Board{}
+	newBoard.ID = bson.NewObjectId()
+	newBoard.Title = "Test Board"
+	newBoard.Description = "I am testing for a board ID"
+	newBoard.Image = "http://notavirus.government"
+	newBoard.Subscribers = 100
+	newBoard.Posts = 3
+
+	col := s.session.DB(s.dbname).C(s.colname)
+
+	if err := col.Insert(newBoard); err != nil {
+		return nil, fmt.Errorf("error adding board: %v", err)
+	}
+	return newBoard, nil
+}
