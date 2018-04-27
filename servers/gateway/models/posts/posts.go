@@ -10,18 +10,17 @@ import (
 
 //Post is a post
 type Post struct {
-	ID        bson.ObjectId   `json:"id" bson:"_id"`
-	Title     string          `json:"title"`
-	ImageURL  string          `json:"image_url"`
-	Caption   string          `json:"caption"`
-	AuthorID  bson.ObjectId   `json:"author_id"`
-	Comments  []bson.ObjectId `json:"comments"`
-	BoardID   bson.ObjectId   `json:"board_id"`
-	Upvotes   int             `json:"upvotes"`
-	Downvotes int             `json:"downvotes"`
-	//TotalVotes  int             `json:"total_votes"`
-	TimeCreated time.Time `json:"time_created"`
-	TimeEdited  time.Time `json:"time_edited"`
+	ID          bson.ObjectId   `json:"id" bson:"_id"`
+	Title       string          `json:"title"`
+	ImageURL    string          `json:"image_url"`
+	Caption     string          `json:"caption"`
+	AuthorID    bson.ObjectId   `json:"author_id"`
+	Comments    []bson.ObjectId `json:"comments"`
+	BoardID     bson.ObjectId   `json:"board_id"`
+	Upvotes     int             `json:"upvotes"`
+	Downvotes   int             `json:"downvotes"`
+	TimeCreated time.Time       `json:"time_created"`
+	TimeEdited  time.Time       `json:"time_edited"`
 }
 
 //NewPost is a new post
@@ -38,9 +37,12 @@ type PostUpdate struct {
 	Title    string `json:"title"`
 	Caption  string `json:"caption"`
 	ImageURL string `json:"image_url"`
-	//Upvotes    map[string]bool `json:"upvotes"`
-	//Downvotes  map[string]bool `json:"downvotes"`
-	TotalVotes int `json:"total_votes"`
+}
+
+// PostVote updater
+type PostVote struct {
+	Upvote   int `json:"upvotes"`
+	Downvote int `json:"downvotes"`
 }
 
 //Validate confirms that a new post contains a title
@@ -93,62 +95,6 @@ func (np *NewPost) ToPost() (*Post, error) {
 	return post, nil
 }
 
-// //HasVote returns 1 if a user has upvoted, -1 if
-// //a user has downvoted, and 0 if a user has not
-// //voted
-// func (p *Post) HasVote(author bson.ObjectId) int {
-// 	if val, ok := p.Upvotes[author.Hex()]; ok && val == true {
-// 		return 1
-// 	}
-// 	if val, ok := p.Downvotes[author.Hex()]; ok && val == true {
-// 		return -1
-// 	}
-// 	return 0
-// }
-
-// //Upvote modifies the current score (count of
-// //upvotes) for the post, returning a *PostUpdate
-// func (p *Post) Upvote(author bson.ObjectId) *PostUpdate {
-// 	update := &PostUpdate{
-// 		Title:      p.Title,
-// 		ImageURL:   p.ImageURL,
-// 		Caption:    p.Caption,
-// 		// Upvotes:    p.Upvotes,
-// 		// Downvotes:  p.Downvotes,
-// 		TotalVotes: p.TotalVotes,
-// 	}
-// 	if p.HasVote(author) == -1 {
-// 		update.Downvotes[author.Hex()] = false
-// 	}
-// 	if p.HasVote(author) != 1 {
-// 		//checks if already upvoted
-// 		update.Upvotes[author.Hex()] = true
-// 		update.TotalVotes++
-
-// 	}
-// 	return update
-// }
-
-// //Downvote downvotes the post
-// func (p *Post) Downvote(author bson.ObjectId) *PostUpdate {
-// 	update := &PostUpdate{
-// 		Title:      p.Title,
-// 		ImageURL:   p.ImageURL,
-// 		Caption:    p.Caption,
-// 		Upvotes:    p.Upvotes,
-// 		Downvotes:  p.Downvotes,
-// 		TotalVotes: p.TotalVotes,
-// 	}
-// 	if p.HasVote(author) == 1 {
-// 		update.Downvotes[author.Hex()] = false
-// 	}
-// 	if p.HasVote(author) != -1 {
-// 		update.Upvotes[author.Hex()] = true
-// 		update.TotalVotes--
-// 	}
-// 	return update
-// }
-
 //ApplyUpdates applies the post updates to the post
 func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 	if len(updates.Title) == 0 {
@@ -176,29 +122,27 @@ func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 	return nil
 }
 
-//Upvote upvotes the post
-func (p *Post) Upvote() {
-	p.Upvotes++
-}
-
-//Downvote downvotes the post
-func (p *Post) Downvote() {
-	p.Downvotes++
-}
-
-//RemoveUpvote removes an upvote from the post
-func (p *Post) RemoveUpvote() {
-	p.Upvotes--
-}
-
-//RemoveDownvote removes a downvote from the post
-func (p *Post) RemoveDownvote() {
-	p.Downvotes--
-}
-
-//AddComments adds comment IDs to the Post
-//TODO: DOES NOT ACTUALLY GET STORED TO DB AT ALL SO... FIX
+//AddComment adds comment IDs to the Post
 //change to "reply"? also can i just lump this into PostUpdate?
-func (p *Post) AddComments(comment bson.ObjectId) {
+func (p *Post) AddComment(comment bson.ObjectId) {
 	p.Comments = append(p.Comments, comment)
+}
+
+// ApplyVotes takes care of applying the votes later
+func (p *Post) ApplyVotes(updates *PostVote) error {
+	// Check if the updates are within the defined bounds
+	if updates.Downvote >= 1 || updates.Downvote <= -1 {
+		return fmt.Errorf("Downvotes are out of bounds: %d", updates.Downvote)
+	}
+	if updates.Upvote >= 1 || updates.Upvote <= -1 {
+		return fmt.Errorf("Upvotes are out of bounds: %d", updates.Upvote)
+	}
+	if updates.Downvote == updates.Upvote {
+		return fmt.Errorf("The updates to both upvotes and downvotes cannot be the same")
+	}
+	// Make the update
+	p.Upvotes += updates.Upvote
+	p.Downvotes += updates.Downvote
+
+	return nil
 }

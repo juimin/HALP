@@ -107,10 +107,9 @@ func TestCRUDValid(t *testing.T) {
 	// Update
 
 	pu := &PostUpdate{
-		Title:      "LOL",
-		Caption:    "Tomato",
-		ImageURL:   "https://update.com",
-		TotalVotes: 1,
+		Title:    "LOL",
+		Caption:  "Tomato",
+		ImageURL: "https://update.com",
 	}
 
 	err = ms.PostUpdate(post.ID, pu)
@@ -231,10 +230,9 @@ func TestUpdateBadID(t *testing.T) {
 	_, err = ms.Insert(np)
 
 	pu := &PostUpdate{
-		Title:      "LOL",
-		Caption:    "Tomato",
-		ImageURL:   "https://update.com",
-		TotalVotes: 1,
+		Title:    "LOL",
+		Caption:  "Tomato",
+		ImageURL: "https://update.com",
 	}
 
 	err = ms.PostUpdate("1231`2312312312321d-d-fd-fdfa", pu)
