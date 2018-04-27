@@ -111,8 +111,6 @@ func main() {
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
 
-	// TODO: DEFINE HANDLERS
-
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)
 	mux.HandleFunc("/users", cr.UsersHandler)
