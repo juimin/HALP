@@ -92,10 +92,7 @@ func (s *MongoStore) GetByBoardID(id bson.ObjectId) ([]*Post, error) {
 //Delete removes a post from the database
 func (s *MongoStore) Delete(id bson.ObjectId) error {
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.RemoveId(id); err != nil {
-		return err
-	}
-	return nil
+	return col.RemoveId(id)
 }
 
 //PostUpdate updates the post with general information
