@@ -42,6 +42,7 @@ func TestBoardsAllHandler(t *testing.T) {
 			t.Errorf("%s Failed: Error %v", c.name, err)
 		} else {
 			httpBoardsAllHandler.ServeHTTP(rr, req)
+			t.Errorf("These are the boards you wanted: %v", rr.Body)
 			if rr.Code != c.expectedStatus {
 				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
 			}
@@ -93,7 +94,7 @@ func TestSingleBoardHandler(t *testing.T) {
 			httpSingleBoardHandler.ServeHTTP(rr, req)
 			if rr.Code != c.expectedStatus {
 				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
-				t.Errorf("This is the id: %s", c.destinationURL)
+				t.Errorf("This is the id: %v", board.ID)
 				t.Errorf(rr.Body.String())
 			}
 		}

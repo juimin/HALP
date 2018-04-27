@@ -40,7 +40,7 @@ func (s *MongoStore) GetByID(id bson.ObjectId) (*Board, error) {
 	board := &Board{}
 	filter := &idFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter).One(board); err != nil {
+	if err := col.FindId(filter).One(board); err != nil {
 		return nil, fmt.Errorf("error getting boards by Board id: %v", err)
 	}
 	return board, nil
