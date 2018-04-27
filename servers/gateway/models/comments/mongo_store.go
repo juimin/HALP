@@ -116,6 +116,24 @@ func (s *MongoStore) InsertSecondaryComment(newSecondary *NewSecondaryComment) (
 	if err := col.Insert(comm); err != nil {
 		return nil, fmt.Errorf("error inserting secondary comment: %v", err)
 	}
+
+	// Now that we have added the comment, we should add the update in the database
+	primary, err := s.GetByCommentID(comm.Parent)
+	if err != nil {
+		return comm, fmt.Errorf("error updating the primary")
+	}
+
+	primary.Comments = append(primary.Comments, comm.ID)
+
+	change := mgo.Change{
+		Update:    bson.M{"$set": primary}, //bson.M is map of string, to some value
+		ReturnNew: true,
+	}
+
+	if _, err := col.FindId(primary.ID).Apply(change, primary); err != nil {
+		return nil, err
+	}
+
 	return comm, nil
 }
 
@@ -131,6 +149,15 @@ func (s *MongoStore) DeleteComment(commentID bson.ObjectId) error {
 
 // UpdateComment updates the parent level comments
 func (s *MongoStore) UpdateComment(commentID bson.ObjectId, updates *CommentUpdate) (*Comment, error) {
+	test, err := s.GetByCommentID(commentID)
+	if err != nil {
+		return nil, err
+	}
+
+	if test.Secondary {
+		return nil, fmt.Errorf("This is a secondary Comment")
+	}
+
 	change := mgo.Change{
 		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
 		ReturnNew: true,
@@ -145,6 +172,15 @@ func (s *MongoStore) UpdateComment(commentID bson.ObjectId, updates *CommentUpda
 
 // UpdateSecondaryComment updates a secondary level comment
 func (s *MongoStore) UpdateSecondaryComment(secondaryID bson.ObjectId, updates *SecondaryCommentUpdate) (*SecondaryComment, error) {
+	test, err := s.GetBySecondaryID(secondaryID)
+	if err != nil {
+		return nil, err
+	}
+
+	if !test.Secondary {
+		return nil, fmt.Errorf("This is a primary")
+	}
+
 	change := mgo.Change{
 		Update:    bson.M{"$set": updates}, //bson.M is map of string, to some value
 		ReturnNew: true,

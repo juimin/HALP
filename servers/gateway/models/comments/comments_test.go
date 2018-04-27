@@ -362,11 +362,7 @@ func TestUpdateComment(t *testing.T) {
 			comment: &Comment{},
 			updates: &CommentUpdate{
 				ImageURL: "https://potato.com",
-				Comments: []bson.ObjectId{
-					bson.NewObjectId(),
-					bson.NewObjectId(),
-				},
-				Content: "Something",
+				Content:  "Something",
 			},
 			expectedError: nil,
 		},
@@ -375,11 +371,7 @@ func TestUpdateComment(t *testing.T) {
 			comment: &Comment{},
 			updates: &CommentUpdate{
 				ImageURL: "",
-				Comments: []bson.ObjectId{
-					bson.NewObjectId(),
-					bson.NewObjectId(),
-				},
-				Content: "",
+				Content:  "",
 			},
 			expectedError: fmt.Errorf("We cannot set the comment to contain nothing"),
 		},
@@ -402,11 +394,6 @@ func TestUpdateComment(t *testing.T) {
 			}
 			if c.comment.Content != c.updates.Content {
 				t.Errorf("Error updating Content")
-			}
-			for i, comm := range c.comment.Comments {
-				if c.updates.Comments[i] != comm {
-					t.Errorf("Error updating Comments list")
-				}
 			}
 		}
 	}

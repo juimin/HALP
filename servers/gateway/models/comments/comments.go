@@ -20,6 +20,7 @@ type Comment struct {
 	TotalVotes  int             `json:"total_votes"`
 	TimeCreated time.Time       `json:"time_created"`
 	TimeEdited  time.Time       `json:"time_edited"`
+	Secondary   bool            `json:"secondary"`
 }
 
 // NewComment contains the information required to create a new comment
@@ -32,9 +33,8 @@ type NewComment struct {
 
 // CommentUpdate contains all the information that could be updated in a comment
 type CommentUpdate struct {
-	ImageURL string          `json:"image_url"`
-	Comments []bson.ObjectId `json:"comments"`
-	Content  string          `json:"content"`
+	ImageURL string `json:"image_url"`
+	Content  string `json:"content"`
 }
 
 // CommentVote contains an integer that represents the vote of this user
@@ -81,6 +81,7 @@ func (nc *NewComment) ToComment() (*Comment, error) {
 		Downvotes:   0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
+		Secondary:   false,
 	}
 
 	// Return the created comment
@@ -97,7 +98,6 @@ func (c *Comment) Update(updates *CommentUpdate) error {
 
 	// Valid updates
 	c.ImageURL = updates.ImageURL
-	c.Comments = updates.Comments
 	c.Content = updates.Content
 	// Update the time stamps
 	c.TimeEdited = time.Now()

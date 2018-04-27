@@ -197,35 +197,39 @@ func (cr *ContextReceiver) VotesHandler(w http.ResponseWriter, r *http.Request) 
 		if r.Method == "PATCH" {
 			commentType := r.URL.Query().Get("type")
 			id := r.URL.Query().Get("id")
-			if commentType == "primary" {
-				comment := &comments.CommentVote{}
-				err := json.NewDecoder(r.Body).Decode(comment)
-				if err != nil {
-					w.WriteHeader(http.StatusBadRequest)
-				} else {
-					c, err := cr.CommentStore.CommentVote(bson.ObjectIdHex(id), comment)
+			if r.Body != nil {
+				if commentType == "primary" {
+					comment := &comments.CommentVote{}
+					err := json.NewDecoder(r.Body).Decode(comment)
 					if err != nil {
 						w.WriteHeader(http.StatusBadRequest)
 					} else {
-						// Return the comment
-						w.WriteHeader(http.StatusOK)
-						json.NewEncoder(w).Encode(&c)
+						c, err := cr.CommentStore.CommentVote(bson.ObjectIdHex(id), comment)
+						if err != nil {
+							w.WriteHeader(http.StatusBadRequest)
+						} else {
+							// Return the comment
+							w.WriteHeader(http.StatusOK)
+							json.NewEncoder(w).Encode(&c)
+						}
 					}
-				}
-			} else if commentType == "secondary" {
-				secondaryComment := &comments.SecondaryCommentVote{}
-				err := json.NewDecoder(r.Body).Decode(secondaryComment)
-				if err != nil {
-					w.WriteHeader(http.StatusBadRequest)
-				} else {
-					sc, err := cr.CommentStore.SecondaryCommentVote(bson.ObjectIdHex(id), secondaryComment)
+				} else if commentType == "secondary" {
+					secondaryComment := &comments.SecondaryCommentVote{}
+					err := json.NewDecoder(r.Body).Decode(secondaryComment)
 					if err != nil {
 						w.WriteHeader(http.StatusBadRequest)
 					} else {
-						// Return the comment
-						w.WriteHeader(http.StatusOK)
-						json.NewEncoder(w).Encode(&sc)
+						sc, err := cr.CommentStore.SecondaryCommentVote(bson.ObjectIdHex(id), secondaryComment)
+						if err != nil {
+							w.WriteHeader(http.StatusBadRequest)
+						} else {
+							// Return the comment
+							w.WriteHeader(http.StatusOK)
+							json.NewEncoder(w).Encode(&sc)
+						}
 					}
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
 				}
 			} else {
 				w.WriteHeader(http.StatusBadRequest)

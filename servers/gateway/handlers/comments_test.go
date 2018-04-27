@@ -2,10 +2,16 @@ package handlers
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"gopkg.in/mgo.v2/bson"
+
+	"github.com/JuiMin/HALP/servers/gateway/models/comments"
+	"github.com/JuiMin/HALP/servers/gateway/models/users"
 )
 
 // TestCommentsHandler tests the comments handler
@@ -136,6 +142,31 @@ func TestCommentsHandlerSession(t *testing.T) {
 			authHeader = temp.Header().Get("Authorization")
 		}
 
+		// Insert Some Comments
+
+		comment, err := cr.CommentStore.InsertComment(&comments.NewComment{
+			AuthorID: bson.NewObjectId(),
+			Content:  "test content",
+			PostID:   bson.NewObjectId(),
+			ImageURL: "https://github.com",
+		})
+
+		if err != nil {
+			t.Errorf("Error inserting comment")
+		}
+
+		secondaryComment, err := cr.CommentStore.InsertSecondaryComment(&comments.NewSecondaryComment{
+			AuthorID: bson.NewObjectId(),
+			Content:  "test content",
+			PostID:   bson.NewObjectId(),
+			ImageURL: "https://github.com",
+			Parent:   comment.ID,
+		})
+
+		if err != nil {
+			t.Errorf("Error inserting comment")
+		}
+
 		cases := []struct {
 			name     string
 			endpoint string
@@ -153,7 +184,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "507f1f77bcf86cd799439011",
 						"content": "I am a potato",
 						"post_id": "507f1f77bcf86cd799439011",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusOK,
@@ -167,7 +198,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "",
 						"content": "I am a potato",
 						"post_id": "",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusBadRequest,
@@ -181,7 +212,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "",
 						"content": "I am a potato"
 						"post_id": "",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusBadRequest,
@@ -195,7 +226,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "",
 						"content": "I am a potato"
 						"post_id": "",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusBadRequest,
@@ -209,8 +240,8 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "507f1f77bcf86cd799439012",
 						"content": "I am a potato",
 						"post_id": "507f1f77bcf86cd799439012",
-						"parent": "507f1f77bcf86cd799439013",
-						"ImageURL": "www.something.comp"
+						"parent": "` + comment.ID.Hex() + `",
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusOK,
@@ -224,7 +255,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "",
 						"content": "I am a potato",
 						"post_id": "",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusBadRequest,
@@ -238,7 +269,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 						"author_id": "",
 						"content": "I am a potato",
 						"post_id": "",
-						"ImageURL": "www.something.comp"
+						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
 				code:    http.StatusBadRequest,
@@ -299,6 +330,127 @@ func TestCommentsHandlerSession(t *testing.T) {
 				handler:  commentsHandler,
 				code:     http.StatusBadRequest,
 			},
+			{
+				name:     "Test Comment GET good",
+				endpoint: "/comments?id=" + comment.ID.Hex() + "&query=singleComment",
+				method:   "GET",
+				body:     nil,
+				handler:  commentsHandler,
+				code:     http.StatusOK,
+			},
+			{
+				name:     "Test SecondaryComment GET good",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&query=singeSecondary",
+				method:   "GET",
+				body:     nil,
+				handler:  commentsHandler,
+				code:     http.StatusOK,
+			},
+			{
+				name:     "Test SecondaryComment PATCH good",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&type=secondary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato"
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusOK,
+			},
+			{
+				name:     "Test SecondaryComment PATCH to not asecondary comment",
+				endpoint: "/comments?id=" + comment.ID.Hex() + "&type=secondary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato"
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusBadRequest,
+			},
+			{
+				name:     "Test comment PATCH good request",
+				endpoint: "/comments?id=" + comment.ID.Hex() + "&type=primary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato",
+						"comments": ["` + secondaryComment.ID.Hex() + `"]
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusOK,
+			},
+			{
+				name:     "Test comment PATCH sub secondary for primary",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&type=primary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato",
+						"comments": ["` + secondaryComment.ID.Hex() + `"]
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusBadRequest,
+			},
+			{
+				name:     "Test comment PATCH bad body",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&type=primary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato",,,
+						"comments": ["` + secondaryComment.ID.Hex() + `"]
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusBadRequest,
+			},
+			{
+				name:     "Test comment PATCH bad body",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&type=secondary",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato",,,
+						"comments": ["` + secondaryComment.ID.Hex() + `"]
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusBadRequest,
+			},
+			{
+				name:     "Test comment PATCH bad type",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex() + "&type=asdfasdf",
+				method:   "PATCH",
+				body: bytes.NewBuffer([]byte(
+					`{
+						"image_url": "https://githubd.com",
+						"content": "I am a potato",,,
+						"comments": ["` + secondaryComment.ID.Hex() + `"]
+					}`)),
+				handler: commentsHandler,
+				code:    http.StatusBadRequest,
+			},
+			{
+				name:     "Test comment PATCH delete",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex(),
+				method:   "DELETE",
+				body:     nil,
+				handler:  commentsHandler,
+				code:     http.StatusOK,
+			},
+			{
+				name:     "Test comment PATCH repeat delete",
+				endpoint: "/comments?id=" + secondaryComment.ID.Hex(),
+				method:   "DELETE",
+				body:     nil,
+				handler:  commentsHandler,
+				code:     http.StatusBadRequest,
+			},
 		}
 
 		for _, c := range cases {
@@ -325,5 +477,235 @@ func TestCommentsHandlerSession(t *testing.T) {
 
 // TestVotesHandler tests dealing with votes
 func TestVotesHandler(t *testing.T) {
+	// Get Context Instance
+	cr := prepTestCR()
+	// Generate the handlers
+	// Testing this handler
 
+	votesHandler := http.HandlerFunc(cr.VotesHandler)
+	// Include users handler for adding a user
+	usersHandler := http.HandlerFunc(cr.UsersHandler)
+
+	// New User
+	newUser := bytes.NewBuffer([]byte(
+		`{
+			"email":"asdfasdf@gibbera.comr",
+			"password": "potatopass",
+			"passwordConf": "potatopass",
+			"userName": "sigmundfddfd",
+			"firstName":"firstPotato",
+			"lastName": "lastPotato",
+			"occupation": "vegetable"
+		}`))
+
+	// Generate a new recorder
+	temp := httptest.NewRecorder()
+	// Generate the request
+	req, err := http.NewRequest("POST", "/users", newUser)
+
+	// Session
+	authHeader := ""
+
+	// Try bad session
+	r, err := http.NewRequest("PATCH", "/sdfadsf/", nil)
+
+	r.Header.Add("Authorization", authHeader)
+	if err != nil {
+		t.Errorf("%s Failed: HTTP Request Generation Failed", "No auth test")
+	}
+	// Construct a response recorder
+	w := httptest.NewRecorder()
+
+	// Attempt Endpoint usage
+	votesHandler.ServeHTTP(w, r)
+	if w.Code != http.StatusForbidden {
+		t.Errorf("%s Failed: Expected Code to be %d but got %d", "No auth test", http.StatusForbidden, w.Code)
+		t.Errorf("%s", w.Body)
+	}
+
+	if err != nil {
+		t.Errorf("Error generating request %v", err)
+	} else {
+		// Insert the user
+		usersHandler.ServeHTTP(temp, req)
+		if temp.Code != http.StatusCreated {
+			t.Errorf("Error inserting user into the database: Expect %d but got %d", http.StatusCreated, temp.Code)
+		}
+		// Get the auth header
+		if temp.Header().Get("Authorization") != "" {
+			authHeader = temp.Header().Get("Authorization")
+		}
+
+		if authHeader != "" {
+			user := &users.User{}
+
+			err := json.NewDecoder(temp.Body).Decode(user)
+
+			if err != nil {
+				t.Errorf("User Broken")
+			}
+
+			comment, err := cr.CommentStore.InsertComment(&comments.NewComment{
+				AuthorID: user.ID,
+				Content:  "test content",
+				PostID:   bson.NewObjectId(),
+				ImageURL: "https://github.com",
+			})
+
+			if err != nil {
+				t.Errorf("Error inserting comment")
+			}
+
+			secondaryComment, err := cr.CommentStore.InsertSecondaryComment(&comments.NewSecondaryComment{
+				AuthorID: user.ID,
+				Content:  "test content",
+				PostID:   bson.NewObjectId(),
+				ImageURL: "https://github.com",
+				Parent:   comment.ID,
+			})
+
+			if err != nil {
+				t.Errorf("Error inserting comment")
+			}
+
+			if err == nil {
+				cases := []struct {
+					name     string
+					endpoint string
+					method   string
+					body     io.Reader
+					handler  http.HandlerFunc
+					code     int
+				}{
+					{
+						name:     "Test Vote wrong method",
+						endpoint: "/vote",
+						method:   "GET",
+						body:     nil,
+						handler:  votesHandler,
+						code:     http.StatusMethodNotAllowed,
+					},
+					{
+						name:     "Test Vote wrong method" + secondaryComment.Parent.String(),
+						endpoint: "/vote",
+						method:   "DELETE",
+						body:     nil,
+						handler:  votesHandler,
+						code:     http.StatusMethodNotAllowed,
+					},
+					{
+						name:     "Test Vote test bad type",
+						endpoint: "/vote?type=234324",
+						method:   "PATCH",
+						body:     nil,
+						handler:  votesHandler,
+						code:     http.StatusBadRequest,
+					},
+					{
+						name:     "Test Vote test good request",
+						endpoint: "/vote?type=primary&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 1,
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusOK,
+					},
+					{
+						name:     "Test Vote test bad body",
+						endpoint: "/vote?type=primary&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 1
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusBadRequest,
+					},
+					{
+						name:     "Test Vote test bad request",
+						endpoint: "/vote?type=primary&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 133,
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusBadRequest,
+					},
+					{
+						name:     "Test secondary Vote test good request",
+						endpoint: "/vote?type=secondary&id=" + secondaryComment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 1,
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusOK,
+					},
+					{
+						name:     "Test  secondary Vote test bad body",
+						endpoint: "/vote?type=secondary&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 1
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusBadRequest,
+					},
+					{
+						name:     "Test secondary Vote test bad request",
+						endpoint: "/vote?type=secondary&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 133,
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusBadRequest,
+					},
+					{
+						name:     "Test weird type",
+						endpoint: "/vote?type=df&id=" + comment.ID.Hex(),
+						method:   "PATCH",
+						body: bytes.NewBuffer([]byte(
+							`{
+								"upvote": 133,
+								"downvote": 0
+							}`)),
+						handler: votesHandler,
+						code:    http.StatusBadRequest,
+					},
+				}
+
+				for _, c := range cases {
+					// Generate Request
+					r, err := http.NewRequest(c.method, c.endpoint, c.body)
+
+					r.Header.Add("Authorization", authHeader)
+					if err != nil {
+						t.Errorf("%s Failed: HTTP Request Generation Failed", c.name)
+					}
+					// Construct a response recorder
+					w := httptest.NewRecorder()
+
+					// Attempt Endpoint usage
+					c.handler.ServeHTTP(w, r)
+					if w.Code != c.code {
+						t.Errorf("%s Failed: Expected Code to be %d but got %d", c.name, c.code, w.Code)
+						t.Errorf("%s", w.Body)
+					}
+				}
+			}
+		}
+	}
 }

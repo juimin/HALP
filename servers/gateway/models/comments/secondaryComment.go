@@ -21,6 +21,7 @@ type SecondaryComment struct {
 	TotalVotes  int           `json:"total_votes"`
 	TimeCreated time.Time     `json:"time_created"`
 	TimeEdited  time.Time     `json:"time_edited"`
+	Secondary   bool          `json:"secondary"`
 }
 
 // NewSecondaryComment contains the information required for a secondary comment
@@ -87,6 +88,7 @@ func (nc *NewSecondaryComment) ToSecondaryComment() (*SecondaryComment, error) {
 		TotalVotes:  0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
+		Secondary:   true,
 	}
 
 	// Return the created comment

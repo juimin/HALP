@@ -102,16 +102,19 @@ func TestCommentCRUD(t *testing.T) {
 
 	updateComment := &CommentUpdate{
 		ImageURL: "http://potato.com",
-		Comments: []bson.ObjectId{
-			secondaryComment.ID,
-		},
-		Content: "Tomato",
+		Content:  "Tomato",
 	}
 
 	_, err = ms.UpdateComment(comment.ID, updateComment)
 
 	if err != nil {
 		t.Errorf("update comment failed :%v", err)
+	}
+
+	_, err = ms.UpdateComment(secondaryComment.ID, updateComment)
+
+	if err == nil {
+		t.Errorf("bad update comment failed :%v", err)
 	}
 
 	_, err = ms.UpdateComment("123j12;3j12lk;j1d=2=3d", updateComment)
@@ -237,6 +240,12 @@ func TestCommentCRUDDeadDB(t *testing.T) {
 		t.Errorf("Update failed for secondary : %v ", err)
 	}
 
+	_, err = ms.UpdateSecondaryComment(comment.ID, secondaryUpdate)
+
+	if err == nil {
+		t.Errorf("Update failed for secondary : %v ", err)
+	}
+
 	_, err = ms.UpdateSecondaryComment("12kl;3123h1hi``p`", secondaryUpdate)
 
 	if err == nil {
@@ -249,9 +258,9 @@ func TestCommentCRUDDeadDB(t *testing.T) {
 		t.Errorf("Getting by parent id failed: %v", err)
 	}
 
-	deleteErr := ms.DeleteComment(bson.NewObjectId())
+	err = ms.DeleteComment(bson.NewObjectId())
 
-	if deleteErr == nil {
+	if err == nil {
 		t.Errorf("Deleting id failed: %v", err)
 	}
 }
