@@ -108,3 +108,38 @@ func (s *MongoStore) PostUpdate(id bson.ObjectId, update *PostUpdate) error {
 	}
 	return nil
 }
+
+// VoteInjector is used by the change in mgo to update the votes in a post object
+type VoteInjector struct {
+	Upvotes   int
+	Downvotes int
+}
+
+// PostVotes takes care of updating the votes in the post with the given input
+func (s *MongoStore) PostVotes(id bson.ObjectId, update *PostVote) (*Post, error) {
+	post, err := s.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("Problem getting post from the database: %v", err)
+	}
+
+	// Apply the votes
+	err = post.ApplyVotes(update)
+
+	if err != nil {
+		return nil, fmt.Errorf("Applying vote failed : %v", err)
+	} else {
+		change := mgo.Change{
+			Update: bson.M{"$set": &VoteInjector{
+				Upvotes:   post.Upvotes,
+				Downvotes: post.Downvotes,
+			}},
+			ReturnNew: true,
+		}
+		output := &Post{}
+		col := s.session.DB(s.dbname).C(s.colname)
+		if _, err := col.FindId(id).Apply(change, output); err != nil {
+			return nil, err
+		}
+		return output, nil
+	}
+}

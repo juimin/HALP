@@ -241,3 +241,160 @@ func TestUpdateBadID(t *testing.T) {
 		t.Errorf("Expected error updating post with bad id")
 	}
 }
+
+// TestVoting tests the vote function for the mongo store and makes sure that we
+// Get valid votes
+func TestVoting(t *testing.T) {
+	author := bson.NewObjectId()
+
+	board := bson.NewObjectId()
+
+	np := &NewPost{
+		Title:    "adsfadsf",
+		ImageURL: "https://github.com",
+		Caption:  "Alex I'm doing them lol",
+		AuthorID: author,
+		BoardID:  board,
+	}
+
+	// Generate a mongo store
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+		t.Errorf("%v is a thing", conn)
+	}
+	ms := NewMongoStore(conn, "test_db", "test_col")
+
+	// Insert the post
+	post, err := ms.Insert(np)
+
+	if err != nil {
+		t.Errorf("Inserting the post failed")
+	}
+
+	cases := []struct {
+		name              string
+		votes             *PostVote
+		destination       bson.ObjectId
+		expectedError     error
+		expectedUpvotes   int
+		expectedDownvotes int
+	}{
+		{
+			name: "Valid Vote 1 0",
+			votes: &PostVote{
+				Upvote:   1,
+				Downvote: 0,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 0,
+		},
+		{
+			name: "Valid Vote 0 1",
+			votes: &PostVote{
+				Upvote:   0,
+				Downvote: 1,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Bad Vote 1 1",
+			votes: &PostVote{
+				Upvote:   1,
+				Downvote: 1,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Bad Vote -1 -1",
+			votes: &PostVote{
+				Upvote:   -1,
+				Downvote: -1,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Bad Vote 0 0",
+			votes: &PostVote{
+				Upvote:   0,
+				Downvote: 0,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Valid Vote +1 -1",
+			votes: &PostVote{
+				Upvote:   1,
+				Downvote: -1,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   2,
+			expectedDownvotes: 0,
+		},
+		{
+			name: "Valid Vote -1 +1",
+			votes: &PostVote{
+				Upvote:   -1,
+				Downvote: 1,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Bad Vote - Value out of bounds",
+			votes: &PostVote{
+				Upvote:   -231231231,
+				Downvote: 1231231,
+			},
+			destination:       post.ID,
+			expectedError:     nil,
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+	}
+
+	// Test all the vote test cases
+	for _, c := range cases {
+		p, err := ms.PostVotes(c.destination, c.votes)
+		if err != nil {
+			if c.expectedError != nil {
+				if err.Error() != c.expectedError.Error() {
+					t.Errorf("%s Failed. Incorrect Error: expected %v but got %v", c.name, c.expectedError, err)
+				}
+			} else {
+				t.Errorf("Got error but expected no error: %s failed: expected %v but got nil", c.name, c.expectedError)
+			}
+		} else {
+			if nil != c.expectedError {
+				t.Errorf("%s Failed: Expected Error %v but got nil", c.name, c.expectedError)
+			} else {
+				// Both are nil which means that we should have succeeded
+				if p.Downvotes != c.expectedDownvotes {
+					t.Errorf("%s Failed: Updated downvotes is wrong: expected %d but got %d", c.name, c.expectedDownvotes, p.Downvotes)
+				}
+				if p.Upvotes != c.expectedUpvotes {
+					t.Errorf("%s Failed: Updated upvotes is wrong: expected %d but got %d", c.name, c.expectedUpvotes, p.Upvotes)
+				}
+			}
+		}
+	}
+
+}

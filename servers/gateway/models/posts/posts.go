@@ -131,10 +131,10 @@ func (p *Post) AddComment(comment bson.ObjectId) {
 // ApplyVotes takes care of applying the votes later
 func (p *Post) ApplyVotes(updates *PostVote) error {
 	// Check if the updates are within the defined bounds
-	if updates.Downvote >= 1 || updates.Downvote <= -1 {
+	if updates.Downvote > 1 || updates.Downvote < -1 {
 		return fmt.Errorf("Downvotes are out of bounds: %d", updates.Downvote)
 	}
-	if updates.Upvote >= 1 || updates.Upvote <= -1 {
+	if updates.Upvote > 1 || updates.Upvote < -1 {
 		return fmt.Errorf("Upvotes are out of bounds: %d", updates.Upvote)
 	}
 	if updates.Downvote == updates.Upvote {
@@ -143,6 +143,16 @@ func (p *Post) ApplyVotes(updates *PostVote) error {
 	// Make the update
 	p.Upvotes += updates.Upvote
 	p.Downvotes += updates.Downvote
+
+	if p.Upvotes < 0 {
+		p.Upvotes = 0
+	}
+
+	if p.Downvotes < 0 {
+		p.Downvotes = 0
+	}
+
+	// Make sure that we can't have negative votes
 
 	return nil
 }
