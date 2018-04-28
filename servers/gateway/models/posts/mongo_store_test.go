@@ -1,6 +1,7 @@
 package posts
 
 import (
+	"fmt"
 	"testing"
 
 	"gopkg.in/mgo.v2/bson"
@@ -132,6 +133,26 @@ func TestCRUDValid(t *testing.T) {
 	if err == nil {
 		t.Errorf("Deletion was bad %v", err)
 	}
+}
+
+func TestFaultyPost(t *testing.T) {
+	// Generate a mongo store
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+		t.Errorf("%v is a thing", conn)
+	}
+	ms := NewMongoStore(conn, "test_db", "test_col")
+	_, err = ms.PostVotes("!234123123~?~?", &PostVote{
+		Upvote:   -231231231,
+		Downvote: 1231231,
+	})
+
+	if err == nil {
+		t.Errorf("Bad Get By ID Failed for nonexistent ID")
+	}
+
 }
 
 func TestInsert(t *testing.T) {
@@ -310,7 +331,7 @@ func TestVoting(t *testing.T) {
 				Downvote: 1,
 			},
 			destination:       post.ID,
-			expectedError:     nil,
+			expectedError:     fmt.Errorf("The updates to both upvotes and downvotes cannot be the same"),
 			expectedUpvotes:   1,
 			expectedDownvotes: 1,
 		},
@@ -321,7 +342,7 @@ func TestVoting(t *testing.T) {
 				Downvote: -1,
 			},
 			destination:       post.ID,
-			expectedError:     nil,
+			expectedError:     fmt.Errorf("The updates to both upvotes and downvotes cannot be the same"),
 			expectedUpvotes:   1,
 			expectedDownvotes: 1,
 		},
@@ -332,7 +353,7 @@ func TestVoting(t *testing.T) {
 				Downvote: 0,
 			},
 			destination:       post.ID,
-			expectedError:     nil,
+			expectedError:     fmt.Errorf("The updates to both upvotes and downvotes cannot be the same"),
 			expectedUpvotes:   1,
 			expectedDownvotes: 1,
 		},
@@ -359,13 +380,24 @@ func TestVoting(t *testing.T) {
 			expectedDownvotes: 1,
 		},
 		{
-			name: "Bad Vote - Value out of bounds",
+			name: "Bad Vote - Value out of bounds for upvote",
 			votes: &PostVote{
 				Upvote:   -231231231,
+				Downvote: 0,
+			},
+			destination:       post.ID,
+			expectedError:     fmt.Errorf("Upvotes are out of bounds"),
+			expectedUpvotes:   1,
+			expectedDownvotes: 1,
+		},
+		{
+			name: "Bad Vote - Value out of bounds for downvote",
+			votes: &PostVote{
+				Upvote:   0,
 				Downvote: 1231231,
 			},
 			destination:       post.ID,
-			expectedError:     nil,
+			expectedError:     fmt.Errorf("Downvotes are out of bounds"),
 			expectedUpvotes:   1,
 			expectedDownvotes: 1,
 		},
@@ -380,7 +412,7 @@ func TestVoting(t *testing.T) {
 					t.Errorf("%s Failed. Incorrect Error: expected %v but got %v", c.name, c.expectedError, err)
 				}
 			} else {
-				t.Errorf("Got error but expected no error: %s failed: expected %v but got nil", c.name, c.expectedError)
+				t.Errorf("%s failed: expected nil but got %v", c.name, err)
 			}
 		} else {
 			if nil != c.expectedError {

@@ -132,10 +132,10 @@ func (p *Post) AddComment(comment bson.ObjectId) {
 func (p *Post) ApplyVotes(updates *PostVote) error {
 	// Check if the updates are within the defined bounds
 	if updates.Downvote > 1 || updates.Downvote < -1 {
-		return fmt.Errorf("Downvotes are out of bounds: %d", updates.Downvote)
+		return fmt.Errorf("Downvotes are out of bounds")
 	}
 	if updates.Upvote > 1 || updates.Upvote < -1 {
-		return fmt.Errorf("Upvotes are out of bounds: %d", updates.Upvote)
+		return fmt.Errorf("Upvotes are out of bounds")
 	}
 	if updates.Downvote == updates.Upvote {
 		return fmt.Errorf("The updates to both upvotes and downvotes cannot be the same")

@@ -119,27 +119,26 @@ type VoteInjector struct {
 func (s *MongoStore) PostVotes(id bson.ObjectId, update *PostVote) (*Post, error) {
 	post, err := s.GetByID(id)
 	if err != nil {
-		return nil, fmt.Errorf("Problem getting post from the database: %v", err)
+		return nil, err
 	}
 
 	// Apply the votes
 	err = post.ApplyVotes(update)
 
 	if err != nil {
-		return nil, fmt.Errorf("Applying vote failed : %v", err)
-	} else {
-		change := mgo.Change{
-			Update: bson.M{"$set": &VoteInjector{
-				Upvotes:   post.Upvotes,
-				Downvotes: post.Downvotes,
-			}},
-			ReturnNew: true,
-		}
-		output := &Post{}
-		col := s.session.DB(s.dbname).C(s.colname)
-		if _, err := col.FindId(id).Apply(change, output); err != nil {
-			return nil, err
-		}
-		return output, nil
+		return nil, err
 	}
+	change := mgo.Change{
+		Update: bson.M{"$set": &VoteInjector{
+			Upvotes:   post.Upvotes,
+			Downvotes: post.Downvotes,
+		}},
+		ReturnNew: true,
+	}
+	output := &Post{}
+	col := s.session.DB(s.dbname).C(s.colname)
+	if _, err := col.FindId(id).Apply(change, output); err != nil {
+		return nil, err
+	}
+	return output, nil
 }
