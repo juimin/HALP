@@ -77,11 +77,7 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 			canProceed = false
 		}
 
-		//not possible to do posts/update/<id>
-		//must we do posts/update?id=<id>?
-		//or can we have client send postid?
 		id := r.URL.Query().Get("id")
-		//string to bson.ObjectId?
 		if len(id) == 0 || !bson.IsObjectIdHex(id) {
 			w.WriteHeader(http.StatusBadRequest)
 			canProceed = false
@@ -155,7 +151,6 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 }
 
 //GetPostHandler returns the content of a single post
-//GET /posts/get?id=<id>
 func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
