@@ -16,12 +16,12 @@ type IDFilter struct {
 
 //AuthorIDFilter filters by author id
 type AuthorIDFilter struct {
-	AuthorID bson.ObjectId
+	AuthorID bson.ObjectId `json:"author_id"`
 }
 
 //BoardIDFilter filters by board id
 type BoardIDFilter struct {
-	BoardID bson.ObjectId
+	BoardID bson.ObjectId `json:"board_id"`
 }
 
 // MongoStore outlines the storage struct for mongo db
@@ -70,9 +70,9 @@ func (s *MongoStore) GetByID(id bson.ObjectId) (*Post, error) {
 //GetByAuthorID gets all posts by the given author (via id)
 func (s *MongoStore) GetByAuthorID(id bson.ObjectId) ([]*Post, error) {
 	posts := []*Post{}
-	filter := &AuthorIDFilter{id}
+	// filter := &AuthorIDFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.FindId(filter.AuthorID).All(&posts); err != nil {
+	if err := col.Find(bson.M{"authorid": id}).All(&posts); err != nil {
 		return nil, fmt.Errorf("error getting posts by author id: %v", err)
 	}
 	return posts, nil
@@ -81,9 +81,9 @@ func (s *MongoStore) GetByAuthorID(id bson.ObjectId) ([]*Post, error) {
 //GetByBoardID gets all posts from a given board (via id)
 func (s *MongoStore) GetByBoardID(id bson.ObjectId) ([]*Post, error) {
 	posts := []*Post{}
-	filter := &BoardIDFilter{id}
+	// filter := &BoardIDFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.FindId(filter.BoardID).All(&posts); err != nil {
+	if err := col.Find(bson.M{"boardid": id}).All(&posts); err != nil {
 		return nil, fmt.Errorf("error getting posts by board id: %v", err)
 	}
 	return posts, nil

@@ -72,16 +72,15 @@ func (np *NewPost) ToPost() (*Post, error) {
 		return nil, err
 	}
 	post := &Post{
-		ID:        bson.NewObjectId(),
-		Title:     np.Title,
-		ImageURL:  "",
-		Caption:   "",
-		AuthorID:  np.AuthorID,
-		Comments:  []bson.ObjectId{},
-		BoardID:   bson.NewObjectId(),
-		Upvotes:   0,
-		Downvotes: 0,
-		//TotalVotes:  0,
+		ID:          bson.NewObjectId(),
+		Title:       np.Title,
+		ImageURL:    "",
+		Caption:     "",
+		AuthorID:    np.AuthorID,
+		Comments:    []bson.ObjectId{},
+		BoardID:     np.BoardID,
+		Upvotes:     0,
+		Downvotes:   0,
 		TimeCreated: time.Now(),
 		TimeEdited:  time.Now(),
 	}
@@ -115,9 +114,6 @@ func (p *Post) ApplyUpdates(updates *PostUpdate) error {
 		}
 		p.ImageURL = updates.ImageURL
 	}
-	// p.TotalVotes = updates.TotalVotes
-	// p.Upvotes = updates.Upvotes
-	// p.Downvotes = updates.Downvotes
 	p.TimeEdited = time.Now()
 	return nil
 }

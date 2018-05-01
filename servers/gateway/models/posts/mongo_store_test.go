@@ -81,6 +81,9 @@ func TestCRUDValid(t *testing.T) {
 
 	getAuthorPosts, err := ms.GetByAuthorID(author)
 
+	if len(getAuthorPosts) == 0 {
+		t.Errorf("There should be a post with authors in it")
+	}
 	if err != nil {
 		t.Errorf("Get By ID Failed for inserted board: %v", err)
 	}
@@ -99,6 +102,10 @@ func TestCRUDValid(t *testing.T) {
 	}
 
 	// Check matches
+	if len(getBoardPosts) == 0 {
+		t.Errorf("There should be boards in the database")
+	}
+
 	for _, p := range getBoardPosts {
 		if p.BoardID != post.BoardID {
 			t.Errorf("Got the wrong post out of the database, expected %v but got %v", post.BoardID, p.BoardID)
