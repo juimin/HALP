@@ -40,7 +40,7 @@ func (s *MongoStore) GetByID(id bson.ObjectId) (*Board, error) {
 	board := &Board{}
 	filter := &idFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.FindId(filter).One(board); err != nil {
+	if err := col.FindId(filter.ID).One(board); err != nil {
 		return nil, fmt.Errorf("error getting boards by Board id: %v", err)
 	}
 	return board, nil
@@ -51,7 +51,7 @@ func (s *MongoStore) GetByBoardName(title string) (*Board, error) {
 	board := &Board{}
 	filter := &titleFilter{title}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter).One(board); err != nil {
+	if err := col.Find(filter.Title).One(board); err != nil {
 		return nil, fmt.Errorf("error getting boards by Board name: %v", err)
 	}
 	return board, nil
@@ -96,19 +96,15 @@ func (s *MongoStore) UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) (
 }
 
 //CreateBoard adds a new board to the database to use for testing
-func (s *MongoStore) CreateBoard() (*Board, error) {
-	newBoard := &Board{}
-	newBoard.ID = bson.NewObjectId()
-	newBoard.Title = "Test Board"
-	newBoard.Description = "I am testing for a board ID"
-	newBoard.Image = "http://notavirus.government"
-	newBoard.Subscribers = 100
-	newBoard.Posts = 3
-
+func (s *MongoStore) CreateBoard(NewBoard *NewBoard) (*Board, error) {
+	board, err := NewBoard.ToBoard()
+	if err != nil {
+		return nil, err
+	}
 	col := s.session.DB(s.dbname).C(s.colname)
 
-	if err := col.Insert(newBoard); err != nil {
+	if err := col.Insert(board); err != nil {
 		return nil, fmt.Errorf("error adding board: %v", err)
 	}
-	return newBoard, nil
+	return board, nil
 }

@@ -22,5 +22,5 @@ type Store interface {
 	UpdatePostCount(BoardID bson.ObjectId, posts *UpdatePost) (*Board, error)
 
 	//CreateBoard adds a new board to the database to use for testing
-	CreateBoard() (*Board, error)
+	CreateBoard(NewBoard *NewBoard) (*Board, error)
 }

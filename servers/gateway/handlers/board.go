@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
@@ -42,7 +41,6 @@ func (cr *ContextReceiver) SingleBoardHandler(w http.ResponseWriter, r *http.Req
 			board, err := cr.BoardStore.GetByID(bson.ObjectIdHex(boardID))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				fmt.Fprintf(w, err.Error()+" "+boardID)
 			} else {
 				json.NewEncoder(w).Encode(board)
 				w.WriteHeader(http.StatusOK)
@@ -77,16 +75,16 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 			update := &boards.TempBoolStore{}
 			err = json.NewDecoder(r.Body).Decode(update)
 			if err != nil {
-				status = http.StatusBadRequest
+				status = http.StatusNotAcceptable
 				canProceed = false
 			}
 			if canProceed {
-				board.ChangeSubscriberCount(update.TempSubPost)
+				board.ChangePostCount(update.TempSubPost)
 				//new value of subs
 				changeToStore := &boards.UpdatePost{}
-				changeToStore.Post = board.Subscribers
+				changeToStore.Posts = board.Posts
 				cr.BoardStore.UpdatePostCount(boardID, changeToStore)
-				status = http.StatusAccepted
+				status = http.StatusOK
 			}
 		}
 	}
@@ -124,9 +122,9 @@ func (cr *ContextReceiver) UpdateSubscriberHandler(w http.ResponseWriter, r *htt
 				board.ChangeSubscriberCount(update.TempSubPost)
 				//new value of subs
 				changeToStore := &boards.UpdateSubscriber{}
-				changeToStore.Sub = board.Subscribers
+				changeToStore.Subscribers = board.Subscribers
 				cr.BoardStore.UpdateSubscriberCount(boardID, changeToStore)
-				status = http.StatusAccepted
+				status = http.StatusOK
 			}
 		}
 	}
