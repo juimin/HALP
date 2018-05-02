@@ -33,53 +33,37 @@ func getEnvVariable(name string, defaultValue string, errorMessage string) (stri
 	return envVariable, nil
 }
 
-func main() {
+func generateContextHandler() (*handlers.ContextReceiver, string, string, string, error) {
 	// Check if the port is set
 	port, err := getEnvVariable("ADDR", ":443", "Port Variable Not Set")
-
-	// If it is not set, default the port to be the 443 Https ENABLED port
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "ADDR", err)
-		os.Exit(1)
-	}
 
 	// Get the TLS Cert and TLS Key from the environment variables
 	tlskey, err := getEnvVariable("TLSKEY", "", "TLS Key not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSKEY", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	tlscert, err := getEnvVariable("TLSCERT", "", "TLS Cert Not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	// Connection to the Session Store
 	redisAddr, err := getEnvVariable("REDISADDR", "localhost:6379", "Redis Address Not Set")
 
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "REDISADDR", err)
-		os.Exit(1)
-	}
-
 	// Connection to the Session Store
 	mongoAddr, err := getEnvVariable("DBADDR", "localhost:27017", "Mongo Address Not Set")
-
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "DBADDR", err)
-		os.Exit(1)
-	}
 
 	// Ge tthe variable for the session key
 	sessionKey, err := getEnvVariable("SESSIONKEY", "", "Session Key Not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "SESSIONKEY", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	// Prepare the redis client
@@ -101,22 +85,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	// User Store
+	// Data Store
 	userStore := users.NewMongoStore(mongoSession, "users", "user")
-
-	// Comment Store
 	commentStore := comments.NewMongoStore(mongoSession, "comments", "comment")
-
 	boardStore := boards.NewMongoStore(mongoSession, "boards", "board")
-
 	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
 
 	fmt.Printf("Mongodb Online...\n")
 
 	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore, boardStore)
 
+	return cr, port, tlscert, tlskey, err
+}
+
+func main() {
+
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
+
+	cr, port, tlscert, tlskey, err := generateContextHandler()
+
+	if err != nil {
+		fmt.Printf("Could not generate the Context Handler: %v", err)
+		os.Exit(1)
+	}
 
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)

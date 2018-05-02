@@ -58,9 +58,29 @@ func TestGetEnv(t *testing.T) {
 }
 
 func TestMain(t *testing.T) {
+	_, _, _, _, err := generateContextHandler()
+	if err == nil {
+		t.Errorf("Something should have gone wrong because we don't have all the information")
+	}
 	os.Setenv("ADDR", "localhost:8080")
+	_, _, _, _, err = generateContextHandler()
+	if err == nil {
+		t.Errorf("Something should have gone wrong because we don't have all the information")
+	}
 	os.Setenv("TLSKEY", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/privkey.pem")
+	_, _, _, _, err = generateContextHandler()
+	if err == nil {
+		t.Errorf("Something should have gone wrong because we don't have all the information")
+	}
 	os.Setenv("TLSCERT", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/fullchain.pem")
+	_, _, _, _, err = generateContextHandler()
+	if err == nil {
+		t.Errorf("Something should have gone wrong because we don't have all the information")
+	}
 	os.Setenv("SESSIONKEY", "spUPraqUgethu4AF?x")
-	// main()
+	_, _, _, _, err = generateContextHandler()
+
+	if err != nil {
+		t.Errorf("There was a problem generating the cr")
+	}
 }
