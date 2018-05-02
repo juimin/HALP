@@ -133,7 +133,7 @@ func TestSingleBoardHandler(t *testing.T) {
 	}
 }
 
-func TestUpdatePostHandler(t *testing.T) {
+func TestUpdatePostCountHandler(t *testing.T) {
 
 	//Create test instance of a board
 	cr := prepTestCR()
@@ -175,7 +175,7 @@ func TestUpdatePostHandler(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest(c.reqType, c.destinationURL, c.body)
 		rr := httptest.NewRecorder()
-		httpUpdatePostHandler := http.HandlerFunc(cr.UpdatePostHandler)
+		httpUpdatePostHandler := http.HandlerFunc(cr.UpdatePostCountHandler)
 		// Error if request could not be made
 		if err != nil {
 			t.Errorf("%s Failed: Error %v", c.name, err)
@@ -188,7 +188,7 @@ func TestUpdatePostHandler(t *testing.T) {
 	}
 }
 
-func TestUpdateSubscriberHandler(t *testing.T) {
+func TestUpdateSubscriberCountHandler(t *testing.T) {
 	//Create test instance of a board
 	cr := prepTestCR()
 	board, err := cr.BoardStore.GetAllBoards()
@@ -229,7 +229,7 @@ func TestUpdateSubscriberHandler(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest(c.reqType, c.destinationURL, c.body)
 		rr := httptest.NewRecorder()
-		httpUpdateSubscriberHandler := http.HandlerFunc(cr.UpdateSubscriberHandler)
+		httpUpdateSubscriberHandler := http.HandlerFunc(cr.UpdateSubscriberCountHandler)
 		// Error if request could not be made
 		if err != nil {
 			t.Errorf("%s Failed: Error %v", c.name, err)

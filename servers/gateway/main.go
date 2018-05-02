@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
+	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
 	"github.com/JuiMin/HALP/servers/gateway/models/comments"
@@ -108,9 +109,11 @@ func main() {
 
 	boardStore := boards.NewMongoStore(mongoSession, "boards", "board")
 
+	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
+
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, boardStore)
+	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore, boardStore)
 
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
@@ -121,10 +124,13 @@ func main() {
 	mux.HandleFunc("/users/me", cr.UsersMeHandler)
 	mux.HandleFunc("/sessions", cr.SessionsHandler)
 	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
+	mux.HandleFunc("/posts/new", cr.NewPostHandler)
+	mux.HandleFunc("/posts/update", cr.UpdatePostHandler)
+	mux.HandleFunc("/posts/get", cr.GetPostHandler)
 	mux.HandleFunc("/boards", cr.BoardsAllHandler)
 	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
-	mux.HandleFunc("/boards/updatepost", cr.UpdatePostHandler)
-	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberHandler)
+	mux.HandleFunc("/boards/updatepost", cr.UpdatePostCountHandler)
+	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberCountHandler)
 	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
 	mux.HandleFunc("/favorites", cr.FavoritesHandler)
 

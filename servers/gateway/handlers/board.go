@@ -51,8 +51,8 @@ func (cr *ContextReceiver) SingleBoardHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// UpdatePostHandler gets a board id and updates the given board post count
-func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
+// UpdatePostCountHandler gets a board id and updates the given board post count
+func (cr *ContextReceiver) UpdatePostCountHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	canProceed := true
 	if r.Method != "PATCH" {
@@ -91,8 +91,8 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(status)
 }
 
-// UpdateSubscriberHandler gets a board id and updates the given board post count
-func (cr *ContextReceiver) UpdateSubscriberHandler(w http.ResponseWriter, r *http.Request) {
+// UpdateSubscriberCountHandler gets a board id and updates the given board post count
+func (cr *ContextReceiver) UpdateSubscriberCountHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	canProceed := true
 	if r.Method != "PATCH" {
