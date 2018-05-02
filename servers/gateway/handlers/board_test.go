@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -70,7 +69,6 @@ func TestBoardsAllHandler(t *testing.T) {
 			t.Errorf("%s Failed: Error %v", c.name, err)
 		} else {
 			httpBoardsAllHandler.ServeHTTP(rr, req)
-			fmt.Printf("These are the boards you wanted: %v", rr.Body)
 			if rr.Code != c.expectedStatus {
 				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
 			}
