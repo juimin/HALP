@@ -52,9 +52,8 @@ func NewMongoStore(sess *mgo.Session, dbName string, collectionName string) *Mon
 //GetByCommentID gets the user by the given id
 func (s *MongoStore) GetByCommentID(id bson.ObjectId) (*Comment, error) {
 	c := &Comment{}
-	filter := &IDFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.FindId(filter.ID).One(c); err != nil {
+	if err := col.FindId(id).One(c); err != nil {
 		return nil, fmt.Errorf("error getting comments by id: %v", err)
 	}
 	return c, nil
@@ -63,9 +62,8 @@ func (s *MongoStore) GetByCommentID(id bson.ObjectId) (*Comment, error) {
 //GetBySecondaryID gets the user by the given id
 func (s *MongoStore) GetBySecondaryID(id bson.ObjectId) (*SecondaryComment, error) {
 	sc := &SecondaryComment{}
-	filter := &IDFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.FindId(filter.ID).One(sc); err != nil {
+	if err := col.FindId(id).One(sc); err != nil {
 		return nil, fmt.Errorf("error getting secondary comments by id: %v", err)
 	}
 	return sc, nil
@@ -74,9 +72,8 @@ func (s *MongoStore) GetBySecondaryID(id bson.ObjectId) (*SecondaryComment, erro
 //GetCommentsByPostID gets all the comments associated with a given post
 func (s *MongoStore) GetCommentsByPostID(id bson.ObjectId) (*[]Comment, error) {
 	comments := &[]Comment{}
-	filter := &PostFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter).All(comments); err != nil {
+	if err := col.Find(bson.M{"postid": id}).All(comments); err != nil {
 		return nil, fmt.Errorf("error getting comments by post: %v", err)
 	}
 	return comments, nil
@@ -85,9 +82,8 @@ func (s *MongoStore) GetCommentsByPostID(id bson.ObjectId) (*[]Comment, error) {
 //GetByParentID gets all the comments associated with a given parent comment
 func (s *MongoStore) GetByParentID(id bson.ObjectId) (*[]SecondaryComment, error) {
 	sc := &[]SecondaryComment{}
-	filter := &ParentFilter{id}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter).All(sc); err != nil {
+	if err := col.Find(bson.M{"parent": id}).All(sc); err != nil {
 		return nil, fmt.Errorf("error getting comments by parent comment: %v", err)
 	}
 	return sc, nil
