@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/comments"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
@@ -75,7 +76,9 @@ func prepTestCR() *ContextReceiver {
 
 	commentStore := comments.NewMongoStore(mongoSession, "test", "comments")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore)
+	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
+
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, boardStore)
 
 	return cr
 }
@@ -119,7 +122,9 @@ func BrokenMongoCR() *ContextReceiver {
 
 	commentStore := comments.NewMongoStore(mongoSession, "test", "comments")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore)
+	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
+
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, boardStore)
 
 	return cr
 
@@ -164,7 +169,9 @@ func BrokenRedisCR() *ContextReceiver {
 
 	commentStore := comments.NewMongoStore(mongoSession, "test", "comments")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore)
+	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
+
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, boardStore)
 
 	return cr
 
