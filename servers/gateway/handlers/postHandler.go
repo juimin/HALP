@@ -34,6 +34,13 @@ func (cr *ContextReceiver) NewPostHandler(w http.ResponseWriter, r *http.Request
 				status = http.StatusBadRequest
 				canProceed = false
 			}
+
+			_, err = cr.BoardStore.GetByID(newPost.BoardID)
+			if err != nil {
+				errorMessage = "Error: board does not exist"
+				status = http.StatusBadRequest
+				canProceed = false
+			}
 			if canProceed {
 				// Check for duplicate
 				_, err = cr.BoardStore.GetByBoardName(newPost.Title)
