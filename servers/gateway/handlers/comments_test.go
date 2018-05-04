@@ -8,6 +8,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/posts"
+
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
+
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/comments"
@@ -120,6 +124,41 @@ func TestCommentsHandlerSession(t *testing.T) {
 			"occupation": "vegetable"
 		}`))
 
+	// Insert a board
+	board, err := cr.BoardStore.CreateBoard(&boards.NewBoard{
+		Title:       "Potao",
+		Description: "Poddddaadfda",
+		Image:       "https://github.com",
+	})
+
+	if err != nil {
+		t.Errorf("Problem adding board")
+	}
+
+	// Insert a post
+	post, err := cr.PostStore.Insert(&posts.NewPost{
+		Title:    "somehig",
+		ImageURL: "https://asdfadf.com",
+		AuthorID: bson.NewObjectId(),
+		BoardID:  board.ID,
+		Caption:  "asdfasdf",
+	})
+
+	if err != nil {
+		t.Errorf("Problem adding post")
+	}
+
+	seedComment, err := cr.CommentStore.InsertComment(&comments.NewComment{
+		AuthorID: bson.NewObjectId(),
+		Content:  "asdfadfasdf",
+		PostID:   post.ID,
+		ImageURL: "https://werr.comf",
+	})
+
+	if err != nil {
+		t.Errorf("Problem adding comment seed")
+	}
+
 	// Generate a new recorder
 	temp := httptest.NewRecorder()
 	// Generate the request
@@ -209,7 +248,7 @@ func TestCommentsHandlerSession(t *testing.T) {
 					`{
 						"author_id": "507f1f77bcf86cd799439011",
 						"content": "I am a potato",
-						"post_id": "507f1f77bcf86cd799439011",
+						"post_id": "` + post.ID.Hex() + `",
 						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,
@@ -265,8 +304,8 @@ func TestCommentsHandlerSession(t *testing.T) {
 					`{
 						"author_id": "507f1f77bcf86cd799439012",
 						"content": "I am a potato",
-						"post_id": "507f1f77bcf86cd799439012",
-						"parent": "` + comment.ID.Hex() + `",
+						"post_id": "` + post.ID.Hex() + `",
+						"parent": "` + seedComment.ID.Hex() + `",
 						"image_url": "www.something.comp"
 					}`)),
 				handler: commentsHandler,

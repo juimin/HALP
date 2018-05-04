@@ -10,6 +10,7 @@ import (
 
 	"gopkg.in/mgo.v2/bson"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 )
@@ -18,6 +19,17 @@ func TestNewPostHandler(t *testing.T) {
 	cr := prepTestCR()
 	nph := http.HandlerFunc(cr.NewPostHandler)
 	//objectid == 507f1f77bcf86cd799439011
+
+	// Insert a board
+	board, err := cr.BoardStore.CreateBoard(&boards.NewBoard{
+		Title:       "Potao",
+		Description: "Poddddaadfda",
+		Image:       "https://github.com",
+	})
+
+	if err != nil {
+		t.Errorf("Problem adding board")
+	}
 
 	cases := []struct {
 		name         string
@@ -54,7 +66,7 @@ func TestNewPostHandler(t *testing.T) {
 					"image_url": "potatopass",
 					"caption": "potat",
 					"author_id": "507f1f77bcf86cd799439011",
-					"board_id": "507f1f77bcf86cd799439011"
+					"board_id": "` + board.ID.Hex() + `"
 				}`)),
 			destination: "/posts/new",
 		},
@@ -69,7 +81,7 @@ func TestNewPostHandler(t *testing.T) {
 					"image_url": "http://google.com",
 					"caption": "potat",
 					"author_id": "507f1f77bcf86cd799439011",
-					"board_id": "507f1f77bcf86cd799439011"
+					"board_id": "` + board.ID.Hex() + `"
 				}`)),
 			destination: "/posts/new",
 		},
@@ -108,6 +120,17 @@ func TestNewPostHandler(t *testing.T) {
 func TestUpdatePostHandler(t *testing.T) {
 
 	cr := prepTestCR()
+
+	// Insert a board
+	board, err := cr.BoardStore.CreateBoard(&boards.NewBoard{
+		Title:       "Potao",
+		Description: "Poddddaadfda",
+		Image:       "https://github.com",
+	})
+
+	if err != nil {
+		t.Errorf("Problem adding board")
+	}
 
 	// Include users handler for adding a user
 	usersHandler := http.HandlerFunc(cr.UsersHandler)
@@ -199,7 +222,7 @@ func TestUpdatePostHandler(t *testing.T) {
 					"image_url": "http://google.com",
 					"caption": "potat",
 					"author_id": "507f1f77bcf86cd799439011",
-					"board_id": "507f1f77bcf86cd799439011"
+					"board_id": "` + board.ID.Hex() + `"
 				}`)),
 					destination: "/posts/new",
 				},
