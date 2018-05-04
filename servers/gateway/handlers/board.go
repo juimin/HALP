@@ -69,7 +69,7 @@ func (cr *ContextReceiver) UpdatePostCountHandler(w http.ResponseWriter, r *http
 			update := &boards.TempBoolStore{}
 			err = json.NewDecoder(r.Body).Decode(update)
 			if err != nil {
-				status = http.StatusNotAcceptable
+				status = http.StatusBadRequest
 				canProceed = false
 			}
 			if canProceed {

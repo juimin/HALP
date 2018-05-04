@@ -137,6 +137,18 @@ func TestUpdatePostCountHandler(t *testing.T) {
 
 	//Create test instance of a board
 	cr := prepTestCR()
+
+	// Insert a board into the cr
+	_, err := cr.BoardStore.CreateBoard(&boards.NewBoard{
+		Title:       "Davin",
+		Description: "Test Desc",
+		Image:       "https://potato.com",
+	})
+
+	if err != nil {
+		t.Errorf("Boards not added")
+	}
+
 	board, err := cr.BoardStore.GetAllBoards()
 	if err != nil {
 		t.Errorf("Board not created: %v", err)
@@ -171,11 +183,11 @@ func TestUpdatePostCountHandler(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:           "Passing Test",
+			name:           "Invalid JSON Test",
 			body:           bytes.NewBuffer([]byte(`{"temp" true}`)),
 			reqType:        "PATCH",
 			destinationURL: "/boards/updatepost?id=" + board[0].ID.Hex(),
-			expectedStatus: http.StatusOK,
+			expectedStatus: http.StatusBadRequest,
 		},
 	}
 
@@ -232,11 +244,11 @@ func TestUpdateSubscriberCountHandler(t *testing.T) {
 			expectedStatus: http.StatusBadRequest,
 		},
 		{
-			name:           "Passing Test",
+			name:           "Invalid JSON Test",
 			body:           bytes.NewBuffer([]byte(`{"temp" false}`)),
 			reqType:        "PATCH",
 			destinationURL: "/boards/updatesubscriber?id=" + board[0].ID.Hex(),
-			expectedStatus: http.StatusOK,
+			expectedStatus: http.StatusBadRequest,
 		},
 	}
 
