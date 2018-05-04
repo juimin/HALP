@@ -141,3 +141,57 @@ func (s *MongoStore) PassUpdate(userID bson.ObjectId, updates *PasswordUpdate) e
 	}
 	return nil
 }
+
+// BookmarkInjector is a Temp struct for allowing the bookmarks updater to inject the new list of bookmarks
+type BookmarkInjector struct {
+	Bookmarks []bson.ObjectId
+}
+
+// FavoritesInjector is a Temp struct for allowing the bookmarks updater to inject the new list of bookmarks
+type FavoritesInjector struct {
+	Favorites []bson.ObjectId
+}
+
+// FavoritesUpdate takes the user and a list of favorites and replaces the current list with the new list
+func (s *MongoStore) FavoritesUpdate(userID bson.ObjectId, updates *FavoritesUpdate) (*User, error) {
+	user, err := s.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	user.UpdateFavorites(updates)
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update: bson.M{"$set": &FavoritesInjector{
+			Favorites: user.Favorites,
+		}},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}
+
+// BookmarksUpdate takes the user's list of bookmarks and replaces it with the given list of bookmarks
+func (s *MongoStore) BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error) {
+	user, err := s.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	user.UpdateBookmarks(updates)
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update: bson.M{"$set": &BookmarkInjector{
+			Bookmarks: user.Bookmarks,
+		}},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}
