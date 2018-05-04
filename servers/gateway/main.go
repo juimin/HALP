@@ -125,7 +125,7 @@ func main() {
 	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
 	mux.HandleFunc("/boards/updatepost", cr.UpdatePostHandler)
 	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberHandler)
-	mux.HandleFunc("/boards/createboard", cr.CreateBoard)
+	mux.HandleFunc("/boards/createboard", cr.CreateBoardHandler)
 	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
 	mux.HandleFunc("/favorites", cr.FavoritesHandler)
 
