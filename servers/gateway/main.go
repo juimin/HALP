@@ -115,6 +115,7 @@ func generateMux(cr *handlers.ContextReceiver, tlscert string, tlskey string, po
 	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
 	mux.HandleFunc("/boards/updatepost", cr.UpdatePostCountHandler)
 	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberCountHandler)
+	mux.HandleFunc("/boards/createboard", cr.CreateBoardHandler)
 	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
 	mux.HandleFunc("/favorites", cr.FavoritesHandler)
 
