@@ -26,6 +26,7 @@ func (cr *ContextReceiver) NewPostHandler(w http.ResponseWriter, r *http.Request
 			canProceed = false
 		}
 		if canProceed {
+			// Get the new post
 			newPost := &posts.NewPost{}
 			err := json.NewDecoder(r.Body).Decode(newPost)
 			if err != nil {
@@ -33,13 +34,27 @@ func (cr *ContextReceiver) NewPostHandler(w http.ResponseWriter, r *http.Request
 				status = http.StatusBadRequest
 				canProceed = false
 			}
+
+			_, err = cr.BoardStore.GetByID(newPost.BoardID)
+			if err != nil {
+				errorMessage = "Error: board does not exist"
+				status = http.StatusBadRequest
+				canProceed = false
+			}
 			if canProceed {
-				//Validate the Post
-				err = newPost.Validate()
-				if err != nil {
-					errorMessage = "Error: Could not validate new post"
-					status = http.StatusConflict
+				// Check for duplicate
+				_, err = cr.BoardStore.GetByBoardName(newPost.Title)
+				if err == nil {
+					// We found a board with this title
 					canProceed = false
+				} else {
+					//Validate the Post
+					err = newPost.Validate()
+					if err != nil {
+						errorMessage = "Error: Could not validate new post"
+						status = http.StatusConflict
+						canProceed = false
+					}
 				}
 			}
 			//don't need to check for duplicate posts as with users

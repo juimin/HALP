@@ -11,22 +11,16 @@ import (
 
 // BoardsAllHandler returns all the boards that exist
 func (cr *ContextReceiver) BoardsAllHandler(w http.ResponseWriter, r *http.Request) {
-	status := http.StatusOK
-	canProceed := true
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		canProceed = false
-	}
-	if canProceed {
+	} else {
 		allBoards, err := cr.BoardStore.GetAllBoards()
 		if err != nil {
-			status = http.StatusInternalServerError
-			canProceed = false
-		}
-		if canProceed {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
 			// Encodes all boards into the response
 			json.NewEncoder(w).Encode(allBoards)
-			w.WriteHeader(status)
+			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
