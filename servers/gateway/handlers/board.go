@@ -130,3 +130,47 @@ func (cr *ContextReceiver) UpdateSubscriberHandler(w http.ResponseWriter, r *htt
 	}
 	w.WriteHeader(status)
 }
+
+// CreateBoardHandler creates a board given a title and description
+func (cr *ContextReceiver) CreateBoardHandler(w http.ResponseWriter, r *http.Request) {
+	status := http.StatusCreated
+	canProceed := true
+	if r.Method != "POST" {
+		status = http.StatusMethodNotAllowed
+		canProceed = false
+	} else {
+		if r.Body == nil {
+			status = http.StatusBadRequest
+			canProceed = false
+		}
+		if canProceed {
+			newBoard := &boards.NewBoard{}
+			err := json.NewDecoder(r.Body).Decode(newBoard)
+			if err != nil {
+				status = http.StatusBadRequest
+				canProceed = false
+			}
+			if canProceed {
+				//Check board to see if it is proper
+				err := newBoard.Validate()
+				if err != nil {
+					status = http.StatusBadRequest
+					canProceed = false
+				}
+			}
+			if canProceed {
+				toBeInsertedBoard, err := cr.BoardStore.CreateBoard(newBoard)
+				if err != nil {
+					status = http.StatusInternalServerError
+					canProceed = false
+				} else {
+					w.WriteHeader(status)
+					json.NewEncoder(w).Encode(&toBeInsertedBoard)
+				}
+			}
+		}
+	}
+	if !canProceed {
+		w.WriteHeader(status)
+	}
+}

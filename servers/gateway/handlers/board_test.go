@@ -172,6 +172,13 @@ func TestUpdatePostHandler(t *testing.T) {
 			destinationURL: "/boards/updatepost?id=" + board[0].ID.Hex(),
 			expectedStatus: http.StatusBadRequest,
 		},
+		{
+			name:           "Passing Test",
+			body:           bytes.NewBuffer([]byte(`{"temp" true}`)),
+			reqType:        "PATCH",
+			destinationURL: "/boards/updatepost?id=" + board[0].ID.Hex(),
+			expectedStatus: http.StatusOK,
+		},
 	}
 
 	for _, c := range cases {
@@ -226,6 +233,13 @@ func TestUpdateSubscriberHandler(t *testing.T) {
 			destinationURL: "/boards/updatepost?id=" + board[0].ID.Hex(),
 			expectedStatus: http.StatusBadRequest,
 		},
+		{
+			name:           "Passing Test",
+			body:           bytes.NewBuffer([]byte(`{"temp" false}`)),
+			reqType:        "PATCH",
+			destinationURL: "/boards/updatesubscriber?id=" + board[0].ID.Hex(),
+			expectedStatus: http.StatusOK,
+		},
 	}
 
 	for _, c := range cases {
@@ -237,6 +251,109 @@ func TestUpdateSubscriberHandler(t *testing.T) {
 			t.Errorf("%s Failed: Error %v", c.name, err)
 		} else {
 			httpUpdateSubscriberHandler.ServeHTTP(rr, req)
+			if rr.Code != c.expectedStatus {
+				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
+			}
+		}
+	}
+}
+
+func TestCreateBoardHandler(t *testing.T) {
+	cases := []struct {
+		name           string
+		destinationURL string
+		reqType        string
+		newBody        io.Reader
+		expectedStatus int
+	}{
+		{
+			name:           "Test Proper Board",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"title": "Test Proper Board",
+				"description": "This is a test board. Do what you will!",
+				"image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png"
+			}`)),
+			expectedStatus: http.StatusCreated,
+		},
+		{
+			name:           "Bad Url Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"title": "Test Bad URL",
+				"description": "This is a test board. Do what you will!",
+				"image": "good image url"
+			}`)),
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "No Title Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"title": "",
+				"description": "Test No Titlte",
+				"image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png"
+			}`)),
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "No Description Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"title": "Test No Description",
+				"description": "",
+				"image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png"
+			}`)),
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Bad Method Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "GET",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"title": "Test No Description",
+				"description": "",
+				"image": "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png"
+			}`)),
+			expectedStatus: http.StatusMethodNotAllowed,
+		},
+		{
+			name:           "No Body Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody:        nil,
+			expectedStatus: http.StatusBadRequest,
+		},
+		{
+			name:           "Bad Body Test",
+			destinationURL: "/boards/createboard",
+			reqType:        "POST",
+			newBody: bytes.NewBuffer([]byte(
+				`{
+				"image" "https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-2800x2800.png"
+			}`)),
+			expectedStatus: http.StatusBadRequest,
+		},
+	}
+	for _, c := range cases {
+		cr := prepTestCR()
+		req, err := http.NewRequest(c.reqType, c.destinationURL, c.newBody)
+		rr := httptest.NewRecorder()
+		httpCreateBoardHandler := http.HandlerFunc(cr.CreateBoardHandler)
+		// Error if request could not be made
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			httpCreateBoardHandler.ServeHTTP(rr, req)
 			if rr.Code != c.expectedStatus {
 				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
 			}
