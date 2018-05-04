@@ -49,9 +49,8 @@ func (s *MongoStore) GetByID(id bson.ObjectId) (*Board, error) {
 //GetByBoardName gets and returns all Boards from the given Name
 func (s *MongoStore) GetByBoardName(title string) (*Board, error) {
 	board := &Board{}
-	filter := &titleFilter{title}
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(filter.Title).One(board); err != nil {
+	if err := col.Find(bson.M{"title": title}).One(board); err != nil {
 		return nil, fmt.Errorf("error getting boards by Board name: %v", err)
 	}
 	return board, nil

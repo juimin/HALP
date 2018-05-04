@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -70,7 +69,6 @@ func TestBoardsAllHandler(t *testing.T) {
 			t.Errorf("%s Failed: Error %v", c.name, err)
 		} else {
 			httpBoardsAllHandler.ServeHTTP(rr, req)
-			fmt.Printf("These are the boards you wanted: %v", rr.Body)
 			if rr.Code != c.expectedStatus {
 				t.Errorf("%s Failed. Expected %d but got %d.", c.name, c.expectedStatus, rr.Code)
 			}
@@ -135,7 +133,7 @@ func TestSingleBoardHandler(t *testing.T) {
 	}
 }
 
-func TestUpdatePostHandler(t *testing.T) {
+func TestUpdatePostCountHandler(t *testing.T) {
 
 	//Create test instance of a board
 	cr := prepTestCR()
@@ -184,7 +182,7 @@ func TestUpdatePostHandler(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest(c.reqType, c.destinationURL, c.body)
 		rr := httptest.NewRecorder()
-		httpUpdatePostHandler := http.HandlerFunc(cr.UpdatePostHandler)
+		httpUpdatePostHandler := http.HandlerFunc(cr.UpdatePostCountHandler)
 		// Error if request could not be made
 		if err != nil {
 			t.Errorf("%s Failed: Error %v", c.name, err)
@@ -197,7 +195,7 @@ func TestUpdatePostHandler(t *testing.T) {
 	}
 }
 
-func TestUpdateSubscriberHandler(t *testing.T) {
+func TestUpdateSubscriberCountHandler(t *testing.T) {
 	//Create test instance of a board
 	cr := prepTestCR()
 	board, err := cr.BoardStore.GetAllBoards()
@@ -245,7 +243,7 @@ func TestUpdateSubscriberHandler(t *testing.T) {
 	for _, c := range cases {
 		req, err := http.NewRequest(c.reqType, c.destinationURL, c.body)
 		rr := httptest.NewRecorder()
-		httpUpdateSubscriberHandler := http.HandlerFunc(cr.UpdateSubscriberHandler)
+		httpUpdateSubscriberHandler := http.HandlerFunc(cr.UpdateSubscriberCountHandler)
 		// Error if request could not be made
 		if err != nil {
 			t.Errorf("%s Failed: Error %v", c.name, err)
