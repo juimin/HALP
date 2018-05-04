@@ -70,10 +70,28 @@ func TestCommentCRUD(t *testing.T) {
 	}
 
 	// Try get by post
-	_, err = ms.GetCommentsByPostID(comment.PostID)
+	byPost, err := ms.GetCommentsByPostID(comment.PostID)
+
+	if len(*byPost) == 0 {
+		t.Errorf("Get by post should not be empty")
+	}
 
 	if err != nil {
 		t.Errorf("Testing Get all by post id failed: %v", err)
+	}
+
+	newSecondarybadComment := &NewSecondaryComment{
+		AuthorID: bson.NewObjectId(),
+		Content:  "Hello",
+		PostID:   bson.NewObjectId(),
+		ImageURL: "https://google.com",
+		Parent:   bson.NewObjectId(),
+	}
+
+	_, err = ms.InsertSecondaryComment(newSecondarybadComment)
+
+	if err == nil {
+		t.Errorf("Shouldn't be able to add orphan secondary comment")
 	}
 
 	newSecondaryComment := &NewSecondaryComment{
@@ -92,10 +110,14 @@ func TestCommentCRUD(t *testing.T) {
 		t.Errorf("Testing get by secondary comment failed: %v", err)
 	}
 
-	_, err = ms.GetByParentID(comment.ID)
+	byParent, err := ms.GetByParentID(secondaryComment.Parent)
 
 	if err != nil {
 		t.Errorf("Getting by parent id failed: %v", err)
+	}
+
+	if len(*byParent) == 0 {
+		t.Errorf("Get by post should not be empty")
 	}
 
 	// Test Update

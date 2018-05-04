@@ -11,22 +11,16 @@ import (
 
 // BoardsAllHandler returns all the boards that exist
 func (cr *ContextReceiver) BoardsAllHandler(w http.ResponseWriter, r *http.Request) {
-	status := http.StatusOK
-	canProceed := true
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		canProceed = false
-	}
-	if canProceed {
+	} else {
 		allBoards, err := cr.BoardStore.GetAllBoards()
 		if err != nil {
-			status = http.StatusInternalServerError
-			canProceed = false
-		}
-		if canProceed {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
 			// Encodes all boards into the response
 			json.NewEncoder(w).Encode(allBoards)
-			w.WriteHeader(status)
+			w.WriteHeader(http.StatusOK)
 		}
 	}
 }
@@ -51,8 +45,8 @@ func (cr *ContextReceiver) SingleBoardHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// UpdatePostHandler gets a board id and updates the given board post count
-func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Request) {
+// UpdatePostCountHandler gets a board id and updates the given board post count
+func (cr *ContextReceiver) UpdatePostCountHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	canProceed := true
 	if r.Method != "PATCH" {
@@ -91,8 +85,8 @@ func (cr *ContextReceiver) UpdatePostHandler(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(status)
 }
 
-// UpdateSubscriberHandler gets a board id and updates the given board post count
-func (cr *ContextReceiver) UpdateSubscriberHandler(w http.ResponseWriter, r *http.Request) {
+// UpdateSubscriberCountHandler gets a board id and updates the given board post count
+func (cr *ContextReceiver) UpdateSubscriberCountHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	canProceed := true
 	if r.Method != "PATCH" {

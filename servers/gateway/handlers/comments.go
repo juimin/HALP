@@ -91,13 +91,19 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 				if err != nil {
 					status = http.StatusBadRequest
 				} else {
-					c, err := cr.CommentStore.InsertComment(comment)
+					// check if the board exists
+					_, err = cr.PostStore.GetByID(comment.PostID)
 					if err != nil {
 						status = http.StatusBadRequest
 					} else {
-						// Return the comment
-						status = http.StatusOK
-						json.NewEncoder(w).Encode(&c)
+						c, err := cr.CommentStore.InsertComment(comment)
+						if err != nil {
+							status = http.StatusBadRequest
+						} else {
+							// Return the comment
+							status = http.StatusOK
+							json.NewEncoder(w).Encode(&c)
+						}
 					}
 				}
 			} else if commentType == "secondary" {
@@ -106,13 +112,23 @@ func (cr *ContextReceiver) CommentsHandler(w http.ResponseWriter, r *http.Reques
 				if err != nil {
 					status = http.StatusBadRequest
 				} else {
-					sc, err := cr.CommentStore.InsertSecondaryComment(secondaryComment)
+					_, err = cr.PostStore.GetByID(secondaryComment.PostID)
 					if err != nil {
 						status = http.StatusBadRequest
 					} else {
-						// Return the comment
-						status = http.StatusOK
-						json.NewEncoder(w).Encode(&sc)
+						_, err = cr.CommentStore.GetByCommentID(secondaryComment.Parent)
+						if err != nil {
+							status = http.StatusBadRequest
+						} else {
+							sc, err := cr.CommentStore.InsertSecondaryComment(secondaryComment)
+							if err != nil {
+								status = http.StatusBadRequest
+							} else {
+								// Return the comment
+								status = http.StatusOK
+								json.NewEncoder(w).Encode(&sc)
+							}
+						}
 					}
 				}
 			} else {
