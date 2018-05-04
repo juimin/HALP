@@ -10,7 +10,7 @@ Capstone Project: Providing a mobile solution for community assistance on everyd
 | Android Client | Under Construction |
 | iOS Client | -- |
 | Web Client | -- |
-| Web Site   | [Halp App Site](https://happapp.github.io) |
+| Web Site   | [Halp App Site](https://halpapp.github.io/) |
 
 ## Deployment Status
 
