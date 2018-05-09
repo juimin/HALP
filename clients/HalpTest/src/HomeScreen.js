@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-//import BottomNavigation, { Tab } from 'react-native-material-bottom-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 export default class HomeScreen extends React.Component {
