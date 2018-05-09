@@ -7,7 +7,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/models/boards"
+	"github.com/JuiMin/HALP/servers/gateway/models/posts"
+
 	"github.com/JuiMin/HALP/servers/gateway/handlers"
+	"github.com/JuiMin/HALP/servers/gateway/models/comments"
 	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 	"github.com/JuiMin/HALP/servers/gateway/models/users"
 	"github.com/go-redis/redis"
@@ -29,53 +33,37 @@ func getEnvVariable(name string, defaultValue string, errorMessage string) (stri
 	return envVariable, nil
 }
 
-func main() {
+func generateContextHandler() (*handlers.ContextReceiver, string, string, string, error) {
 	// Check if the port is set
 	port, err := getEnvVariable("ADDR", ":443", "Port Variable Not Set")
-
-	// If it is not set, default the port to be the 443 Https ENABLED port
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "ADDR", err)
-		os.Exit(1)
-	}
 
 	// Get the TLS Cert and TLS Key from the environment variables
 	tlskey, err := getEnvVariable("TLSKEY", "", "TLS Key not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSKEY", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	tlscert, err := getEnvVariable("TLSCERT", "", "TLS Cert Not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "TLSCERT", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	// Connection to the Session Store
 	redisAddr, err := getEnvVariable("REDISADDR", "localhost:6379", "Redis Address Not Set")
 
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "REDISADDR", err)
-		os.Exit(1)
-	}
-
 	// Connection to the Session Store
 	mongoAddr, err := getEnvVariable("DBADDR", "localhost:27017", "Mongo Address Not Set")
-
-	if err != nil {
-		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "DBADDR", err)
-		os.Exit(1)
-	}
 
 	// Ge tthe variable for the session key
 	sessionKey, err := getEnvVariable("SESSIONKEY", "", "Session Key Not Set")
 
 	if err != nil {
 		fmt.Printf("Problem Encountered getting Environment Variable %s =: %v", "SESSIONKEY", err)
-		os.Exit(1)
+		return nil, "", "", "", err
 	}
 
 	// Prepare the redis client
@@ -97,27 +85,55 @@ func main() {
 		os.Exit(1)
 	}
 
-	mongoStore := users.NewMongoStore(mongoSession, "users", "user")
+	// Data Store
+	userStore := users.NewMongoStore(mongoSession, "users", "user")
+	commentStore := comments.NewMongoStore(mongoSession, "comments", "comment")
+	boardStore := boards.NewMongoStore(mongoSession, "boards", "board")
+	postStore := posts.NewMongoStore(mongoSession, "posts", "post")
 
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, mongoStore, redisStore)
+	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore, boardStore)
 
+	return cr, port, tlscert, tlskey, err
+}
+
+func generateMux(cr *handlers.ContextReceiver, tlscert string, tlskey string, port string) *handlers.CORSHandler {
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
-
-	// TODO: DEFINE HANDLERS
 
 	// Default Root handling
 	mux.HandleFunc("/", handlers.RootHandler)
 	mux.HandleFunc("/users", cr.UsersHandler)
+	mux.HandleFunc("/users/me", cr.UsersMeHandler)
 	mux.HandleFunc("/sessions", cr.SessionsHandler)
 	mux.HandleFunc("/sessions/mine", cr.SessionsMineHandler)
+	mux.HandleFunc("/posts/new", cr.NewPostHandler)
+	mux.HandleFunc("/posts/update", cr.UpdatePostHandler)
+	mux.HandleFunc("/posts/get", cr.GetPostHandler)
+	mux.HandleFunc("/boards", cr.BoardsAllHandler)
+	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
+	mux.HandleFunc("/boards/updatepost", cr.UpdatePostCountHandler)
+	mux.HandleFunc("/boards/updatesubscriber", cr.UpdateSubscriberCountHandler)
+	mux.HandleFunc("/boards/createboard", cr.CreateBoardHandler)
+	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
+	mux.HandleFunc("/favorites", cr.FavoritesHandler)
 
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
 	corsHandler := handlers.NewCORSHandler(mux)
+	return corsHandler
+}
 
+func main() {
+	cr, port, tlscert, tlskey, err := generateContextHandler()
+
+	if err != nil {
+		fmt.Printf("Could not generate the Context Handler: %v", err)
+		os.Exit(1)
+	}
+
+	corsHandler := generateMux(cr, tlscert, tlskey, port)
 	fmt.Println("CORS Mounted Successfully...")
 
 	// Notify that the server is started
