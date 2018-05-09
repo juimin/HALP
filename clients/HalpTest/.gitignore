@@ -31,6 +31,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+yarn.lock
+
 # OSX
 #
 .DS_Store
@@ -87,6 +89,3 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
-
-# Yarn lock
-yarn.lock
