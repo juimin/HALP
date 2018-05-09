@@ -1,66 +1,16 @@
 import React, { Component } from 'react';
 import { Button, StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
-//import { NavigationComponent } from 'react-native-material-bottom-navigation'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './src/HomeScreen';
 import SignupScreen from './src/SignupScreen';
 import LoginScreen from './src/LoginScreen';
-//import PrimaryNav from './src/AppNavigation';
 import CanvasTest from './src/CanvasTest';
 import HomeNav from './src/HomeNav';
 import SearchNav from './src/SearchNav';
 import AccNav from './src/AccNav';
 import BoardNav from './src/BoardNav';
 import SettingsNav from './src/SettingsNav';
-
-// export default class App extends React.Component {
-//   render() {
-//     return <RootTab screenProps={{loggedin: false}}/>;
-//   }
-// }
-
-// const RootTab = TabNavigator({
-//   HomeNav: { screen: HomeNav },
-//   SearchNav: { screen: SearchNav },
-//   BoardNav: { screen: BoardNav },
-//   AccNav: { screen: AccNav },
-//   SettingsNav: { screen: SettingsNav},
-
-// }, {
-//   tabBarPosition: 'bottom',
-//   tabBarOptions: {
-//     showLabel: false,  
-//     showIcon: true,
-//     style: {
-//       backgroundColor: '#fff',
-//     },
-//     tintColor: 'gray',
-//     activeTintColor: '#F44336',
-//     indicatorStyle: {
-//       backgroundColor: '#F44336',
-//     },
-//     inactiveTintColor: 'gray',
-//     bottomNavigationOptions: {
-//       backgroundColor: "white",
-//       rippleColor: '#f44336',
-//       tabs: {
-//         HomeNav: {
-//           activeLabelColor: 'white', /*overwrites default label color*/
-//         },
-//         SearchNav: {
-//         },
-//         BoardNav: {
-//         },
-//         AccNav: {
-//         },
-//         SettingsNav: {
-//         }
-//       }
-//     }
-//   }
-// })
-
 
 const activeTintColor = '#F44336';
 const inactiveTintColor = 'gray';

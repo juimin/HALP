@@ -24,7 +24,7 @@ const PrimaryNav = StackNavigator({
 const LoginStack = StackNavigator({
   loginScreen: { screen: LoginTest },
   signupScreen: { screen: SignupTest },
-  {
+},{
   headerMode: 'screen',
   navigationOptions: {
     headerStyle: {backgroundColor: '#E73536'},
