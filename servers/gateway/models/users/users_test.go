@@ -106,6 +106,9 @@ func TestValidate(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, result, c.expectedOutput)
 			}
 		}
+		if (result == nil || c.expectedOutput == nil) && !(result == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, result, c.expectedOutput)
+		}
 	}
 }
 
@@ -149,60 +152,7 @@ func TestToUser(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
 		}
-	}
-}
-
-// TestFullName tests the function returning the full name of a user
-func TestFullname(t *testing.T) {
-	cases := []struct {
-		name           string
-		input          *User
-		expectedOutput string
-	}{
-		{
-			name: "No first or last name",
-			input: &User{
-				ID:        bson.NewObjectId(),
-				Email:     "derek@uw.edu",
-				FirstName: "",
-				LastName:  "",
-			},
-			expectedOutput: "",
-		},
-		{
-			name: "First name but no last name",
-			input: &User{
-				ID:        bson.NewObjectId(),
-				Email:     "derek@uw.edu",
-				FirstName: "Derek",
-				LastName:  "",
-			},
-			expectedOutput: "Derek",
-		},
-		{
-			name: "Last name but no first name",
-			input: &User{
-				ID:        bson.NewObjectId(),
-				Email:     "derek@uw.edu",
-				FirstName: "",
-				LastName:  "potato",
-			},
-			expectedOutput: "potato",
-		},
-		{
-			name: "Both first and last name",
-			input: &User{
-				ID:        bson.NewObjectId(),
-				Email:     "derek@uw.edu",
-				FirstName: "Potato",
-				LastName:  "Tomato",
-			},
-			expectedOutput: "Potato Tomato",
-		},
-	}
-
-	for _, c := range cases {
-		if output := c.input.FullName(); c.expectedOutput != output {
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
 			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 		}
 	}
@@ -225,11 +175,6 @@ func TestSetPassword(t *testing.T) {
 			input:          "hotpotato123",
 			expectedOutput: nil,
 		},
-		{
-			name:           "bcrypt error",
-			input:          "-12312",
-			expectedOutput: fmt.Errorf("Bcrypt error."),
-		},
 	}
 
 	testUser := &User{}
@@ -239,6 +184,9 @@ func TestSetPassword(t *testing.T) {
 			if output.Error() != c.expectedOutput.Error() {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
+		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 		}
 	}
 }
@@ -262,12 +210,6 @@ func TestAuthenticate(t *testing.T) {
 			cost:           bcryptCost,
 			expectedOutput: nil,
 		},
-		{
-			name:           "bcrypt error",
-			input:          "something",
-			cost:           0,
-			expectedOutput: fmt.Errorf("Bcrypt error"),
-		},
 	}
 
 	for _, c := range cases {
@@ -288,10 +230,12 @@ func TestAuthenticate(t *testing.T) {
 					t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 				}
 			}
+			if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
+			}
 		}
 	}
 }
-
 func TestApplyUpdates(t *testing.T) {
 	cases := []struct {
 		name           string
@@ -359,55 +303,180 @@ func TestApplyUpdates(t *testing.T) {
 				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
 			}
 		}
+		if (output == nil || c.expectedOutput == nil) && !(output == nil && c.expectedOutput == nil) {
+			t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
+		}
 	}
 }
 
-func TestPassUpdates(t *testing.T) {
+func TestUpdateFavorites(t *testing.T) {
+
+	filler := []bson.ObjectId{
+		bson.NewObjectId(),
+	}
+
 	cases := []struct {
 		name           string
-		input          *PasswordUpdate
-		expectedOutput error
+		user           *NewUser
+		expectedUpdate *FavoritesUpdate
+		filler         bool
 	}{
 		{
-			name: "Invalid New Password Input",
-			input: &PasswordUpdate{
-				NewPassword:     "",
-				NewPasswordConf: "potato",
+			name: "Testing Update",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
 			},
-			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
+			expectedUpdate: &FavoritesUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
+			filler: false,
 		},
 		{
-			name: "Invalid New Password Conf Input",
-			input: &PasswordUpdate{
-				NewPassword:     "potato",
-				NewPasswordConf: "",
+			name: "Testing Failed Removal",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
 			},
-			expectedOutput: fmt.Errorf("Invalid Input: New Password cannot be length 0"),
+			expectedUpdate: &FavoritesUpdate{
+				Adding:   false,
+				UpdateID: bson.NewObjectId(),
+			},
+			filler: false,
 		},
 		{
-			name: "Password Conf does not match",
-			input: &PasswordUpdate{
-				NewPassword:     "pieces",
-				NewPasswordConf: "gooodddcd",
+			name: "Testing Successful Removal",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
 			},
-			expectedOutput: fmt.Errorf("Password and password conf do not match"),
-		},
-		{
-			name: "Good Input",
-			input: &PasswordUpdate{
-				NewPassword:     "monkey",
-				NewPasswordConf: "monkey",
+			expectedUpdate: &FavoritesUpdate{
+				Adding:   false,
+				UpdateID: filler[0],
 			},
-			expectedOutput: nil,
+			filler: true,
 		},
 	}
-	testUser := &User{}
+
 	for _, c := range cases {
-		output := testUser.PassUpdate(c.input)
-		if output != nil && c.expectedOutput != nil {
-			if output.Error() != c.expectedOutput.Error() {
-				t.Errorf("%s: got %s but expected %s", c.name, output, c.expectedOutput)
+		u, err := c.user.ToUser()
+		if err != nil {
+			t.Errorf("Error on %s: %v", c.name, err)
+		}
+		if c.filler {
+			u.Favorites = filler
+		}
+		u.UpdateFavorites(c.expectedUpdate)
+		if c.expectedUpdate.Adding {
+			if u.Favorites[0] != c.expectedUpdate.UpdateID {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.UpdateID, 0, u.Favorites[0])
 			}
+		} else {
+			if len(u.Favorites) != len(filler)-1 {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.UpdateID, 0, u.Favorites[0])
+			}
+		}
+	}
+}
+
+// TestUpdateBookmarks tests the updating of bookmarks
+func TestUpdateBookmarks(t *testing.T) {
+
+	filler := []bson.ObjectId{
+		bson.NewObjectId(),
+	}
+
+	cases := []struct {
+		name           string
+		user           *NewUser
+		expectedUpdate *BookmarksUpdate
+		filler         bool
+	}{
+		{
+			name: "Testing Update",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
+			},
+			expectedUpdate: &BookmarksUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
+			filler: false,
+		},
+		{
+			name: "Testing Failed Removal",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
+			},
+			expectedUpdate: &BookmarksUpdate{
+				Adding:   false,
+				UpdateID: bson.NewObjectId(),
+			},
+			filler: false,
+		},
+		{
+			name: "Testing Success Removal",
+			user: &NewUser{
+				Email:        "asd.df@gmail.com",
+				Password:     "huptwothreefour",
+				PasswordConf: "huptwothreefour",
+				UserName:     "potatoman",
+				FirstName:    "Neal",
+				LastName:     "Jones",
+			},
+			expectedUpdate: &BookmarksUpdate{
+				Adding:   false,
+				UpdateID: filler[0],
+			},
+			filler: true,
+		},
+	}
+
+	for _, c := range cases {
+		u, err := c.user.ToUser()
+		if err != nil {
+			t.Errorf("Error on %s: %v", c.name, err)
+		}
+		if c.filler {
+			u.Bookmarks = filler
+		}
+		u.UpdateBookmarks(c.expectedUpdate)
+		if c.expectedUpdate.Adding {
+			if u.Bookmarks[0] != c.expectedUpdate.UpdateID {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.UpdateID, 0, u.Bookmarks[0])
+			}
+		} else {
+			if len(u.Bookmarks) != 0 {
+				t.Errorf("Error on %s: Epected %s at %d but got %s", c.name,
+					c.expectedUpdate.UpdateID, 0, u.Bookmarks[0])
+			}
+
 		}
 	}
 }

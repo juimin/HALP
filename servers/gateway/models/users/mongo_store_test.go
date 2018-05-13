@@ -514,3 +514,177 @@ func TestPassUpdate(t *testing.T) {
 		}
 	}
 }
+
+// TestFavoritesUpdate tests the mongo storage updating of the favorites for a user
+func TestFavoritesUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	filler := bson.NewObjectId()
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		addition       *FavoritesUpdate
+		expectedOutput error
+	}{
+		{
+			name: "Test Updating User with Valid Update Addition",
+			id:   usr.ID,
+			addition: &FavoritesUpdate{
+				Adding:   true,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
+		},
+		{
+			name: "Test Updating User That doesn't exist",
+			id:   bson.NewObjectId(),
+			addition: &FavoritesUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
+			expectedOutput: fmt.Errorf("error getting users by id: not found"),
+		},
+		{
+			name: "Test Updating User with Valid Update Remove",
+			id:   usr.ID,
+			addition: &FavoritesUpdate{
+				Adding:   false,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
+		},
+	}
+
+	for _, c := range cases {
+		updatedUser, err := mongoStore.FavoritesUpdate(c.id, c.addition)
+		if err != nil && c.expectedOutput != nil {
+			if err.Error() != c.expectedOutput.Error() {
+				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+			}
+		}
+		if !(err == nil && c.expectedOutput == nil) && (err == nil || c.expectedOutput == nil) {
+			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+		}
+		if updatedUser != nil {
+			if c.addition.Adding {
+				if len(updatedUser.Favorites) != 1 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 1, len(updatedUser.Favorites))
+				}
+			} else {
+				if len(updatedUser.Favorites) != 0 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 0, len(updatedUser.Favorites))
+				}
+			}
+		}
+	}
+}
+
+// TestBookmarksUpdate tests the mongo updating of user's bookmarks
+func TestBookmarksUpdate(t *testing.T) {
+
+	testUser := &NewUser{
+		Email:        "potato@gg.com",
+		Password:     "something",
+		PasswordConf: "something",
+		UserName:     "user",
+		FirstName:    "pot",
+		LastName:     "tato",
+		Occupation:   "Spud",
+	}
+
+	// Predefine a mongo store for all tests
+	mongoSession, err := mgo.Dial("localhost")
+	if err != nil {
+		t.Errorf("Error Connecting to MongoDB. Cannot perform Insertion Tests")
+	}
+	mongoStore := NewMongoStore(mongoSession, "test_users", "user")
+
+	usr, err := mongoStore.Insert(testUser)
+
+	if err != nil {
+		t.Error("There was an issue adding the test user to the database")
+	}
+
+	filler := bson.NewObjectId()
+
+	cases := []struct {
+		name           string
+		id             bson.ObjectId
+		addition       *BookmarksUpdate
+		expectedOutput error
+	}{
+		{
+			name: "Test Updating User with Valid Update Addition",
+			id:   usr.ID,
+			addition: &BookmarksUpdate{
+				Adding:   true,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
+		},
+		{
+			name: "Test Updating User That doesn't exist",
+			id:   bson.NewObjectId(),
+			addition: &BookmarksUpdate{
+				Adding:   true,
+				UpdateID: bson.NewObjectId(),
+			},
+			expectedOutput: fmt.Errorf("error getting users by id: not found"),
+		},
+		{
+			name: "Test Updating User with Valid Update Remove",
+			id:   usr.ID,
+			addition: &BookmarksUpdate{
+				Adding:   false,
+				UpdateID: filler,
+			},
+			expectedOutput: nil,
+		},
+	}
+
+	for _, c := range cases {
+		updatedUser, err := mongoStore.BookmarksUpdate(c.id, c.addition)
+		if err != nil && c.expectedOutput != nil {
+			if err.Error() != c.expectedOutput.Error() {
+				t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+			}
+		}
+		if !(err == nil && c.expectedOutput == nil) && (err == nil || c.expectedOutput == nil) {
+			t.Errorf("Error on %s: Expected %v but got %v", c.name, c.expectedOutput, err)
+		}
+		if updatedUser != nil {
+			if c.addition.Adding {
+				if len(updatedUser.Bookmarks) != 1 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 1, len(updatedUser.Bookmarks))
+				}
+			} else {
+				if len(updatedUser.Bookmarks) != 0 {
+					t.Errorf("Error on %s: Expected %v but got %v", c.name, 0, len(updatedUser.Bookmarks))
+				}
+			}
+		}
+	}
+}
