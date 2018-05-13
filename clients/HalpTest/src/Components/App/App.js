@@ -135,16 +135,16 @@ const Tabs = TabNavigator({
     screen: (props) => <HomeNav />,
   },
   SearchNav: {
-    screen: (props) => <SearchNav />,
+    screen: (props) => <Search />,
   },
   NewPost: {
     screen: View,
   },
   AccNav: {
-    screen: (props) => <AccNav />,
+    screen: (props) => <Account />,
   },
   SettingsNav: {
-    screen: (props) => <SettingsNav />,
+    screen: (props) => <Settings />,
   },
 }, {
   tabBarPosition: 'bottom',
