@@ -7,6 +7,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
+// Import the different views based on user state
+import UserHome from './UserHome';
+import GuestHome from './GuestHome';
+
 export default class HomeScreen extends React.Component {
    // Here we should run initialization scripts
    constructor(props) {
@@ -17,46 +21,13 @@ export default class HomeScreen extends React.Component {
    render() {
       const {goBack} = this.props.navigation;
       if (this.state.loggedin) {
-         return(
-            <View style={Styles.home}>
-               <Text>Dashboard</Text>
-               <Button color = "#F44336"
-                  title="Go Back"
-                  onPress={() => {
-                     this.setState({loggedin: false});
-                  }}
-               />
-            </View>
-         )
+         return (
+            <UserHome />
+         );
       }
       //if not logged in
       return (
-         <View style={Styles.home}>
-         <Text></Text>
-         <Button 
-            color={Theme.colors.primaryColor}
-            title="Log in"
-            onPress={() => this.props.navigation.navigate('Login')}
-         />
-         <Text></Text>
-            <Button 
-               color={Theme.colors.primaryColor}
-            title="Sign Up"
-            onPress={() => this.props.navigation.navigate('Signup')}
-         />
-         <Text></Text>
-         <Button 
-               color={Theme.colors.primaryColor}
-               title="Try Me"
-               onPress={() => this.setState({loggedin: true})}
-               />
-         <Text></Text>
-         <Button
-               color={Theme.colors.primaryColor}
-               title="Canvas Test"
-               onPress={() => this.props.navigation.navigate('Canvas')}
-               />
-         </View>
+         <GuestHome />
       );
    }
 }
