@@ -16,7 +16,7 @@ export default class CanvasTest extends React.Component {
       <View style={styles.container}>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <ImageBackground
-          source={require('./images/davint.png')}
+          source={require('./Images/davint.png')}
           style={styles.container}>
           <RNSketchCanvas
             containerStyle={{ backgroundColor: 'transparent', flex: 1 }}
