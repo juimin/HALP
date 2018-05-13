@@ -4,4 +4,6 @@ import { AppRegistry } from 'react-native';
 import App from './src/Components/App/App';
 
 // Register the HALP test component
-AppRegistry.registerComponent('HalpTest', () => App);
+AppRegistry.registerComponent(
+   'HalpTest', () => App
+);
