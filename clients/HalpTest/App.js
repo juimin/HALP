@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './src/HomeScreen';
 import SignupScreen from './src/Components/SignUp/SignupScreen';
 import LoginScreen from './src/Components/Login/LoginScreen';
-import CanvasTest from './src/CanvasTest';
+import CanvasTest from './src/Components/Canvas/CanvasTest';
 import HomeNav from './src/HomeNav';
 import SearchNav from './src/SearchNav';
 import AccNav from './src/AccNav';

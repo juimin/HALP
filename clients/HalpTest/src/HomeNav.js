@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './HomeScreen';
 import SignupScreen from './Components/SignUp/SignupScreen';
 import LoginScreen from './Components/Login/LoginScreen';
-import CanvasTest from './CanvasTest';
+import CanvasTest from './Components/Canvas/CanvasTest';
 
 export default class HomeNav extends React.Component {
   static navigationOptions = {
