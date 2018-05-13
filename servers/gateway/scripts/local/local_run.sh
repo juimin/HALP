@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 ./local_services.sh
 
-export GATEWAYPATH=$GOPATH/src/github.com/JuiMin/HALP/servers/gateway/
+export GATEWAYPATH=$GOPATH/src/github.com/JuiMin/HALP/servers/gateway
 cd $GATEWAYPATH
 # Set environment variables
 export ADDR=localhost:4000

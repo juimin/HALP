@@ -1,5 +1,4 @@
 #! /usr/bin/env bash
-./build.sh
 
 SCRIPT='
 export TLSCERT=/etc/letsencrypt/live/staging.halp.derekwang.net/fullchain.pem
