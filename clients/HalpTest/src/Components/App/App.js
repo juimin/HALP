@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { Button, StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import HomeScreen from './src/Components/Home/HomeScreen';
-import SignupScreen from './src/Components/SignUp/SignupScreen';
-import LoginScreen from './src/Components/Login/LoginScreen';
-import CanvasTest from './src/Components/Canvas/CanvasTest';
-import HomeNav from './src/Components/Navigation/HomeNav';
-import Search from './src/Components/Search/Search';
-import Account from './src/Components/Account/Account';
-import BoardNav from './src/Components/Board/BoardNav';
-import Settings from './src/Components/Settings/Settings';
+import HomeScreen from '../Home/HomeScreen';
+import SignupScreen from '../SignUp/SignupScreen';
+import LoginScreen from '../Login/LoginScreen';
+import CanvasTest from '../Canvas/CanvasTest';
+import HomeNav from '../Navigation/HomeNav';
+import Search from '../Search/Search';
+import Account from '../Account/Account';
+import BoardNav from '../Board/BoardNav';
+import Settings from '../Settings/Settings';
 
 const activeTintColor = '#F44336';
 const inactiveTintColor = 'gray';
