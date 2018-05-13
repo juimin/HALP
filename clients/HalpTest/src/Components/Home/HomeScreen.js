@@ -8,9 +8,10 @@ import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
 export default class HomeScreen extends React.Component {
+   // Here we should run initialization scripts
    constructor(props) {
       super(props);
-      this.state = {loggedin: false};
+      this.state = {loggedin: true};
    }
 
    render() {
@@ -55,7 +56,6 @@ export default class HomeScreen extends React.Component {
                title="Canvas Test"
                onPress={() => this.props.navigation.navigate('Canvas')}
                />
-         
          </View>
       );
    }

@@ -12,11 +12,6 @@ export default class LoginScreen extends React.Component {
     return (
       <View style={Styles.login}>
         <Text>Log In Here!</Text>
-      	<Button
-            color={Theme.colors.primaryColor}
-            title="Go Back"
-            onPress={() => goBack()}
-         />
       </View>
     );
   }
