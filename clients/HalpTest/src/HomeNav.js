@@ -4,7 +4,7 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './HomeScreen';
 import SignupScreen from './Components/SignUp/SignupScreen';
-import LoginScreen from './LoginScreen';
+import LoginScreen from './Components/Login/LoginScreen';
 import CanvasTest from './CanvasTest';
 
 export default class HomeNav extends React.Component {
