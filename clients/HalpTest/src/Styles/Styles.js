@@ -3,16 +3,15 @@
 import { StyleSheet } from 'react-native';
 
 // Default Thematic Coloring so you can use it in multiple objects
-import Colors from './Colors';
+import Theme from './Theme';
 
 // Generate the stylesheet
 export default StyleSheet.create({
    // Define Component Specific Styling
    signup: {
       flex: 1,
-      backgroundColor: Colors.primaryBackgroundColor,
+      backgroundColor: Theme.primaryBackgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
    },
-
 });
