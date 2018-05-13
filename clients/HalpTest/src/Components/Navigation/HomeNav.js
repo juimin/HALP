@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import HomeScreen from './Components/Home/HomeScreen';
-import SignupScreen from './Components/SignUp/SignupScreen';
-import LoginScreen from './Components/Login/LoginScreen';
-import CanvasTest from './Components/Canvas/CanvasTest';
+import HomeScreen from '../Home/HomeScreen';
+import SignupScreen from '../SignUp/SignupScreen';
+import LoginScreen from '../Login/LoginScreen';
+import CanvasTest from '../Canvas/CanvasTest';
 
 export default class HomeNav extends React.Component {
   static navigationOptions = {

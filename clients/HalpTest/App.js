@@ -6,11 +6,11 @@ import HomeScreen from './src/Components/Home/HomeScreen';
 import SignupScreen from './src/Components/SignUp/SignupScreen';
 import LoginScreen from './src/Components/Login/LoginScreen';
 import CanvasTest from './src/Components/Canvas/CanvasTest';
-import HomeNav from './src/HomeNav';
-import SearchNav from './src/SearchNav';
+import HomeNav from './src/Components/Navigation/HomeNav';
+import Search from './src/Components/Search/Search';
 import Account from './src/Components/Account/Account';
 import BoardNav from './src/Components/Board/BoardNav';
-import SettingsNav from './src/SettingsNav';
+import Settings from './src/Components/Settings/Settings';
 
 const activeTintColor = '#F44336';
 const inactiveTintColor = 'gray';
