@@ -10,7 +10,7 @@ export default StyleSheet.create({
    // Define Component Specific Styling
    signup: {
       flex: 1,
-      backgroundColor: Theme.primaryBackgroundColor,
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
    },
