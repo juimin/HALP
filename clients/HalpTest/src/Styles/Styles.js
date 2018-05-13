@@ -8,6 +8,13 @@ import Theme from './Theme';
 // Generate the stylesheet
 export default StyleSheet.create({
    // Define Component Specific Styling
+   login: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+   },
+
    signup: {
       flex: 1,
       backgroundColor: Theme.colors.primaryBackgroundColor,

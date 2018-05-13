@@ -68,38 +68,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-/*
-<BottomNavigation
-        labelColor="white"
-        rippleColor="white"
-        backgroundColor="#F44336"
-        style={{
-          height: 56,
-          elevation: 8,
-          position: 'absolute',
-          left: 0,
-          bottom: 0,
-          right: 0
-        }}
-        onTabChange={newTabIndex => alert(`New Tab at position ${newTabIndex}`)}
-      >
-        <Tab
-          label="Home"
-          icon={<Icon size={24} color="white" name="home" />}
-        />
-        <Tab
-          label="Search"
-          icon={<Icon size={24} color="white" name="search" />}
-        />
-        <Tab
-          label="Boards"
-          icon={<Icon size={24} color="white" name="add-circle" />}
-        />
-        <Tab
-          label="Account"
-          icon={<Icon size={24} color="white" name="account-circle" />}
-        />
-        
-      </BottomNavigation>
-      */

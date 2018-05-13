@@ -8,17 +8,12 @@ import LoginScreen from '../Login/LoginScreen';
 import CanvasTest from '../Canvas/CanvasTest';
 
 export default class HomeNav extends React.Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (<Icon size={28} name="home" style={{color:tintColor}}/>)
-  }
- 
-  render() {
-    return <RootStack screenProps={{loggedin: false}}/>;
-  }
+   render() {
+      return <RootStack screenProps={{loggedin: false}}/>;
+   }
 }
 
 //react-navigation
-
 const RootStack = StackNavigator(
   {
     Home: {
