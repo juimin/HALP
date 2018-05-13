@@ -3,7 +3,7 @@ import { Button, StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-n
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './src/HomeScreen';
-import SignupScreen from './src/SignupScreen';
+import SignupScreen from './src/Components/SignUp/SignupScreen';
 import LoginScreen from './src/LoginScreen';
 import CanvasTest from './src/CanvasTest';
 import HomeNav from './src/HomeNav';

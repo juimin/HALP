@@ -3,7 +3,7 @@ import { Button, StyleSheet, View, Text } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import HomeScreen from './HomeScreen';
-import SignupScreen from './SignupScreen';
+import SignupScreen from './Components/SignUp/SignupScreen';
 import LoginScreen from './LoginScreen';
 import CanvasTest from './CanvasTest';
 
