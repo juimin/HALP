@@ -8,7 +8,7 @@ import LoginScreen from './src/Components/Login/LoginScreen';
 import CanvasTest from './src/Components/Canvas/CanvasTest';
 import HomeNav from './src/HomeNav';
 import SearchNav from './src/SearchNav';
-import AccNav from './src/AccNav';
+import Account from './src/Components/Account/Account';
 import BoardNav from './src/Components/Board/BoardNav';
 import SettingsNav from './src/SettingsNav';
 
