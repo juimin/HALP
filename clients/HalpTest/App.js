@@ -9,7 +9,7 @@ import CanvasTest from './src/Components/Canvas/CanvasTest';
 import HomeNav from './src/HomeNav';
 import SearchNav from './src/SearchNav';
 import AccNav from './src/AccNav';
-import BoardNav from './src/BoardNav';
+import BoardNav from './src/Components/Board/BoardNav';
 import SettingsNav from './src/SettingsNav';
 
 const activeTintColor = '#F44336';
