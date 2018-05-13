@@ -4,29 +4,29 @@ import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 export default class HomeScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {loggedin: false};
-  }
+   constructor(props) {
+      super(props);
+      this.state = {loggedin: false};
+   }
 
 
 
-  render() {
-    const {goBack} = this.props.navigation;
-    if (this.state.loggedin) {
+   render() {
+      const {goBack} = this.props.navigation;
+      if (this.state.loggedin) {
       
       return(
-        <View style={styles.container}>
-          <Text>Dashboard</Text>
-          <Button color = "#F44336"
-              title="Go Back"
-              onPress={() => {
-                this.setState({loggedin: false});
-              }}
+         <View style={styles.container}>
+            <Text>Dashboard</Text>
+            <Button color = "#F44336"
+               title="Go Back"
+               onPress={() => {
+                  this.setState({loggedin: false});
+               }}
             />
-        </View>
-        )
-    }
+         </View>
+         )
+      }
 
     //if not logged in
     return (
