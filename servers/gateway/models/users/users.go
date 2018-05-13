@@ -1,11 +1,8 @@
 package users
 
 import (
-	"crypto/md5"
-	"crypto/subtle"
 	"fmt"
 	"net/mail"
-	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
@@ -20,14 +17,18 @@ var bcryptCost = 13
 
 // User represents a user account in the database
 type User struct {
-	ID         bson.ObjectId `json:"id" bson:"_id"`
-	Email      string        `json:"email"`
-	PassHash   []byte        `json:"-"` // Stored, but not encoded to clients
-	UserName   string        `json:"userName"`
-	FirstName  string        `json:"firstName"`
-	LastName   string        `json:"lastName"`
-	PhotoURL   string        `json:"photoURL"`
-	Occupation string        `json:"occupation"`
+	ID           bson.ObjectId   `json:"id" bson:"_id"`
+	Email        string          `json:"email"`
+	PassHash     []byte          `json:"-"` // Stored, but not encoded to clients
+	UserName     string          `json:"userName"`
+	FirstName    string          `json:"firstName"`
+	LastName     string          `json:"lastName"`
+	PhotoURL     string          `json:"photoURL"`
+	Occupation   string          `json:"occupation"`
+	Favorites    []bson.ObjectId `json:"favorites"`
+	Bookmarks    []bson.ObjectId `json:"bookmarks"`
+	PostVotes    map[string]bool `json:"postvotes"`
+	CommentVotes map[string]bool `json:"commentvotes"`
 }
 
 // Credentials represents user sign-in credentials
@@ -45,28 +46,6 @@ type NewUser struct {
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
 	Occupation   string `json:"occupation"`
-}
-
-// UserUpdate represents allowed updates to a user profile
-// Updatable Elements:
-// - Name Elements (First and Last)
-// - Email
-type UserUpdate struct {
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	Occupation string `json:"occupation"`
-	Email      string `json:"email"`
-}
-
-// PasswordUpdate represents requirements for changing the user's password
-type PasswordUpdate struct {
-	NewPassword     string `json:"newPassword"`
-	NewPasswordConf string `json:"newPasswordConf"`
-}
-
-// PassUpdate holds the hashed password for the new pass
-type PassUpdate struct {
-	PassHash []byte
 }
 
 // Validate confirms that a new user contains information that we
@@ -116,40 +95,28 @@ func (nu *NewUser) ToUser() (*User, error) {
 	}
 
 	// MD5 hasher
-	hash := md5.New()
+	// hash := md5.New()
 	// Hash the email using md5
-	emailHash := string(hash.Sum([]byte(strings.ToLower(strings.Trim(nu.Email, " ")))))
+	// emailHash := string(hash.Sum([]byte(strings.ToLower(strings.Trim(nu.Email, " ")))))
 
 	// We have a valid new user so we can generate a user object
 	user := &User{
-		Email:      nu.Email,
-		UserName:   nu.UserName,
-		FirstName:  nu.FirstName,
-		LastName:   nu.LastName,
-		ID:         bson.NewObjectId(),               // Generate a new bson object ID
-		PhotoURL:   gravatarBasePhotoURL + emailHash, // Gravatar for the given email
-		Occupation: nu.Occupation,
+		Email:        nu.Email,
+		UserName:     nu.UserName,
+		FirstName:    nu.FirstName,
+		LastName:     nu.LastName,
+		ID:           bson.NewObjectId(), // Generate a new bson object ID
+		Occupation:   nu.Occupation,
+		Favorites:    []bson.ObjectId{},
+		Bookmarks:    []bson.ObjectId{},
+		PostVotes:    map[string]bool{},
+		CommentVotes: map[string]bool{},
 	}
 
 	// Set the password using the given hash from the password generator
 	user.SetPassword(nu.Password)
 	// Return the user and no error
 	return user, nil
-}
-
-// FullName outputs the full name of the given user
-// Empty string is returned if no name is seen
-func (u *User) FullName() string {
-	if len(u.FirstName) > 0 {
-		if len(u.LastName) > 0 {
-			return u.FirstName + " " + u.LastName
-		}
-		return u.FirstName
-	}
-	if len(u.LastName) > 0 {
-		return u.LastName
-	}
-	return ""
 }
 
 // SetPassword hashes the password and stores it in the PassHash field
@@ -170,54 +137,12 @@ func (u *User) SetPassword(password string) error {
 //Authenticate compares the plaintext password against the stored hash
 //and returns an error if they don't match, or nil if they do
 func (u *User) Authenticate(password string) error {
+	if len(password) == 0 {
+		return fmt.Errorf("Cannot authenticate no password")
+	}
 	err := bcrypt.CompareHashAndPassword(u.PassHash, []byte(password))
 	if err != nil {
 		return fmt.Errorf("Bcrypt hash error")
 	}
-	return nil
-}
-
-//ApplyUpdates applies the updates to the user. An error
-//is returned if the updates are invalid
-func (u *User) ApplyUpdates(updates *UserUpdate) error {
-	if len(updates.FirstName) == 0 || len(updates.LastName) == 0 {
-		return fmt.Errorf("Invalid input. First and last name must both have a non-zero length")
-	}
-
-	// We can't deal with empty emails either because this is not optional
-	if len(updates.Email) == 0 {
-		return fmt.Errorf("Invalid Input. Email cannot be empty")
-	}
-
-	// Check Email valid
-	if _, err := mail.ParseAddress(updates.Email); err != nil {
-		return fmt.Errorf("Invalid input. Email not a valid email")
-	}
-
-	// We aren't dealing with occupation because it is optional
-	u.FirstName = updates.FirstName
-	u.LastName = updates.LastName
-	u.Email = updates.Email
-	u.Occupation = updates.Occupation
-
-	return nil
-}
-
-// PassUpdate allows for the changing of a password given knowledge of the old password
-func (u *User) PassUpdate(updates *PasswordUpdate) error {
-	// The user should be authenticated already
-	// Check password and password conf
-	if len(updates.NewPassword) == 0 || len(updates.NewPasswordConf) == 0 {
-		return fmt.Errorf("Invalid Input: New Password cannot be length 0")
-	}
-
-	if subtle.ConstantTimeCompare([]byte(updates.NewPassword), []byte(updates.NewPasswordConf)) != 1 {
-		return fmt.Errorf("Password and password conf do not match")
-	}
-
-	// Set Password since we confirmed
-	u.SetPassword(updates.NewPassword)
-
-	// No problems setting the new password so we can return no error
 	return nil
 }
