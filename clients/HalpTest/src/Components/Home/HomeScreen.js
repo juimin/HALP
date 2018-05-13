@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -11,7 +11,7 @@ import Theme from '../../Styles/Theme';
 import UserHome from './UserHome';
 import GuestHome from './GuestHome';
 
-export default class HomeScreen extends React.Component {
+export default class HomeScreen extends Component {
    // Here we should run initialization scripts
    constructor(props) {
       super(props);

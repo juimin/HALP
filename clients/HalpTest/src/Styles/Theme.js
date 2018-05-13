@@ -7,6 +7,8 @@ export default {
       primaryTextColor: '#ffffff',
       secondaryTextColor: '#000000',
       primaryBackgroundColor: '#fff',
+      activeTintColor: '#F44336',
+      inactiveTintColor: 'gray',
    },
 
    // Fonts

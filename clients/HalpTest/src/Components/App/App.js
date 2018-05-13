@@ -1,7 +1,13 @@
+// This should be the root of all application components
+// Everything runs under a stack navigation nexted from here
+
+// Import required react components
 import React, { Component } from 'react';
-import { Button, StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
+import { Button, View, Text, TouchableWithoutFeedback} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+
+// Import HALP Components
 import HomeScreen from '../Home/HomeScreen';
 import HomeNav from '../Navigation/HomeNav';
 import Search from '../Search/Search';
@@ -9,22 +15,9 @@ import Account from '../Account/Account';
 import BoardNav from '../Board/BoardNav';
 import Settings from '../Settings/Settings';
 
-const activeTintColor = '#F44336';
-const inactiveTintColor = 'gray';
-const styles = StyleSheet.create({
-  tabBar: {
-    height: 49,
-    flexDirection: 'row',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(0, 0, 0, .4)',
-    backgroundColor: '#FFFFFF',
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// Import Stylesheet and themes
+import Styles from '../../Styles/Styles';
+import Theme from '../../Styles/Theme';
 
 class TabBar extends Component {
   renderItem = (route, index) => {
@@ -36,16 +29,16 @@ class TabBar extends Component {
     const isNewPost = route.routeName === 'NewPost';
 
     const focused = index === navigation.state.index;
-    const color = focused ? activeTintColor : inactiveTintColor;
+    const color = focused ? Theme.colors.activeTintColor : Theme.colors.inactiveTintColor;
     const size = 30;
     if (route.routeName == "HomeNav") {
       return (
         <TouchableWithoutFeedback
           key={route.key}
-          style={styles.tab}
+          style={Styles.navigationTab}
           onPress={() => jumpToIndex(index)}
         >
-          <View style={styles.tab}>
+          <View style={Styles.navigationTab}>
             <Icon style={{ color }} size={size} name="home"/>
           </View>
         </TouchableWithoutFeedback>
@@ -55,10 +48,10 @@ class TabBar extends Component {
       return (
         <TouchableWithoutFeedback
           key={route.key}
-          style={styles.tab}
+          style={Styles.navigationTab}
           onPress={() => jumpToIndex(index)}
         >
-          <View style={styles.tab}>
+          <View style={Styles.navigationTab}>
             <Icon style={{ color }} size={size} name="search"/>
           </View>
         </TouchableWithoutFeedback>
@@ -68,10 +61,10 @@ class TabBar extends Component {
       return (
         <TouchableWithoutFeedback
           key={route.key}
-          style={styles.tab}
+          style={Styles.navigationTab}
           onPress={() => jumpToIndex(index)}
         >
-          <View style={styles.tab}>
+          <View style={Styles.navigationTab}>
             <Icon style={{ color }} size={size} name="person"/>
           </View>
         </TouchableWithoutFeedback>
@@ -81,10 +74,10 @@ class TabBar extends Component {
       return (
         <TouchableWithoutFeedback
           key={route.key}
-          style={styles.tab}
+          style={Styles.navigationTab}
           onPress={() => jumpToIndex(index)}
         >
-          <View style={styles.tab}>
+          <View style={Styles.navigationTab}>
             <Icon style={{ color }} size={size} name="settings"/>
           </View>
         </TouchableWithoutFeedback>
@@ -93,11 +86,11 @@ class TabBar extends Component {
     return (
         <TouchableWithoutFeedback
           key={route.key}
-          style={styles.tab}
+          style={Styles.navigationTab}
           onPress={() => isNewPost ? navigation.navigate('NewPostModal') : jumpToIndex(index)}
         >
-          <View style={styles.tab}>
-            <Icon style={{ color }} style={styles.ico} size={size + 10} name="add-circle"/>
+          <View style={Styles.navigationTab}>
+            <Icon style={{ color }} size={size + 10} name="add-circle"/>
           </View>
         </TouchableWithoutFeedback>
       );
@@ -113,7 +106,7 @@ class TabBar extends Component {
     } = navigation.state;
 
     return (
-      <View style={styles.tabBar}>
+      <View style={Styles.navigationBar}>
         {routes && routes.map(this.renderItem)}
       </View>
     );

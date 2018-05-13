@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button, StyleSheet, View, Text } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -7,7 +7,7 @@ import SignupScreen from '../SignUp/SignupScreen';
 import LoginScreen from '../Login/LoginScreen';
 import CanvasTest from '../Canvas/CanvasTest';
 
-export default class HomeNav extends React.Component {
+export default class HomeNav extends Component {
    render() {
       return <RootStack screenProps={{loggedin: false}}/>;
    }

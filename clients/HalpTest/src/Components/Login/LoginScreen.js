@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
@@ -6,7 +6,7 @@ import { StackNavigator } from 'react-navigation';
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
-export default class LoginScreen extends React.Component {
+export default class LoginScreen extends Component {
   render() {
     const {goBack} = this.props.navigation;
     return (

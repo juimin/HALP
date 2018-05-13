@@ -27,4 +27,20 @@ export default StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
    },
+
+   // Navigation Bar from the default view
+   navigationBar: {
+      height: 49,
+      flexDirection: 'row',
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: 'rgba(0, 0, 0, .4)',
+      backgroundColor: '#FFFFFF',
+   },
+
+   // Navigation Tabs
+   navigationTab: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+   }
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Button, View, Text } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Theme from '../../Styles/Theme'
 
 // Export the Component
-export default class Settings extends React.Component {
+export default class Settings extends Component {
    render() {
       return (
          <Text>this is the settings page</Text>
