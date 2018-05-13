@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, StyleSheet, View, Text, TouchableWithoutFeedback} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import HomeScreen from './src/HomeScreen';
+import HomeScreen from './src/Components/Home/HomeScreen';
 import SignupScreen from './src/Components/SignUp/SignupScreen';
 import LoginScreen from './src/Components/Login/LoginScreen';
 import CanvasTest from './src/Components/Canvas/CanvasTest';
