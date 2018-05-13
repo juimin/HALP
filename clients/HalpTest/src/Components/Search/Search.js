@@ -4,12 +4,16 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // Import themes
+import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
+
 
 export default class Search extends Component {
   render() {
   	return (
-  		<Text>this is a search page</Text>
+      <View style={Styles.home}>
+         <Text>This is the search home</Text>
+      </View>
   	)
   }
 }

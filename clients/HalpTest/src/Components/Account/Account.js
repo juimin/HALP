@@ -6,14 +6,16 @@ import { Button, StyleSheet, View, Text } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
+// Import the styles and themes
+import Styles from '../../Styles/Styles';
+import Theme from '../../Styles/Theme';
+
 export default class Account extends Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (<Icon size={28} name="person" style={{color:tintColor}}/>)
-  }
- 
   render() {
   	return (
-  		<Text>this is an account page</Text>
+      <View style={Styles.home}>
+         <Text>Account Info for logged in User</Text>
+      </View>
   	)
   }
 }

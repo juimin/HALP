@@ -15,27 +15,27 @@ export default class HomeNav extends Component {
 
 //react-navigation
 const RootStack = StackNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: { title: 'Home' },
-    },
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: { title: 'Log In' },
-    },
-    Signup: {
-    	screen: SignupScreen,
-    	navigationOptions: { title: 'Sign Up' },
-    },
-    Canvas: {
-      screen: CanvasTest,
-      navigationOptions: {title: 'Edit Image'},
-    },
-  },
-  {
-    initialRouteName: 'Home',
-    headerMode: 'screen',
+   {
+      Home: {
+         screen: HomeScreen,
+         navigationOptions: { title: 'Home' },
+      },
+      Login: {
+         screen: LoginScreen,
+         navigationOptions: { title: 'Log In' },
+      },
+      Signup: {
+         screen: SignupScreen,
+         navigationOptions: { title: 'Sign Up' },
+      },
+      Canvas: {
+         screen: CanvasTest,
+         navigationOptions: {title: 'Edit Image'},
+      },
+   },
+   {
+      initialRouteName: 'Home',
+      headerMode: 'screen',
 
-  },
+   },
 );

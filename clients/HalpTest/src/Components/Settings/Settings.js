@@ -4,13 +4,16 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // Import Themes
+import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme'
 
 // Export the Component
 export default class Settings extends Component {
    render() {
       return (
-         <Text>this is the settings page</Text>
+         <View style={Styles.home}>
+            <Text>Settings for logged in User</Text>
+         </View>
       )
    }
 }

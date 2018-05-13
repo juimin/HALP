@@ -20,17 +20,17 @@ import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
 class TabBar extends Component {
-  renderItem = (route, index) => {
-    const {
-      navigation,
-      jumpToIndex,
-    } = this.props;
+   renderItem = (route, index) => {
+      const {
+         navigation,
+         jumpToIndex,
+      } = this.props;
 
-    const isNewPost = route.routeName === 'NewPost';
+      const isNewPost = route.routeName === 'NewPost';
 
-    const focused = index === navigation.state.index;
-    const color = focused ? Theme.colors.activeTintColor : Theme.colors.inactiveTintColor;
-    const size = 30;
+      const focused = index === navigation.state.index;
+      const color = focused ? Theme.colors.activeTintColor : Theme.colors.inactiveTintColor;
+      const size = 30;
     if (route.routeName == "HomeNav") {
       return (
         <TouchableWithoutFeedback
