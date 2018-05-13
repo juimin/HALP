@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+import { Button, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 // Import stylesheet and thematic settings
@@ -21,4 +21,3 @@ export default class LoginScreen extends React.Component {
     );
   }
 }
-

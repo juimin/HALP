@@ -8,9 +8,15 @@ import Theme from './Theme';
 // Generate the stylesheet
 export default StyleSheet.create({
    // Define Component Specific Styling
+   home: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+   },
+
    login: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
    },
