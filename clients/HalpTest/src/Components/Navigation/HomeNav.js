@@ -16,19 +16,18 @@ const RootStack = StackNavigator(
    {
       Home: {
          screen: HomeScreen,
-         navigationOptions: { title: 'Home' },
+         navigationOptions: {
+            title: "HALP"
+         }
       },
       Login: {
          screen: LoginScreen,
-         navigationOptions: { title: 'Log In' },
       },
       Signup: {
          screen: SignupScreen,
-         navigationOptions: { title: 'Sign Up' },
       },
       Canvas: {
          screen: CanvasTest,
-         navigationOptions: {title: 'Edit Image'},
       },
    },
    {
