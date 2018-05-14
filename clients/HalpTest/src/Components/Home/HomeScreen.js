@@ -10,6 +10,7 @@ import Theme from '../../Styles/Theme';
 // Import the different views based on user state
 import UserHome from './UserHome';
 import GuestHome from './GuestHome';
+import HomeNav from '../Navigation/HomeNav';
 
 export default class HomeScreen extends Component {
    // Here we should run initialization scripts
