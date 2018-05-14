@@ -1,19 +1,17 @@
+// Import default react components
 import React, { Component } from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
-import { TabNavigator, StackNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { StackNavigator } from 'react-navigation';
+
+// Import Halp Components
 import HomeScreen from '../Home/HomeScreen';
 import SignupScreen from '../SignUp/SignupScreen';
 import LoginScreen from '../Login/LoginScreen';
 import CanvasTest from '../Canvas/CanvasTest';
 
-export default class HomeNav extends Component {
-   render() {
-      return <RootStack screenProps={{loggedin: false}}/>;
-   }
-}
-
-//react-navigation
+// Generate a stack for navigation
+// Generally, this is the component that wraps the child components
+// Specifically for this file, App.js will use this as a component because it allows for
+// navigating between the Compoents listed
 const RootStack = StackNavigator(
    {
       Home: {
@@ -36,6 +34,12 @@ const RootStack = StackNavigator(
    {
       initialRouteName: 'Home',
       headerMode: 'screen',
-
    },
 );
+
+// Export the navigator
+export default class HomeNav extends Component {
+   render() {
+      return <RootStack screenProps={{loggedin: false}}/>;
+   }
+}

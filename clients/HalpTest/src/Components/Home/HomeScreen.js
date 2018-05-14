@@ -15,11 +15,11 @@ export default class HomeScreen extends Component {
    // Here we should run initialization scripts
    constructor(props) {
       super(props);
-      this.state = {loggedin: true};
+      this.state = {loggedin: false};
    }
 
    render() {
-      const {goBack} = this.props.navigation;
+      // const {goBack} = this.props.navigation;
       if (this.state.loggedin) {
          return (
             <UserHome />

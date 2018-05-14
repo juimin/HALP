@@ -12,8 +12,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
+// TODO FIX THIS
+
 // Export the default class
 export default class GuestHome extends Component {
+   constructor(props) {
+      super(props);
+      this.state = {loggedin: false};
+   }
+
    render() {
       return(
          <View style={Styles.home}>
@@ -27,7 +34,7 @@ export default class GuestHome extends Component {
                onPress={() => this.setState({loggedin: true})}
             />
             <Button color={Theme.colors.primaryColor} title="Canvas Test"
-                  onPress={() => this.props.navigation.navigate('Canvas')}
+               onPress={() => this.props.navigation.navigate('Canvas')}
             />
          </View>
       )
