@@ -1,16 +1,19 @@
-import React from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+import React, { Component } from 'react';
+import { Button, View, Text } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-export default class Search extends React.Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (<Icon size={28} name="search" style={{color:tintColor}}/>)
-  }
- 
+// Import themes
+import Styles from '../../Styles/Styles';
+import Theme from '../../Styles/Theme';
+
+
+export default class Search extends Component {
   render() {
   	return (
-  		<Text>this is a search page</Text>
+      <View style={Styles.home}>
+         <Text>This is the search home</Text>
+      </View>
   	)
   }
 }

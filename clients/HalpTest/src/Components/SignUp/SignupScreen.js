@@ -1,27 +1,19 @@
-import React from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
+// Import needed react dependancies
+import React, { Component } from 'react';
+import { Button, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
-export default class SignupScreen extends React.Component {
-  render() {
-    const {goBack} = this.props.navigation;
-    return (
-      <View style={styles.container}>
-        <Text>Sign Up Here!</Text>
-        <Button color = "#F44336"
-	        		title="Go Back"
-	        		onPress={() => goBack()}
-	        	/>
-      </View>
-    );
-  }
-}
+// Import stylesheet and thematic settings
+import Styles from '../../Styles/Styles';
+import Theme from '../../Styles/Theme';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// Define and export the component
+export default class SignupScreen extends Component {
+   render() {
+      return (
+         <View style={Styles.signup}>
+            <Text>Sign Up Here! It worked Potato</Text>
+         </View>
+      );
+   }
+}

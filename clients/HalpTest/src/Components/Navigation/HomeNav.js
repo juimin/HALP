@@ -1,46 +1,45 @@
-import React from 'react';
-import { Button, StyleSheet, View, Text } from 'react-native';
-import { TabNavigator, StackNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+// Import default react components
+import React, { Component } from 'react';
+import { StackNavigator } from 'react-navigation';
+
+// Import Halp Components
 import HomeScreen from '../Home/HomeScreen';
 import SignupScreen from '../SignUp/SignupScreen';
 import LoginScreen from '../Login/LoginScreen';
 import CanvasTest from '../Canvas/CanvasTest';
+import GuestHome from '../Home/GuestHome';
+import UserHome from '../Home/UserHome';
 
-export default class HomeNav extends React.Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (<Icon size={28} name="home" style={{color:tintColor}}/>)
-  }
- 
-  render() {
-    return <RootStack screenProps={{loggedin: false}}/>;
-  }
-}
+// Generate a stack for navigation
+// Generally, this is the component that wraps the child components
+// Specifically for this file, App.js will use this as a component because it allows for
+// navigating between the Compoents listed
+const loggedin = false;
 
-//react-navigation
-
-const RootStack = StackNavigator(
-  {
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: { title: 'Home' },
-    },
-    Login: {
-      screen: LoginScreen,
-      navigationOptions: { title: 'Log In' },
-    },
-    Signup: {
-    	screen: SignupScreen,
-    	navigationOptions: { title: 'Sign Up' },
-    },
-    Canvas: {
-      screen: CanvasTest,
-      navigationOptions: {title: 'Edit Image'},
-    },
-  },
-  {
-    initialRouteName: 'Home',
-    headerMode: 'screen',
-
-  },
+const RootStack = StackNavigator({
+      Home: {
+         screen: loggedin ? UserHome : GuestHome
+      },
+      UserHome: {
+         screen: UserHome
+      },
+      GuestHome: {
+         screen: GuestHome
+      },
+      Login: {
+         screen: LoginScreen,
+      },
+      Signup: {
+         screen: SignupScreen,
+      },
+      Canvas: {
+         screen: CanvasTest,
+      },
+   },
+   {
+      initialRouteName: 'Home',
+      headerMode: 'screen',
+   },
 );
+
+export default RootStack
