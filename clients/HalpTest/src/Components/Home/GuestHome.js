@@ -16,11 +16,6 @@ import Theme from '../../Styles/Theme';
 
 // Export the default class
 export default class GuestHome extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {loggedin: false};
-   }
-
    render() {
       return(
          <View style={Styles.home}>
