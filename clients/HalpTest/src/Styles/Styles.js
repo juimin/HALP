@@ -42,5 +42,16 @@ export default StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+   },
+
+   // Search bar
+   searchBar: {
+      height: 49,
+      width: "100%",
+      marginBottom: 10
+   },
+
+   searchList: {
+      marginTop: 0
    }
 });

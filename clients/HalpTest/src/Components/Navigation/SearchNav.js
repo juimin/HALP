@@ -19,7 +19,7 @@ const RootStack = StackNavigator({
    },
    {
       initialRouteName: 'Search',
-      headerMode: 'screen',
+      headerMode: 'none',
    },
 );
 
