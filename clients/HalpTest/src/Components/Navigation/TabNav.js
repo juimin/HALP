@@ -5,11 +5,11 @@ import { View } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 
 // Import HALP Components
-import HomeNav from '../Navigation/HomeNav';
-import Search from '../Search/Search';
-import Account from '../Account/Account';
+import HomeNav from './HomeNav';
+import SearchNav from './SearchNav';
+import AccountNav from './AccountNav';
 import BoardNav from '../Board/BoardNav';
-import Settings from '../Settings/Settings';
+import SettingsNav from './SettingsNav';
 import TabBar from '../TabBar/TabBar';
 import NewPost from '../NewPost/NewPost';
 
@@ -19,16 +19,16 @@ export default TabNavigator(
          screen: HomeNav,
       },
       SearchNav: {
-         screen: Search,
+         screen: SearchNav,
       },
       NewPost: {
          screen: View,
       },
       AccNav: {
-         screen: Account,
+         screen: AccountNav,
       },
       SettingsNav: {
-         screen: Settings,
+         screen: SettingsNav,
       },
    }, 
    {
