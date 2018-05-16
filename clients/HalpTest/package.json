@@ -20,10 +20,10 @@
   "dependencies": {
     "@terrylinla/react-native-sketch-canvas": "^0.4.1",
     "react": "16.3.0",
-    "react-native": "~0.54.1",
+    "react-native": "~0.54.4",
     "react-native-material-bottom-navigation": "^0.9.0",
     "react-native-vector-icons": "^4.6.0",
-    "react-navigation": "^1.5.7",
+    "react-navigation": "^1.5.12",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0"
   }
