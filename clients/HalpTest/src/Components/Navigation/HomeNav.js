@@ -21,16 +21,7 @@ const RootStack = StackNavigator({
          screen: loggedin ? UserHome : GuestHome,
          navigationOptions: {
             title: "HALP",
-            titleStyle: {
-                  textALign: 'center'
-            }
          }
-      },
-      UserHome: {
-         screen: UserHome
-      },
-      GuestHome: {
-         screen: GuestHome
       },
       Login: {
          screen: LoginScreen,
