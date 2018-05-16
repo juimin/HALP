@@ -10,6 +10,7 @@ export default StyleSheet.create({
    // Define Component Specific Styling
    home: {
       flex: 1,
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
    },
@@ -44,14 +45,32 @@ export default StyleSheet.create({
       justifyContent: 'center',
    },
 
+   searchScreen: {
+      backgroundColor: Theme.colors.primaryBackgroundColor
+   },
+
    // Search bar
    searchBar: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       height: 49,
       width: "100%",
-      marginBottom: 10
+      marginBottom: 10,
+      borderBottomColor: Theme.colors.primaryBackgroundColor
    },
 
    searchList: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       marginTop: 0
+   },
+
+   searchListItem: {
+      marginTop: 0,
+      backgroundColor: Theme.colors.primaryBackgroundColor,
+      borderColor: Theme.colors.primaryBackgroundColor
+   },
+
+   searchTitle: {
+      width: "80%",
+      borderBottomColor: Theme.colors.primaryBackgroundColor
    }
 });
