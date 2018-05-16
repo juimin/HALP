@@ -92,6 +92,7 @@ export default class Search extends Component {
                            key={i}
                            title={item.title} 
                            containerStyle={Styles.searchListItem}
+                           onPress={() => this.props.navigation.navigate('Board')}
                         />
                      ))
                   }
