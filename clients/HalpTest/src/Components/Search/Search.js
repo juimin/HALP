@@ -67,7 +67,7 @@ export default class Search extends Component {
                   onChangeText={this.search}
                   containerStyle={Styles.searchBar}
                />
-               <Text>Subscriptions</Text>
+               <Text style={Styles.searchTitle}>Subscriptions</Text>
                <ScrollView>
                   <List containerStyle={Styles.searchList} >
                      {

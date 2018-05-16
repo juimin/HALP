@@ -54,23 +54,22 @@ export default StyleSheet.create({
       backgroundColor: Theme.colors.primaryBackgroundColor,
       height: 49,
       width: "100%",
-      marginBottom: 10,
       borderBottomColor: Theme.colors.primaryBackgroundColor
    },
 
    searchList: {
       backgroundColor: Theme.colors.primaryBackgroundColor,
-      marginTop: 0
-   },
-
-   searchListItem: {
       marginTop: 0,
-      backgroundColor: Theme.colors.primaryBackgroundColor,
       borderColor: Theme.colors.primaryBackgroundColor
    },
 
+   searchListItem: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
+      borderBottomWidth: 0
+   },
+
    searchTitle: {
-      width: "80%",
-      borderBottomColor: Theme.colors.primaryBackgroundColor
+      margin: 10,
+      color: 'black'
    }
 });
