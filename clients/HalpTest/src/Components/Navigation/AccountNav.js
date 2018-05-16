@@ -11,15 +11,12 @@ import Account from '../Account/Account';
 // navigating between the Compoents listed
 const RootStack = StackNavigator({
       Account: {
-         screen: Account,
-         navigationOptions: {
-            title: "Account"
-         }
+         screen: Account
       }
    },
    {
       initialRouteName: 'Account',
-      headerMode: 'screen',
+      headerMode: 'none',
    },
 );
 
