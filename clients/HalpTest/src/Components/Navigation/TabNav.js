@@ -7,7 +7,7 @@ import { TabNavigator } from 'react-navigation';
 // Import HALP Components
 import HomeNav from './HomeNav';
 import SearchNav from './SearchNav';
-import AccountNav from './AccountNav';
+import Account from '../Account/Account';
 import SettingsNav from './SettingsNav';
 import TabBar from '../TabBar/TabBar';
 import NewPost from '../NewPost/NewPost';
@@ -24,7 +24,7 @@ export default TabNavigator(
          screen: View,
       },
       AccNav: {
-         screen: AccountNav,
+         screen: Account,
       },
       SettingsNav: {
          screen: SettingsNav,

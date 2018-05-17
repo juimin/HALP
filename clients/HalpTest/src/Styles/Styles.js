@@ -71,5 +71,18 @@ export default StyleSheet.create({
    searchTitle: {
       margin: 10,
       color: 'black'
+   },
+
+   accountNavButtons: {
+      width: "100%",
+      marginLeft: 0,
+      marginTop: 0,
+      padding: 0
+   },
+
+   accountHeader: {
+      marginLeft: 0,
+      width: "100%",
+      padding: 0
    }
 });
