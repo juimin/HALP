@@ -7,7 +7,7 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // Import React Native Elements
-import { ButtonGroup, Card, List, ListItem } from 'react-native-elements';
+import { ButtonGroup, Card } from 'react-native-elements';
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
@@ -42,8 +42,9 @@ export default class Account extends Component {
                containerStyle={Styles.accountNavButtons}
             />
             <ScrollView>
-               <List>
-               </List>
+               {
+                  // Apend cards here
+                }
             </ScrollView>
          </View>
       )
