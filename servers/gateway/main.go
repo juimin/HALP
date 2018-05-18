@@ -98,7 +98,7 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 	return cr, port, tlscert, tlskey, err
 }
 
-func generateMux(cr *handlers.ContextReceiver, tlscert string, tlskey string, port string) *handlers.CORSHandler {
+func generateMux(cr *handlers.ContextReceiver) *handlers.CORSHandler {
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
 
@@ -133,7 +133,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	corsHandler := generateMux(cr, tlscert, tlskey, port)
+	corsHandler := generateMux(cr)
 	fmt.Println("CORS Mounted Successfully...")
 
 	// Notify that the server is started
