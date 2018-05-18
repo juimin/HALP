@@ -3,25 +3,21 @@ import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 
 // Import Halp Components
-import Search from '../Search/Search';
-import BoardNav from './BoardNav';
+import Board from '../Board/Board';
+import SearchNav from './SearchNav';
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
 // Specifically for this file, App.js will use this as a component because it allows for
 // navigating between the Compoents listed
 const RootStack = StackNavigator({
-      Search: { 
-         screen: Search,
-         navigationOptions: {
-            header: null
-         }
-      },
-      Board: { screen: BoardNav }
+      Board: {
+         screen: Board
+      }
    },
    {
-      initialRouteName: 'Search',
-      headerMode: 'screen',
+      initialRouteName: 'Board',
+      headerMode: 'none',
    },
 );
 
