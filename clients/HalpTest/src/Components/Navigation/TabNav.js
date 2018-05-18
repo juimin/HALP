@@ -8,7 +8,6 @@ import { TabNavigator } from 'react-navigation';
 import HomeNav from './HomeNav';
 import SearchNav from './SearchNav';
 import AccountNav from './AccountNav';
-import BoardNav from '../Board/BoardNav';
 import SettingsNav from './SettingsNav';
 import TabBar from '../TabBar/TabBar';
 import NewPost from '../NewPost/NewPost';
