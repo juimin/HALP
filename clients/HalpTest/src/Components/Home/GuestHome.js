@@ -4,9 +4,10 @@
 
 // Import React Components
 import React, { Component } from 'react';
-import { Button, View, Text } from 'react-native';
+import { Button, View, Text, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import BoardTiles from './BoardTiles';
 
 // Import stylesheet and thematic settings
 import Styles from '../../Styles/Styles';
@@ -16,22 +17,43 @@ import Theme from '../../Styles/Theme';
 
 // Export the default class
 export default class GuestHome extends Component {
-   render() {
+
+     render() {
       return(
-         <View style={Styles.home}>
+        /* <View style={Styles.home}>
             <Button color={Theme.colors.primaryColor} title="Log in"
-               onPress={() => this.props.navigation.navigate('Login')}
+            onPress={() => this.props.navigation.navigate('Login')}
             />
             <Button color={Theme.colors.primaryColor} title="Sign Up"
-               onPress={() => this.props.navigation.navigate('Signup')}
+            onPress={() => this.props.navigation.navigate('Signup')}
             />
             <Button color={Theme.colors.primaryColor} title="Try Me"
-               onPress={() => this.setState({loggedin: true})}
+            onPress={() => this.setState({loggedin: true})}
             />
             <Button color={Theme.colors.primaryColor} title="Canvas Test"
-               onPress={() => this.props.navigation.navigate('Canvas')}
+            onPress={() => this.props.navigation.navigate('Canvas')}
             />
-         </View>
+        </View> */
+        <ScrollView style={Styles.tileList}>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+            <BoardTiles/>
+        </ScrollView>
       )
    }
 }
