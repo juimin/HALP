@@ -114,7 +114,7 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 		fmt.Printf("%v", err == nil)
 	}
 
-	boards, err := boardStore.GetAll()
+	boards, err := boardStore.GetAllBoards()
 	if err == nil {
 		for _, b := range boards {
 			// Insert the keys into the trie by building+room
