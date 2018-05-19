@@ -216,6 +216,21 @@ func TestGetByUserName(t *testing.T) {
 	}
 }
 
+func TestGetAll(t *testing.T) {
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+	}
+
+	ms := NewMongoStore(conn, "test_db_board", "test_col_board")
+
+	_, err = ms.GetAll()
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+}
+
 func TestGetByID(t *testing.T) {
 
 	testUser := &NewUser{
