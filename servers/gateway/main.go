@@ -101,16 +101,44 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 	postTrie := indexes.NewSearchTrie()
 
 	// IMPORT DATA FROM THE DATABASE FOR EACH TRIE
-	/*
-		for _, key := range keys {
+	users, err := userStore.GetAll()
+	if err == nil {
+		for _, u := range users {
 			// Insert the keys into the trie by building+room
-			log.Printf("Entering %s into the trie for ID: %v", key.Building+key.Room, key.ID)
-			err := trie.Insert(key.Building+key.Room+"-"+key.ID.String(), key.ID, 0)
+			err := userTrie.Insert(u.UserName, u.ID, 0)
 			if err != nil {
-				log.Printf("Failed to insert %s for ID: %v, Error: %v", key.Building+key.Room, key.ID, err)
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", u.UserName, u.ID, err)
 			}
 		}
-	*/
+	} else {
+		fmt.Printf("%v", err == nil)
+	}
+
+	boards, err := boardStore.GetAll()
+	if err == nil {
+		for _, b := range boards {
+			// Insert the keys into the trie by building+room
+			err := boardTrie.Insert(b.Title, b.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", b.Title, b.ID, err)
+			}
+		}
+	} else {
+		fmt.Printf("%v\n", err)
+	}
+
+	posts, err := postStore.GetAll()
+	if err == nil {
+		for _, p := range posts {
+			// Insert the keys into the trie by building+room
+			err := postTrie.Insert(p.Title, p.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", p.Title, p.ID, err)
+			}
+		}
+	} else {
+		fmt.Printf("%v\n", err)
+	}
 
 	// Build the CR
 	cr, err := handlers.NewContextReceiver(
