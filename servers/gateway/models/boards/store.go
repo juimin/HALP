@@ -23,6 +23,4 @@ type Store interface {
 
 	//CreateBoard adds a new board to the database to use for testing
 	CreateBoard(NewBoard *NewBoard) (*Board, error)
-
-	GetAll() ([]*Board, error)
 }
