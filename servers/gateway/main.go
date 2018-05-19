@@ -176,7 +176,7 @@ func generateMux(cr *handlers.ContextReceiver) *handlers.CORSHandler {
 	mux.HandleFunc("/boards/createboard", cr.CreateBoardHandler)
 	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
 	mux.HandleFunc("/favorites", cr.FavoritesHandler)
-
+	mux.HandleFunc("/search", cr.SearchHandler)
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
 	corsHandler := handlers.NewCORSHandler(mux)
