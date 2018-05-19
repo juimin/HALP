@@ -35,17 +35,6 @@ func NewMongoStore(sess *mgo.Session, dbName string, collectionName string) *Mon
 	}
 }
 
-// GetAll gets every post from the store
-func (s *MongoStore) GetAll() ([]*Board, error) {
-	var result []*Board
-	col := s.session.DB(s.dbname).C(s.colname)
-	err := col.Find(bson.M{}).All(&result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
 //GetByID gets and returns all Boards from the given ID
 func (s *MongoStore) GetByID(id bson.ObjectId) (*Board, error) {
 	board := &Board{}
