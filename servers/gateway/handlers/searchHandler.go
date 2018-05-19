@@ -66,6 +66,7 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 			// Respond with the results
 			w.Header().Add(headerContentType, contentTypeJSON)
 			respond(w, results)
+			return
 		case "BOARD":
 			// Get results from the trie
 			results, err := cr.BoardTrie.NValues(searchTerm, NSEARCH, 0)
@@ -78,6 +79,7 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 			// Respond with the results
 			w.Header().Add(headerContentType, contentTypeJSON)
 			respond(w, results)
+			return
 		case "USER":
 			// Get results from the trie
 			results, err := cr.UserTrie.NValues(searchTerm, NSEARCH, 0)
@@ -90,6 +92,7 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 			// Respond with the results
 			w.Header().Add(headerContentType, contentTypeJSON)
 			respond(w, results)
+			return
 		default:
 			// Add the content type header
 			w.WriteHeader(http.StatusBadRequest)
