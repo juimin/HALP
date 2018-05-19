@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/indexes"
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 
@@ -93,7 +94,23 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore, boardStore)
+	// Search Tries
+	userTrie := indexes.NewSearchTrie()
+	commentTrie := indexes.NewSearchTrie()
+	boardTrie := indexes.NewSearchTrie()
+	postTrie := indexes.NewSearchTrie()
+
+	cr, err := handlers.NewContextReceiver(
+		sessionKey,
+		userStore,
+		redisStore,
+		commentStore,
+		postStore,
+		boardStore,
+		userTrie,
+		commentTrie,
+		boardTrie,
+		postTrie)
 
 	return cr, port, tlscert, tlskey, err
 }

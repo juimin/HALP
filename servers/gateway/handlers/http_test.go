@@ -80,7 +80,7 @@ func prepTestCR() *ContextReceiver {
 	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 	postStore := posts.NewMongoStore(mongoSession, "test", "post")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore)
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore, nil, nil, nil, nil)
 
 	return cr
 }
@@ -126,7 +126,7 @@ func BrokenMongoCR() *ContextReceiver {
 	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 	postStore := posts.NewMongoStore(mongoSession, "test", "post")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore)
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore, nil, nil, nil, nil)
 
 	return cr
 }
@@ -172,7 +172,7 @@ func BrokenRedisCR() *ContextReceiver {
 	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 	postStore := posts.NewMongoStore(mongoSession, "test", "post")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore)
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore, nil, nil, nil, nil)
 
 	return cr
 }
