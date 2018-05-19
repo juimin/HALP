@@ -167,7 +167,6 @@ func BrokenRedisCR() *ContextReceiver {
 	}
 
 	mongoStore := users.NewMongoStore(mongoSession, "test", "users")
-
 	commentStore := comments.NewMongoStore(mongoSession, "test", "comments")
 	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 	postStore := posts.NewMongoStore(mongoSession, "test", "post")

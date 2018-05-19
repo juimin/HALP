@@ -100,6 +100,19 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 	boardTrie := indexes.NewSearchTrie()
 	postTrie := indexes.NewSearchTrie()
 
+	// IMPORT DATA FROM THE DATABASE FOR EACH TRIE
+	/*
+		for _, key := range keys {
+			// Insert the keys into the trie by building+room
+			log.Printf("Entering %s into the trie for ID: %v", key.Building+key.Room, key.ID)
+			err := trie.Insert(key.Building+key.Room+"-"+key.ID.String(), key.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", key.Building+key.Room, key.ID, err)
+			}
+		}
+	*/
+
+	// Build the CR
 	cr, err := handlers.NewContextReceiver(
 		sessionKey,
 		userStore,
