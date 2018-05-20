@@ -95,17 +95,6 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 	return col.RemoveId(id)
 }
 
-// GetAll gets every post from the store
-func (s *MongoStore) GetAll() ([]*Post, error) {
-	var result []*Post
-	col := s.session.DB(s.dbname).C(s.colname)
-	err := col.Find(bson.M{}).All(&result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
 //PostUpdate updates the post with general information
 func (s *MongoStore) PostUpdate(id bson.ObjectId, update *PostUpdate) error {
 	change := mgo.Change{

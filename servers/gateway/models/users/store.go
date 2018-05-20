@@ -41,7 +41,4 @@ type Store interface {
 
 	// UpdateBookmarks allows for updating the list of bookmarks the user has
 	BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error)
-
-	// GetAll gets every user in the store
-	GetAll() ([]*User, error)
 }
