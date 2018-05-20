@@ -7,7 +7,10 @@ import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // Import React Native Elements
-import { ButtonGroup, Card } from 'react-native-elements';
+import { ButtonGroup } from 'react-native-elements';
+
+// Import the header
+import AccountHeader from './AccountHeader';
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
@@ -32,9 +35,7 @@ export default class Account extends Component {
       const { selectedIndex } = this.state  
       return (
          <View>
-            <Card title="Test Card" style={Styles.accountHeader}>
-               
-            </Card>
+            <AccountHeader />
             <ButtonGroup
                onPress={this.switchSelection}
                selectedIndex={selectedIndex}

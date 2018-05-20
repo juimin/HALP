@@ -84,5 +84,9 @@ export default StyleSheet.create({
       marginLeft: 0,
       width: "100%",
       padding: 0
+   },
+
+   accountStatBar: {
+      height: "40%"
    }
 });
