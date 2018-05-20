@@ -53,6 +53,13 @@ func TestSearchHandler(t *testing.T) {
 		t.Errorf("Problem adding board")
 	}
 
+	// Add board to trie
+	err = cr.BoardTrie.Insert(board.Title, board.ID, 0)
+
+	if err != nil {
+		t.Errorf("Problem adding board")
+	}
+
 	// Insert a post
 	post, err := cr.PostStore.Insert(&posts.NewPost{
 		Title:    "somehig",
@@ -61,6 +68,12 @@ func TestSearchHandler(t *testing.T) {
 		BoardID:  board.ID,
 		Caption:  "asdfasdf",
 	})
+
+	if err != nil {
+		t.Errorf("Problem adding post")
+	}
+
+	cr.PostTrie.Insert(post.Title, post.ID, 0)
 
 	if err != nil {
 		t.Errorf("Problem adding post")
@@ -105,6 +118,13 @@ func TestSearchHandler(t *testing.T) {
 		if err != nil {
 			t.Errorf("%v", err)
 		} else {
+
+			err = cr.UserTrie.Insert(user.UserName, user.ID, 0)
+
+			if err != nil {
+				t.Errorf("%v", err)
+			}
+
 			cases := []struct {
 				name     string
 				endpoint string
@@ -114,12 +134,28 @@ func TestSearchHandler(t *testing.T) {
 				code     int
 			}{
 				{
-					name:     "Test",
+					name:     "Test search board",
 					endpoint: "/Search?type=BOARD&search=p",
 					method:   "GET",
 					body:     nil,
 					handler:  searchHandler,
-					code:     200,
+					code:     http.StatusOK,
+				},
+				{
+					name:     "Test search user",
+					endpoint: "/Search?type=USER&search=t",
+					method:   "GET",
+					body:     nil,
+					handler:  searchHandler,
+					code:     http.StatusOK,
+				},
+				{
+					name:     "Test search post",
+					endpoint: "/Search?type=POST&search=som",
+					method:   "GET",
+					body:     nil,
+					handler:  searchHandler,
+					code:     http.StatusOK,
 				},
 				{
 					name:     "Test no search term",
@@ -143,7 +179,7 @@ func TestSearchHandler(t *testing.T) {
 					method:   "GET",
 					body:     nil,
 					handler:  searchHandler,
-					code:     http.StatusBadRequest,
+					code:     http.StatusInternalServerError,
 				},
 				{
 					name:     "Test user search term",
@@ -151,7 +187,7 @@ func TestSearchHandler(t *testing.T) {
 					method:   "GET",
 					body:     nil,
 					handler:  searchHandler,
-					code:     http.StatusBadRequest,
+					code:     http.StatusInternalServerError,
 				},
 				{
 					name:     "Test search unknown type",
@@ -168,6 +204,22 @@ func TestSearchHandler(t *testing.T) {
 					body:     nil,
 					handler:  searchHandler,
 					code:     http.StatusMethodNotAllowed,
+				},
+				{
+					name:     "Test search board not found",
+					endpoint: "/Search?type=BOARD&search=123123123?ASDF",
+					method:   "GET",
+					body:     nil,
+					handler:  searchHandler,
+					code:     http.StatusInternalServerError,
+				},
+				{
+					name:     "Test search user not found",
+					endpoint: "/Search?type=USER&search=fflfeflwefjakl;dfja;lsdf?",
+					method:   "GET",
+					body:     nil,
+					handler:  searchHandler,
+					code:     http.StatusInternalServerError,
 				},
 			}
 
@@ -195,7 +247,6 @@ func TestSearchHandler(t *testing.T) {
 			// Generate Request
 			r, err := http.NewRequest("GET", "/Search", nil)
 
-			r.Header.Add("Authorization", authHeader)
 			if err != nil {
 				t.Errorf("%s Failed: HTTP Request Generation Failed for no auth input", "No auth input")
 			}

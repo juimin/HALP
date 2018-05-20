@@ -13,6 +13,7 @@ const NSEARCH = 20
 
 // Respond handles the response
 func respond(w http.ResponseWriter, value interface{}) {
+	w.WriteHeader(http.StatusOK)
 	w.Header().Add(headerContentType, contentTypeJSON)
 	if err := json.NewEncoder(w).Encode(value); err != nil {
 		http.Error(w, fmt.Sprintf("error encoding response value to JSON: %v", err), http.StatusInternalServerError)
@@ -63,8 +64,7 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 				return
 			}
 
-			// Respond with the results
-			w.Header().Add(headerContentType, contentTypeJSON)
+			// Respond with the results\
 			respond(w, results)
 			return
 		case "BOARD":
@@ -77,7 +77,6 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 			}
 
 			// Respond with the results
-			w.Header().Add(headerContentType, contentTypeJSON)
 			respond(w, results)
 			return
 		case "USER":
@@ -90,7 +89,6 @@ func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request)
 			}
 
 			// Respond with the results
-			w.Header().Add(headerContentType, contentTypeJSON)
 			respond(w, results)
 			return
 		default:
