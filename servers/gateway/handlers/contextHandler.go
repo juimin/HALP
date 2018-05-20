@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/JuiMin/HALP/servers/gateway/indexes"
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/comments"
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
@@ -18,6 +19,10 @@ type ContextReceiver struct {
 	PostStore    posts.Store
 	BoardStore   boards.Store
 	CommentStore comments.Store
+	UserTrie     *indexes.TrieNode
+	CommentTrie  *indexes.TrieNode
+	BoardTrie    *indexes.TrieNode
+	PostTrie     *indexes.TrieNode
 }
 
 // NewContextReceiver Creates a new context receiver with a session key and references to the session and user stores
@@ -26,7 +31,12 @@ func NewContextReceiver(key string,
 	redisStore sessions.Store,
 	commentStore comments.Store,
 	postStore posts.Store,
-	boardStore boards.Store) (*ContextReceiver, error) {
+	boardStore boards.Store,
+	userTrie *indexes.TrieNode,
+	commentTrie *indexes.TrieNode,
+	boardTrie *indexes.TrieNode,
+	postTrie *indexes.TrieNode,
+) (*ContextReceiver, error) {
 	if len(key) == 0 {
 		return nil, fmt.Errorf("No key set for signing key")
 	}
@@ -37,5 +47,9 @@ func NewContextReceiver(key string,
 		PostStore:    postStore,
 		BoardStore:   boardStore,
 		CommentStore: commentStore,
+		UserTrie:     userTrie,
+		CommentTrie:  commentTrie,
+		BoardTrie:    boardTrie,
+		PostTrie:     postTrie,
 	}, nil
 }
