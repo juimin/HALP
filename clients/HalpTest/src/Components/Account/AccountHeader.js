@@ -1,6 +1,7 @@
 // Import react components
 import React, { Component } from 'react';
 import { Button, ScrollView, View, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo'
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
@@ -15,7 +16,9 @@ export default class AccountHeader extends Component {
    render() {
       return(
          <View  style={Styles.accountHeader}>
-            <Header />
+            <View>
+               <Icon name="dots-three-vertical" size={20} color="#900" />
+            </View>
             <Avatar
                   size="xlarge"
                   rounded
