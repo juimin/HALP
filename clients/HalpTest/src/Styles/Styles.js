@@ -88,5 +88,9 @@ export default StyleSheet.create({
 
    accountStatBar: {
       height: "40%"
+   },
+
+   signinFormInput: {
+      borderBottomColor: Theme.colors.inactiveTintColor
    }
 });
