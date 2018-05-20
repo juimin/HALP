@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/indexes"
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
@@ -74,13 +75,19 @@ func prepTestCR() *ContextReceiver {
 		os.Exit(1)
 	}
 
+	// Search Tries
+	userTrie := indexes.NewSearchTrie()
+	commentTrie := indexes.NewSearchTrie()
+	boardTrie := indexes.NewSearchTrie()
+	postTrie := indexes.NewSearchTrie()
+
 	mongoStore := users.NewMongoStore(mongoSession, "test", "users")
 
 	commentStore := comments.NewMongoStore(mongoSession, "test", "comments")
 	boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 	postStore := posts.NewMongoStore(mongoSession, "test", "post")
 
-	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore, nil, nil, nil, nil)
+	cr, err := NewContextReceiver(sessionKey, mongoStore, redisStore, commentStore, postStore, boardStore, userTrie, commentTrie, boardTrie, postTrie)
 
 	return cr
 }
