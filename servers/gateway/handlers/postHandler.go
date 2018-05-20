@@ -64,16 +64,8 @@ func (cr *ContextReceiver) NewPostHandler(w http.ResponseWriter, r *http.Request
 					fmt.Printf("Could not insert the post: %v", err)
 					status = http.StatusInternalServerError
 				}
-
-				err = cr.PostTrie.Insert(thisPost.Title, thisPost.ID, 0)
-
-				if err != nil {
-					fmt.Printf("Could not insert the post for search: %v", err)
-					status = http.StatusInternalServerError
-				} else {
-					w.WriteHeader(http.StatusCreated)
-					json.NewEncoder(w).Encode(&thisPost)
-				}
+				w.WriteHeader(http.StatusCreated)
+				json.NewEncoder(w).Encode(&thisPost)
 			}
 		}
 		if !canProceed {

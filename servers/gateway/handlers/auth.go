@@ -63,19 +63,10 @@ func (cr *ContextReceiver) UsersHandler(w http.ResponseWriter, r *http.Request) 
 			if canProceed {
 				// NOw that we have done our checks, we can try and insert the user into the store
 				thisUser, err := cr.UserStore.Insert(newUser)
-
 				if err != nil {
 					fmt.Printf("Could not insert the user: %v", err)
 					status = http.StatusInternalServerError
 				}
-
-				err = cr.UserTrie.Insert(thisUser.UserName, thisUser.ID, 0)
-
-				if err != nil {
-					fmt.Printf("Could not insert the user into serach: %v", err)
-					status = http.StatusInternalServerError
-				}
-
 				// Begin new session
 				state := &SessionState{
 					StartTime: time.Now(),
