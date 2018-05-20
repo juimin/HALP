@@ -248,3 +248,25 @@ func (s *MongoStore) SecondaryCommentVote(id bson.ObjectId, updates *SecondaryCo
 	}
 	return comment, nil
 }
+
+// GetAllComment gets every post from the store
+func (s *MongoStore) GetAllComment() ([]*Comment, error) {
+	var result []*Comment
+	col := s.session.DB(s.dbname).C(s.colname)
+	err := col.Find(bson.M{}).All(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetAllSecondary gets every post from the store
+func (s *MongoStore) GetAllSecondary() ([]*SecondaryComment, error) {
+	var result []*SecondaryComment
+	col := s.session.DB(s.dbname).C(s.colname)
+	err := col.Find(bson.M{}).All(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

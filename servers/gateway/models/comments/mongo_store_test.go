@@ -397,3 +397,33 @@ func TestVoting(t *testing.T) {
 		t.Errorf("Comment Vote Failed %v", err)
 	}
 }
+
+func TestGetAllComments(t *testing.T) {
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+	}
+
+	ms := NewMongoStore(conn, "test_db_board", "test_col_board")
+
+	_, err = ms.GetAllComment()
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+}
+
+func TestGetAllSecondary(t *testing.T) {
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+	}
+
+	ms := NewMongoStore(conn, "test_db_board", "test_col_board")
+
+	_, err = ms.GetAllSecondary()
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+}

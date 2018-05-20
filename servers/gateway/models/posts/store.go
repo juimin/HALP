@@ -32,4 +32,7 @@ type Store interface {
 
 	//PostUpdate applies a PostUpdate to a given post ID
 	PostUpdate(id bson.ObjectId, update *PostUpdate) error
+
+	// Get all posts returns all posts
+	GetAll() ([]*Post, error)
 }
