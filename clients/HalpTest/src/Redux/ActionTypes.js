@@ -3,6 +3,7 @@
 // FOR LOGGING IN & OUT
 export const LOGOUT = "LOGOUT";
 export const LOGIN = "LOGIN";
+export const SETUSER = "SETUSER";
 
 // For SEARCH
 export const SEARCH = "SEARCH";

@@ -1,5 +1,5 @@
-import { LOGIN, LOGOUT } from '../ActionTypes';
-import { loginAction, logoutAction } from '../Actions';
+import { LOGIN, LOGOUT, SETUSER } from '../ActionTypes';
+import { loginAction, logoutAction, setUserAction } from '../Actions';
 
 // Import the api URL
 import { API_URL } from '../../Constants/Constants';
@@ -20,10 +20,18 @@ export default (state=initialState, action) => {
 		case LOGIN:
 			// In the case that we are logging in we need to perform the login and the do the setting of the state's auth token
 			return Object.assign({}, state, {
+				authToken: action.payload,
 				loggedIn: true
 			})
 		case LOGOUT:
-			return state
+			return Object.assign({}, state, {
+				loggedIn: false,
+				authToken: ""
+			})
+		case SETUSER:
+			return Object.assign({}, state, {
+				user: action.payload
+			})
 		default:
 			return state;
 	}

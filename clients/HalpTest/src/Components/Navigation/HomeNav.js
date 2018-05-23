@@ -10,8 +10,6 @@ import CanvasTest from '../Canvas/CanvasTest';
 import GuestHome from '../Home/GuestHome';
 import UserHome from '../Home/UserHome';
 
-
-
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
 // Specifically for this file, App.js will use this as a component because it allows for
