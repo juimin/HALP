@@ -21,7 +21,6 @@ class UserHome extends Component {
       return(
          <View style={Styles.home}>
             <Text>Dashboard for logged in User</Text>
-            
          </View>
       )
    }

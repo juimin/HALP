@@ -11,10 +11,19 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import NewPostStack from '../Navigation/NewPostNav';
 import Tabs from '../Navigation/TabNav';
 
+// Import redux
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import Reducer from '../../Redux/Reducer';
+
+// Create the redux store
+const store = createStore(Reducer)
+
 /*
  * We need a root stack navigator with the mode set to modal so that we can open the capture screen
  * as a modal. Defaults to the Tabs navigator.
  */
+
 const AppRootStack = StackNavigator({
    // Add the tab navigator as a modal?
    Tabs: {
@@ -32,4 +41,16 @@ const AppRootStack = StackNavigator({
    mode: 'modal',
 });
 
-export default AppRootStack;
+class App extends Component {
+   render() {
+      return(
+         <Provider store={store}>
+            <AppRootStack />
+         </Provider>
+      );
+   }
+
+}
+
+// Wrap the redux aroiund the app
+export default App;

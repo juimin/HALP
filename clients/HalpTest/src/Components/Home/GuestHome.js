@@ -12,10 +12,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
-// TODO FIX THIS
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 // Export the default class
-export default class GuestHome extends Component {
+class GuestHome extends Component {
    render() {
       return(
          <View style={Styles.home}>
@@ -32,3 +34,5 @@ export default class GuestHome extends Component {
       )
    }
 }
+
+export default GuestHome

@@ -12,23 +12,29 @@ import UserHome from './UserHome';
 import GuestHome from './GuestHome';
 import HomeNav from '../Navigation/HomeNav';
 
-export default class HomeScreen extends Component {
-   // Here we should run initialization scripts
-   constructor(props) {
-      super(props);
-      this.state = {loggedin: false};
-   }
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+const mapStateToProps = (state) => {
+	return {
+		loggedIn: state.LoginReducer.loggedIn
+	}
+}
+
+class HomeScreen extends Component {
+   // Here we should run initialization scripts
    render() {
-      // const {goBack} = this.props.navigation;
-      if (this.state.loggedin) {
+      if (this.props.loggedIn) {
          return (
-            <UserHome />
+            <UserHome {...this.props} />
          );
       }
       //if not logged in
       return (
-         <GuestHome />
+         <GuestHome {...this.props} />
       );
    }
 }
+
+export default connect(mapStateToProps)(HomeScreen)

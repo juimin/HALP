@@ -1,6 +1,7 @@
 // Stores references to all defined action types
-export const AUTH = "AUTH";
-export const DOWNLOAD = "DOWNLOAD";
+
+// FOR LOGGING IN & OUT
+export const LOGOUT = "LOGOUT";
 export const LOGIN = "LOGIN";
 
 // For SEARCH
