@@ -14,29 +14,27 @@ import UserHome from '../Home/UserHome';
 // Generally, this is the component that wraps the child components
 // Specifically for this file, App.js will use this as a component because it allows for
 // navigating between the Compoents listed
-const loggedin = false;
 
-const RootStack = StackNavigator({
-      Home: {
-         screen: loggedin ? UserHome : GuestHome,
-         navigationOptions: {
-            title: "HALP",
-         }
-      },
-      Login: {
-         screen: LoginScreen,
-      },
-      Signup: {
-         screen: SignupScreen,
-      },
-      Canvas: {
-         screen: CanvasTest,
-      },
-   },
-   {
-      initialRouteName: 'Home',
-      headerMode: 'screen',
-   },
-);
-
-export default RootStack
+export default StackNavigator(
+	{
+		Home: {
+			screen: HomeScreen,
+			navigationOptions: {
+				title: "HALP"
+			}
+		},
+		Login: {
+			screen: LoginScreen,
+		},
+		Signup: {
+			screen: SignupScreen,
+		},
+		Canvas: {
+			screen: CanvasTest,
+		},
+	},
+	{
+		initialRouteName: 'Home',
+		headerMode: 'screen',
+	}
+)

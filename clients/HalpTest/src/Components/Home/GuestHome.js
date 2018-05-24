@@ -12,10 +12,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
-// TODO FIX THIS
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 // Export the default class
-export default class GuestHome extends Component {
+class GuestHome extends Component {
    render() {
       return(
          <View style={Styles.home}>
@@ -25,9 +27,6 @@ export default class GuestHome extends Component {
             <Button color={Theme.colors.primaryColor} title="Sign Up"
                onPress={() => this.props.navigation.navigate('Signup')}
             />
-            <Button color={Theme.colors.primaryColor} title="Try Me"
-               onPress={() => this.setState({loggedin: true})}
-            />
             <Button color={Theme.colors.primaryColor} title="Canvas Test"
                onPress={() => this.props.navigation.navigate('Canvas')}
             />
@@ -35,3 +34,5 @@ export default class GuestHome extends Component {
       )
    }
 }
+
+export default GuestHome
