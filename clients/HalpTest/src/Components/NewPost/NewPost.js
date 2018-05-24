@@ -3,17 +3,134 @@
 
 // Import required react components
 import React, { Component } from 'react';
-import { Button, View, Text, TouchableWithoutFeedback} from 'react-native';
+import { Button, View, Text, TouchableWithoutFeedback, Alert, Image} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import ActionSheet from 'react-native-actionsheet'
+import ImageResizer from 'react-native-image-resizer';
 
+// Import stylesheet and thematic settings
+import Styles from '../../Styles/Styles';
+import Theme from '../../Styles/Theme';
+
+// import HALP compnents
+import CanvasTest from '../Canvas/CanvasTest'
+import HideableView from '../App/HideableView';
+
+var ImagePicker = require('react-native-image-picker');
+var options = {
+    title: null,
+    cameraType: 'back',
+    // storageOptions: {
+    //   skipBackup: true,
+    //   path: 'images'
+    // }
+    //maxWidth: 480,
+    //maxHeight: 480,
+}; 
 // Define the new Post
 export default class NewPost extends Component {
-   render() {
+    constructor(props) {
+        super(props);
+        this.state = 
+        {
+          source: require('../../Images/davint.png'),
+          isHidden: true,
+        };
+    }
+    
+    showActionSheet = () => {
+        this.ActionSheet.show()
+    }
+    // static navigationOptions = {
+    //   headerTitle: 'New Post',
+    //   headerLeft: (
+    //     // Add the Icon for canceling the Home
+    //     <Icon name="close" onPress={() => navigation.goBack(null)}/>
+    //   ),
+    //   headerRight: (
+    //     // Add the Icon for canceling the Home
+    //     <Button title="POST" onPress={() => navigation.goBack(null)}></Button>
+    //   ),
+    // }
+
+    //stupid way to send data back from child component without redux
+    //pass returnData while navigating
+    returnData(url) {
+      // ImageResizer.createResizedImage( url, 480, 640, "JPEG", 100)
+      //   .then( ( { uri } ) => 
+      //     this.setState({source: {uri: uri}, isHidden: false}),
+      //     console.log("testing")
+      //   ).catch( err => {
+      //     console.log( err )
+      //     //return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
+      //   } )
+      Image.getSize(url, (width, height) => console.log(width, height));
+      this.setState({source: {uri: url}, isHidden: false});
+      }
+    
+    render() {
+      if (!this.state.isHidden) {
+        return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
+      }
       return(
-         <View style={{ flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
-            <Text>New Post Screen</Text>
-         </View>
+         <View style={Styles.newPostView}>
+            <Button color={Theme.colors.primaryColor}
+                onPress={() => {
+                    ImagePicker.launchCamera(options, (response) => {
+                    console.log('Response = ', response);
+                  
+                    if (response.didCancel) {
+                      console.log('User cancelled image picker');
+                    }
+                    else if (response.error) {
+                      console.log('ImagePicker Error: ', response.error);
+                    }
+                    else {
+                      console.log('success');
+                      console.log(response.height, response.width)
+                      const { error, uri, originalRotation } = response
+
+                      if ( uri && !error ) {
+                        let rotation = 0
+
+                        if ( originalRotation === 90 ) {
+                          rotation = 90
+                        } else if ( originalRotation === 270 ) {
+                          rotation = -90
+                        }
+
+                        ImageResizer.createResizedImage( uri, 480, 640, "JPEG", 100, rotation )
+                          .then( ( { uri } ) => {
+                            let source = {uri: response.uri };
+                            this.setState({
+                              source: source
+                            });
+                            this.props.navigation.navigate('Canvas', {source: source, returnData: this.returnData.bind(this)});
+                          } ).catch( err => {
+                            console.log( err )
+
+                            return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
+                          } )
+                      }
+                     }
+                  });
+            }} 
+            title = "Camera Butt"/>
+            <Button color={Theme.colors.primaryColor} 
+                onPress={this.showActionSheet} title="shiet"/>
+                <ActionSheet
+                ref={o => this.ActionSheet = o}
+                title={'make your choice:'}
+                options={['davin', 'derek', 'Cancel']}
+                cancelButtonIndex={2}
+                destructiveButtonIndex={1}
+                onPress={(index) => { /* do something */ }}
+                />
+            <HideableView hide={this.state.isHidden}><Image style={{height: 200, width: 100}} source = {this.state.source} /></HideableView>
+        </View>
       );
    }
 }
+
+
