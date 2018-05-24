@@ -38,7 +38,6 @@ class LoginScreen extends Component {
    }
 
    login() {
-      console.log("something should happen...")
       fetch(API_URL + endpoint, {
          method: 'POST',
          headers: {
@@ -49,8 +48,7 @@ class LoginScreen extends Component {
       }).then(response => {
          if (response.status == 202) {
             this.props.addAuthToken(response.headers.get("authorization"))
-            console.log
-            this.props.navigation.goBack()
+            return response.json()
          } else {
             // Something went wrong with the server
             Alert.alert(
@@ -60,6 +58,13 @@ class LoginScreen extends Component {
                   {text: 'OK', onPress: () => console.log('OK Pressed')},
                ]
             )
+            return null
+         }
+      }).then(user => {
+         if (user != null) {
+            // Save the user to the thing
+            this.props.setUser(user)
+            this.props.navigation.goBack()
          }
       }).catch(err => {
          Alert.alert(

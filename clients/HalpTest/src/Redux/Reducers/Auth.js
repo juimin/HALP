@@ -10,8 +10,7 @@ const endpoint = "";
 // Set the initial state of this part
 const initialState = {
 	user: null,
-	authToken: null,
-	loggedIn: false
+	authToken: null
 };
 
 // This file exports the reducer used for login tasks
