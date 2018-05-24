@@ -11,6 +11,7 @@ export default StyleSheet.create({
    // Define Component Specific Styling
    home: {
       flex: 1,
+      backgroundColor: Theme.colors.primaryBackgroundColor,
       alignItems: 'center',
       justifyContent: 'center',
    },
@@ -45,6 +46,7 @@ export default StyleSheet.create({
       justifyContent: 'center',
    },
 
+<<<<<<< HEAD
    // Tile Scroll
    tileList: {
     flex: 1, 
@@ -59,5 +61,54 @@ export default StyleSheet.create({
     margin: 7,
     height: 50,
     backgroundColor: "#FFFFFF"
+=======
+   searchScreen: {
+      backgroundColor: Theme.colors.primaryBackgroundColor
+   },
+
+   // Search bar
+   searchBar: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
+      height: 49,
+      width: "100%",
+      borderBottomColor: Theme.colors.primaryBackgroundColor
+   },
+
+   searchList: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
+      marginTop: 0,
+      borderColor: Theme.colors.primaryBackgroundColor
+   },
+
+   searchListItem: {
+      backgroundColor: Theme.colors.primaryBackgroundColor,
+      borderBottomWidth: 0
+   },
+
+   searchTitle: {
+      margin: 10,
+      color: 'black'
+   },
+
+   accountNavButtons: {
+      width: "100%",
+      marginLeft: 0,
+      marginTop: 0,
+      padding: 0
+   },
+
+   accountHeader: {
+      marginLeft: 0,
+      width: "100%",
+      padding: 0
+   },
+
+   accountStatBar: {
+      height: "40%"
+   },
+
+   signinFormInput: {
+      borderBottomColor: Theme.colors.inactiveTintColor
+>>>>>>> remotes/origin/mobile-staging
    }
 });

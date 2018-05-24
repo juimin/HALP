@@ -94,3 +94,27 @@ class BoardsList extends Component {
   });
   
   export default connect(mapStateToProps)(BoardsList);
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+// // Export the default class
+// class GuestHome extends Component {
+//    render() {
+//       return(
+//          <View style={Styles.home}>
+//             <Button color={Theme.colors.primaryColor} title="Log in"
+//                onPress={() => this.props.navigation.navigate('Login')}
+//             />
+//             <Button color={Theme.colors.primaryColor} title="Sign Up"
+//                onPress={() => this.props.navigation.navigate('Signup')}
+//             />
+//             <Button color={Theme.colors.primaryColor} title="Canvas Test"
+//                onPress={() => this.props.navigation.navigate('Canvas')}
+//             />
+//          </View>
+//       )
+//    }
+// }
+
+// export default GuestHome

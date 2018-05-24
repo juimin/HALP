@@ -1,12 +1,21 @@
 // Stores references to all defined action types
 
-export const AUTH = "AUTH";
-export const DOWNLOAD = "DOWNLOAD";
+// FOR LOGGING IN & OUT
+export const LOGOUT = "LOGOUT";
 export const LOGIN = "LOGIN";
+export const SETUSER = "SETUSER";
 
-// Boards action types defintions 
+// For SEARCH
+export const SEARCH = "SEARCH";
+export const UPDATE = "UPDATE";
+export const GET_SUBSCRIPTIONS = "GET_SUBSCRIPTIONS";
+export const ADD_SUBSCRIPTIONS = "ADD_SUBSCRIPTIONS";
+export const REMOVE_SUBSCRIPTIONS = "REMOVE_SUBSCRIPTIONS"
+
+// For Boards
 export const FETCH_BOARDS_BEGIN = "FETCH_BOARDS_BEGIN";
 export const FETCH_BOARDS_SUCCESS = "FETCH_BOARDS_SUCCESS";
 export const FETCH_BOARDS_FAILIURE = "FETCH_BOARDS_FAILIURE";
 
-export default {AUTH, DOWNLOAD, LOGIN, FETCH_BOARDS_BEGIN, FETCH_BOARDS_FAILIURE, FETCH_BOARDS_SUCCESS}
+// Not 100% sure if we need to export these action types
+// export default {AUTH, DOWNLOAD, LOGIN, FETCH_BOARDS_BEGIN, FETCH_BOARDS_FAILIURE, FETCH_BOARDS_SUCCESS}
