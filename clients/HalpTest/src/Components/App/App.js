@@ -28,6 +28,9 @@ const AppRootStack = StackNavigator({
    // Add the tab navigator as a modal?
    Tabs: {
       screen: Tabs,
+      navigationOptions: {
+         gesturesEnabled: false
+      }
    },
    // Add this modal because it is separate from the main application navigation
    NewPostModal: {

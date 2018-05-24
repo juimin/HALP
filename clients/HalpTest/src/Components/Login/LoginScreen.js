@@ -24,14 +24,13 @@ export default class LoginScreen extends Component {
       console.log(this.state)
    }
 
-      
    render() {
       return (
          <View style={Styles.signup}>
             <FormLabel>Email</FormLabel>
             <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.email = text}}/>
             <FormLabel>Password</FormLabel>
-            <FormInput onChangeText={(text) => {this.state.password = text}}/>
+            <FormInput  secureTextEntry={true}  onChangeText={(text) => {this.state.password = text}}/>
             <Button title="Log In" onPress={()=> this.login()}></Button>
          </View>
       );

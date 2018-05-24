@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 
 const mapStateToProps = (state) => {
 	return {
-		loggedIn: state.LoginReducer.loggedIn
+		loggedIn: state.AuthReducer.loggedIn
 	}
 }
 

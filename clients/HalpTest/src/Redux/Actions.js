@@ -22,7 +22,7 @@ export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
 export default {
    // Home Screen actions
-   logoutAction, loginAction,
+   logoutAction, loginAction, setUserAction,
    // Search Actions
    searchPosts,
    // Subscriptions

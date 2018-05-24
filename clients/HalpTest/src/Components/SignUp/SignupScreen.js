@@ -1,6 +1,6 @@
 // Import needed react dependancies
 import React, { Component } from 'react';
-import { ScrollView, Button, View, Text } from 'react-native';
+import { Alert, ScrollView, Button, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 // Import stylesheet and thematic settings
@@ -13,7 +13,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { loginAction } from '../../Redux/Actions';
+import { loginAction, setUserAction } from '../../Redux/Actions';
+
+// Material UI Components
 
 const endpoint = "users"
 
@@ -24,8 +26,8 @@ function validateEmail(email) {
 
 const mapDispatchToProps = (dispatch) => {
    return {
-      login: token => { dispatch(loginAction(token)) },
-      setUser: usr => { dispatch(setUser(usr)) }
+      addAuthToken: token => { dispatch(loginAction(token)) },
+      setUser: usr => { dispatch(setUserAction(usr)) }
    }
 }
 
@@ -51,6 +53,16 @@ class SignupScreen extends Component {
          firstName: false,
          lastName: false,
          occupation: false
+      }
+
+      this.errorMessages = {
+         email: "",
+         userName: "",
+         password: "",
+         passwordConf: "",
+         firstName: "",
+         lastName: "",
+         occupation: ""
       }
 
       this.signup = this.signup.bind(this)
@@ -79,6 +91,16 @@ class SignupScreen extends Component {
          lastName: false,
          occupation: false
       }
+
+      this.errorMessages = {
+         email: "",
+         userName: "",
+         password: "",
+         passwordConf: "",
+         firstName: "",
+         lastName: "",
+         occupation: ""
+      }
    }
 
    // Validate the user input
@@ -87,27 +109,56 @@ class SignupScreen extends Component {
       // Validate email
       if (!validateEmail(this.state.email)) {
          this.errors.email = true
+         this.errorMessages.email = "Email is invalid"
          errored = true
+      } else {
+         this.errors.email = false
+         this.errorMessages.email = ""
       }
 
       if (this.state.userName.length < 6) {
          this.errors.userName = true
+         this.errorMessages.userName = "Username must be at least 6 characters"
          errored = true
+      } else {
+         this.errors.userName = false
+         this.errorMessages.userName = ""
       }
 
       if (this.state.password.length < 6) {
          this.errors.password = true
+         this.errorMessages.password = "Password must be at least 6 characters"
          errored = true
-      }
-
-      if (this.state.passwordConf.length < 6) {
-         this.errors.passwordConf = true
-         errored = true
+      } else {
+         this.errors.password = false
+         this.errorMessages.password = ""
       }
 
       if (this.state.password != this.state.passwordConf) {
          this.errors.passwordConf = true
+         this.errorMessages.password = "PasswordConf does not match password"
          errored = true
+      } else {
+         this.errorMessages.passwordConf = ""
+         this.errors.passwordConf = false
+      }
+
+      if (this.state.firstName.length <= 0) {
+         this.errorMessages.firstName = "Must Enter a first Name"
+         this.errors.firstName = true
+         errored = true
+      } else {
+         this.errorMessages.firstName = ""
+         this.errors.firstName = false
+      }
+
+      if (this.state.lastName.length <= 0) {
+         this.errorMessages.lastName = "Must Enter a first Name"
+         this.errors.lastName = true
+         errored = true
+      } else {
+         this.errorMessages.lastName = ""
+         this.errors.lastName = false
       }
 
       return !errored
@@ -126,19 +177,33 @@ class SignupScreen extends Component {
            body: JSON.stringify(this.state)
          }).then(response => {
             if (response.status == 201) {
-               console.log(response.headers.get('authorization'))
-               this.props.login(response.headers.get("authorization"))
-               console.log(JSON.parse(response.body))
-               // this.props.setUser(response.json())
+               this.props.addAuthToken(response.headers.get("authorization"))
+               this.props.setUser(response.blob())
                this.props.navigation.goBack()
             } else {
-               console.log(response)
+               // Something went wrong with the server
+               Alert.alert(
+                  'Sign Up Error',
+                  'A problem arose when signing up. Please try again',
+                  [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                  ]
+                )
             }
          }).catch(err => {
-            console.log(err)
+            Alert.alert(
+               'Alert Title',
+               err,
+               [
+                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                 {text: 'OK', onPress: () => console.log('OK Pressed')},
+               ],
+               { cancelable: false }
+             )
          })
       } else {
-         console.log(this.errors)
+         // RErender the component
+         this.setState(this.state)
       }
    }
 
@@ -147,16 +212,22 @@ class SignupScreen extends Component {
          <ScrollView>
             <FormLabel>Email *</FormLabel>
             <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.email = text}}/>
+            <FormValidationMessage>{this.errorMessages.email}</FormValidationMessage>
             <FormLabel>Username *</FormLabel>
             <FormInput onChangeText={(text) => {this.state.userName = text}}/>
+            <FormValidationMessage>{this.errorMessages.userName}</FormValidationMessage>
             <FormLabel>Password *</FormLabel>
-            <FormInput onChangeText={(text) => {this.state.password = text}}/>
+            <FormInput secureTextEntry={true} onChangeText={(text) => {this.state.password = text}}/>
+            <FormValidationMessage>{this.errorMessages.password}</FormValidationMessage>
             <FormLabel>Password Confirm *</FormLabel>
-            <FormInput onChangeText={(text) => {this.state.passwordConf = text}}/>
+            <FormInput secureTextEntry={true} onChangeText={(text) => {this.state.passwordConf = text}}/>
+            <FormValidationMessage>{this.errorMessages.passwordConf}</FormValidationMessage>
             <FormLabel>First Name *</FormLabel>
             <FormInput onChangeText={(text) => {this.state.firstName = text}}/>
+            <FormValidationMessage>{this.errorMessages.firstName}</FormValidationMessage>
             <FormLabel>Last Name *</FormLabel>
             <FormInput onChangeText={(text) => {this.state.lastName = text}}/>
+            <FormValidationMessage>{this.errorMessages.lastName}</FormValidationMessage>
             <FormLabel>Occupation</FormLabel>
             <FormInput onChangeText={(text) => {this.state.occupation = text}}/>
             <Button title="Submit" onPress={this.signup}></Button>
