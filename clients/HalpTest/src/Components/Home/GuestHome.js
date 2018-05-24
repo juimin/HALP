@@ -12,6 +12,7 @@ import BoardTiles from './BoardTiles';
 // Import react-redux connect 
 import { connect } from "react-redux";
 import { fetchBoards } from "../../Redux/ListBoardsOperation.js";
+import { bindActionCreators } from 'redux';
 
 // Import stylesheet and thematic settings
 import Styles from '../../Styles/Styles';
@@ -60,7 +61,7 @@ import Theme from '../../Styles/Theme';
 //    }
 // }
 
-class BoardsList extends React.Component {
+class BoardsList extends Component {
     componentDidMount() {
       this.props.dispatch(fetchBoards());
     }
