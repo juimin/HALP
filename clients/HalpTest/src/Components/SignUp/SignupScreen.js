@@ -178,7 +178,6 @@ class SignupScreen extends Component {
          }).then(response => {
             if (response.status == 201) {
                this.props.addAuthToken(response.headers.get("authorization"))
-               this.props.setUser(response.blob())
                this.props.navigation.goBack()
             } else {
                // Something went wrong with the server
@@ -192,13 +191,11 @@ class SignupScreen extends Component {
             }
          }).catch(err => {
             Alert.alert(
-               'Alert Title',
+               'Error getting response from server',
                err,
                [
-                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-               ],
-               { cancelable: false }
+               ]
              )
          })
       } else {
