@@ -19,17 +19,20 @@
   },
   "dependencies": {
     "@terrylinla/react-native-sketch-canvas": "^0.4.1",
+    "npm": "^6.0.1",
     "react": "16.3.0",
-    "react-native": "~0.54.1",
     "react-native-actionsheet": "^2.4.2",
     "react-native-image-picker": "^0.26.10",
     "react-native-image-resizer": "^1.0.0",
+    "react-native": "~0.54.4",
+    "react-native-elements": "^0.19.1",
     "react-native-material-bottom-navigation": "^0.9.0",
+    "react-native-material-ui": "^1.22.3",
     "react-native-vector-icons": "^4.6.0",
     "react-native-view-shot": "^2.3.0",
-    "react-navigation": "^1.5.7",
+    "react-navigation": "^1.5.12",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "tcomb-form-native": "^0.6.11"
+    "tcomb-form-native": "^0.6.12"
   }
 }
