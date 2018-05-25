@@ -245,7 +245,7 @@ func TestSearchHandler(t *testing.T) {
 
 			// Test with no auth
 			// Generate Request
-			r, err := http.NewRequest("GET", "/Search", nil)
+			r, err := http.NewRequest("GET", "/search", nil)
 
 			if err != nil {
 				t.Errorf("%s Failed: HTTP Request Generation Failed for no auth input", "No auth input")
@@ -255,8 +255,8 @@ func TestSearchHandler(t *testing.T) {
 
 			// Attempt Endpoint usage
 			searchHandler.ServeHTTP(w, r)
-			if w.Code != http.StatusUnauthorized {
-				t.Errorf("%s Failed: Expected Code to be %d but got %d", "No Auth Test", http.StatusUnauthorized, w.Code)
+			if w.Code != http.StatusBadRequest {
+				t.Errorf("%s Failed: Expected Code to be %d but got %d", "No Auth Test", http.StatusBadRequest, w.Code)
 				t.Errorf("%s", w.Body)
 			}
 
