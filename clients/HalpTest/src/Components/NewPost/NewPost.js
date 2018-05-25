@@ -48,6 +48,47 @@ export default class NewPost extends Component {
           imageURL: null,
         };
     }
+
+    takePiture = () => {
+      ImagePicker.launchCamera(options, (response) => {
+        console.log('Response = ', response);
+      
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        }
+        else if (response.error) {
+          console.log('ImagePicker Error: ', response.error);
+        }
+        else {
+          console.log('success');
+          console.log(response.height, response.width)
+          const { error, uri, originalRotation } = response
+
+          if ( uri && !error ) {
+            let rotation = 0
+
+            if ( originalRotation === 90 ) {
+              rotation = 90
+            } else if ( originalRotation === 270 ) {
+              rotation = -90
+            }
+
+            ImageResizer.createResizedImage( uri, 480, 640, "JPEG", 100, rotation )
+              .then( ( { uri } ) => {
+                let source = {uri: response.uri };
+                this.setState({
+                  source: source
+                });
+                this.props.navigation.navigate('Canvas', {source: source, returnData: this.returnData.bind(this)});
+              } ).catch( err => {
+                console.log( err )
+
+                return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
+              } )
+          }
+         }
+      });
+    }
     
     showActionSheet = () => {
         this.ActionSheet.show()
@@ -92,47 +133,8 @@ export default class NewPost extends Component {
       return(
          <View style={Styles.newPostView}>
             <Button color={Theme.colors.primaryColor}
-                onPress={() => {
-                    ImagePicker.launchCamera(options, (response) => {
-                    console.log('Response = ', response);
-                  
-                    if (response.didCancel) {
-                      console.log('User cancelled image picker');
-                    }
-                    else if (response.error) {
-                      console.log('ImagePicker Error: ', response.error);
-                    }
-                    else {
-                      console.log('success');
-                      console.log(response.height, response.width)
-                      const { error, uri, originalRotation } = response
-
-                      if ( uri && !error ) {
-                        let rotation = 0
-
-                        if ( originalRotation === 90 ) {
-                          rotation = 90
-                        } else if ( originalRotation === 270 ) {
-                          rotation = -90
-                        }
-
-                        ImageResizer.createResizedImage( uri, 480, 640, "JPEG", 100, rotation )
-                          .then( ( { uri } ) => {
-                            let source = {uri: response.uri };
-                            this.setState({
-                              source: source
-                            });
-                            this.props.navigation.navigate('Canvas', {source: source, returnData: this.returnData.bind(this)});
-                          } ).catch( err => {
-                            console.log( err )
-
-                            return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
-                          } )
-                      }
-                     }
-                  });
-            }} 
-            title = "New Photo"/>
+                onPress={this.takePiture} 
+            title = "Upload Image"/>
             
             <HideableView hide={this.state.isHidden}><Image style={{height: 200, width: 100}} source = {this.state.source} /></HideableView>
         </View>
