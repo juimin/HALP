@@ -3,24 +3,34 @@
 
 // Import required react components
 import React, { Component } from 'react';
-import { Button, View, Text, TouchableWithoutFeedback, Alert, Image} from 'react-native';
+import { Button, View, Text, TouchableWithoutFeedback, Alert, Image, ScrollView} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ActionSheet from 'react-native-actionsheet'
 import ImageResizer from 'react-native-image-resizer';
+import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
+
 
 // Import stylesheet and thematic settings
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
+import { API_URL } from '../../Constants/Constants';
 
 // import HALP compnents
 import CanvasTest from '../Canvas/CanvasTest'
-import HideableView from '../App/HideableView';
+import HideableView from '../Helper/HideableView';
+
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+//import { loginAction, setUserAction } from '../../Redux/Actions';
 
 var ImagePicker = require('react-native-image-picker');
 var options = {
     title: null,
     cameraType: 'back',
+    mediaType: 'photo',
+    rotation: 0,
     // storageOptions: {
     //   skipBackup: true,
     //   path: 'images'

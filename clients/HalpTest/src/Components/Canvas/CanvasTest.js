@@ -12,7 +12,7 @@ import {
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import {captureRef, captureScreen} from "react-native-view-shot";
 import ImageResizer from 'react-native-image-resizer';
-import HideableView from '../App/HideableView';
+import HideableView from '../Helper/HideableView';
  
 
 export default class CanvasTest extends React.Component {

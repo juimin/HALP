@@ -3,7 +3,8 @@ import {
    SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
-   GET_SUBSCRIPTIONS
+   GET_SUBSCRIPTIONS,
+   MAKE_POST
 
 } from './ActionTypes.js';
 
@@ -20,11 +21,16 @@ export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
 export const removeSubscription = sub => ({type: REMOVE_SUBSCRIPTIONS, payload: sub})
 export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
+//POSTS
+export const makePost = () => ({type: MAKE_POST, payload: post})
+
 export default {
    // Home Screen actions
    logoutAction, loginAction, setUserAction,
    // Search Actions
    searchPosts,
    // Subscriptions
-   addSubscription, removeSubscription, getSubscriptions
+   addSubscription, removeSubscription, getSubscriptions,
+   // Posts
+   makePost
 }
