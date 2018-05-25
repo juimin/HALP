@@ -15,7 +15,6 @@ import ReduxActions from '../../Redux/Actions';
 
 
 const mapStateToProps = (state) => {
-	console.log(state)
 	return {
       authToken: state.AuthReducer.authToken,
       user: state.AuthReducer.user,
@@ -26,8 +25,6 @@ const mapStateToProps = (state) => {
 
 class Board extends Component {
 	render() {
-		console.log(this.props.activeBoard)
-		console.log(this.props.user)	
 		return (
 			<View style={Styles.home}>
 				<Text>{JSON.stringify(this.props.activeBoard)}</Text>

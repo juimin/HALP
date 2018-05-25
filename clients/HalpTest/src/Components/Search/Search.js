@@ -15,7 +15,7 @@ import ReduxActions from '../../Redux/Actions';
 import { List, ListItem, SearchBar } from 'react-native-elements'
 
 // Import Requests
-import { sessionExpired } from '../../Requests/Requests';
+import Requests from '../../Requests/Requests';
 
 const mapStateToProps = (state) => {
 	return {
@@ -41,142 +41,84 @@ class Search extends Component {
 			searchTerm: "",
 			items: []
 		}
+		// Bind the functions to this
 		this.search = this.search.bind(this)
 		this.load = this.load.bind(this)
    }
 
-   onComponentWillMount() {
-      // Check for user to see if we need to restore the session token
+   componentWillMount() {
+		// Check for user to see if we need to restore the session token
       if (this.props.authToken != "") {
-         // Check for session expiration
-         if (sessionExpired(this.props.authToken)) {
-				// Re-obtain a session
-				fetch(API_URL + "/sessions", {
-					method: "POST",
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json',
-				  },
-				  body: JSON.stringify({
-					  email: this.props.user.email,
-					  password: this.props.password
-				  })
-				}).then(response => {
-					if (response.status == 202) {
-						// Save token and password for later use
-						this.props.addAuthToken(response.headers.get("authorization"))
-						return response.json()
-					} else {
-						// Something went wrong with the server
-						Alert.alert(
-							'Session Error',
-							'Error Acquiring Session',
-							[ {text: 'OK', onPress: () => console.log('OK Pressed')} ]
-						)
-						return null
-					}
-				}).then(user => {
-					if (user != null) {
-						// Save the user to the thing
-						this.props.setUser(user)
-						return true
-					} else {
-						// Log out if we can't make a new session
-						this.props.logout()
-						return false
-					}
-				}).catch(err => {
-					Alert.alert(
-						'Error getting response from server',
-						err,
-						[ {text: 'OK', onPress: () => console.log('OK Pressed')} ]
-					)
-				})
-         }
+			// Check for session expiration
+			Requests.sessionExpired(this.props.authToken).then(response => {
+				if (response != 202) {
+					Requests.renewSession({
+						email: this.props.user.email,
+						password: this.props.password
+					}).then(response => {
+						if (response != null) {
+							this.props.restoreToken(response)
+						}
+					}).catch(err => {
+						console.log(err)
+					})
+				}
+			}).catch(err => {
+				console.log(err)
+			})
+			// Load Subscriptions
+			this.load();
       }
 	}
 
 	load() {
-		var items = this.state.items
+		var items = [];
 		if (this.props.user != null) {
 			this.props.user.favorites.forEach((item, index) => {
-				fetch(API_URL + "/boards/single?id=" + item, {
-					method: "GET",
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json',
-				  }
-				}).then(response => {
-					if (response.status == 200) {
-						return response.json()
-					} else {
-						return null
-					}
-				}).then(body => {
-					if (body != null) {
-						items.push(body)
+				Requests.getBoard(item).then(board => {
+					if (board != null) {
+						items.push(board)
 						this.setState({
 							searchTerm: "",
 							items: items
 						})
 					}
-				}).catch(err => {
-					console.log(err)
-				})
+				});
 			});
 		}
 	}
 	
 	search(text) {
 		// Search
-		var items = []
 		if (text == "") {
-			// Get Subscriptions
-			if (this.props.user != null) {
-				// Append each board
-				this.props.user.favorites.forEach((item, index) => {
-					console.log(item)
-					fetch(API_URL + "/boards/single?id=" + item, {
-						method: "GET",
-						headers: {
-							'Accept': 'application/json',
-							'Content-Type': 'application/json',
-					  }
-					}).then(response => {
-						if (response.status == 200) {
-							return response.json()
-						} else {
-							return null
-						}
-					}).then(body => {
-						if (body != null) {
-							items.push(body)
-						}
-					}).catch(err => {
-						console.log(err)
-					})
-				});
-			}
-			this.setState({
-				searchTerm: text,
-				items: items
-			})
+			this.load()
 		} else {
 			// Perform the search
-			
-			// Set the search term
-			this.setState({
-				searchTerm: text,
-				items: items
+			var items = []
+			Requests.searchBoard("BOARD", text, this.props.authToken).then(results => {
+				if (results != null) {
+					results.forEach((item, index) => {
+						Requests.getBoard(item).then(board => {
+							if (board != null) {
+								items.push(board)
+								this.setState({
+									searchTerm: text,
+									items: items
+								});
+							}
+						});
+					});
+				} else {
+					this.setState({
+						searchTerm: text,
+						items: []
+					});
+				}
 			})
 		}
 	}
 
    render() {
-		console.log(this.state)
-		if (this.state.searchTerm == "" && this.state.items.length == 0) {
-			this.load()
-		}
       return (
          <View style={Styles.searchScreen}>
             <SearchBar 
@@ -198,9 +140,7 @@ class Search extends Component {
                            title={item.title} 
                            containerStyle={Styles.searchListItem}
                            onPress={() => {
-										console.log(item)
 										this.props.setActiveBoard(item)
-										console.log("set active board")
 										this.props.navigation.navigate('Board')
 									}
 									}
@@ -208,6 +148,7 @@ class Search extends Component {
                      ))
                   }
                </List>
+					<Text style={Styles.searchTitle}>{(this.state.items.length == 0) ? "No Boards Found": ""}</Text>
             </ ScrollView>
          </View>
       )
