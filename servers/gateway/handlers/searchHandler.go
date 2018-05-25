@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/JuiMin/HALP/servers/gateway/models/sessions"
 )
 
 // NSEARCH is a constant for max search terms returned
@@ -22,13 +20,6 @@ func respond(w http.ResponseWriter, value interface{}) {
 
 // SearchHandler Define the ServeHTTP Function for the databsae
 func (cr *ContextReceiver) SearchHandler(w http.ResponseWriter, r *http.Request) {
-	// Get the state
-	state := &SessionState{}
-	_, errGetState := sessions.GetState(r, cr.SigningKey, cr.SessionStore, state)
-	if errGetState != nil {
-		http.Error(w, fmt.Sprintf("error getting session: %v", errGetState), http.StatusUnauthorized)
-		return
-	}
 	switch r.Method {
 	// YOU NEED TO MAKE AN POST, DELETE, AND PATCH for adding things to the trie
 
