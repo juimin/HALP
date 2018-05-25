@@ -8,28 +8,81 @@ import {
   ImageBackground,
   TouchableHighlight,
 } from 'react-native';
+
+import {setPictureSuccess} from '../../Redux/Actions';
  
 import RNSketchCanvas from '@terrylinla/react-native-sketch-canvas';
 import {captureRef, captureScreen} from "react-native-view-shot";
 import ImageResizer from 'react-native-image-resizer';
 import HideableView from '../Helper/HideableView';
- 
+import RNFetchBlob from 'react-native-fetch-blob'
+global.Buffer = global.Buffer || require('buffer').Buffer
+
+const mapStateToProps = (state) => {
+  return {
+    picture_success: state.PictureReducer.success
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setSuccess: (setting) => { dispatch(setPictureSuccess(setting))}
+  }
+}
+
+
+// aws-sdk to upload to digital ocean spaces
+var AWS = require('aws-sdk/dist/aws-sdk-react-native'); 
+
+// Configure client for use with Spaces
+const spacesEndpoint = new AWS.Endpoint('nyc3.digitaloceanspaces.com');
+const s3 = new AWS.S3({
+    endpoint: spacesEndpoint,
+    accessKeyId: 'E26M2XWYBF3XGE5PBPBE',
+    secretAccessKey: 'Vw4bjoYa4kD8uWs2PKJPvITCzAWNioKsXGY1rcytOqw',
+
+});
+var myBucket = 'halp-staging';
+var filename = 'hello.jpg'; //change to post id? either way this will be the uploaded image filename
+var uploadurl = 'https://' + myBucket + '.nyc3.digitaloceanspaces.com/'+ filename
 
 export default class CanvasTest extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      error: null,
-      res: null,
-      value: {
-        format: "jpg",
-        quality: 0.8,
-        snapshotContentContainer: false
-      },
       source: null,
       isHidden: false,
-
     };
+
+    this.upFile = this.upFile.bind(this)
+    this.uploadObject = this.uploadObject.bind(this)
+  }
+
+  upFile = (data) => {
+    var buff = new Buffer(data, 'base64')
+    console.log("uploading2...")
+    var params = {ACL: "public-read", Body: buff, Bucket: myBucket, Key: filename, 
+      Metadata: {
+        'Content-Type': 'image/jpeg'
+      }
+    };
+    s3.upload(params, function(err, data) {
+      if (err) {
+          console.log(err)
+      } else {
+          console.log("Successfully uploaded data to halp-staging");
+          //console.log(data.Location);
+        }
+    });
+  }
+
+  uploadObject = (uri) => {
+    //this.props.navigation.state.params.returnData(uri);
+    console.log("uploading...");
+    //console.log(this.props);
+    RNFetchBlob.fs.readFile(uri, 'base64').then(data => this.upFile(data));
+    //console.log(uploadurl);
+    this.props.navigation.state.params.returnData(uri, uploadurl);
   }
   
   captureScreenFunction=()=>{
@@ -39,10 +92,11 @@ export default class CanvasTest extends React.Component {
       quality: 1,
       // height: 1136,
       // width: 640,
+      // result: "base64",
     })
     .then(
-      uri => this.props.navigation.state.params.returnData(uri), 
-      console.log("saving"), 
+      //uri => this.props.navigation.state.params.returnData(uri),
+      uri => this.uploadObject(uri),
       this.props.navigation.goBack(),
       error => console.error("Oops, Something Went Wrong", error)
     );
@@ -80,9 +134,9 @@ render() {
                 }} />
               </HideableView>
             )}}
-            saveComponent={<TouchableHighlight onPress={() => {
+            saveComponent={<HideableView hide={this.state.isHidden}><TouchableHighlight onPress={() => {
               this.setState({isHidden: true}, this.captureScreenFunction);
-              }}><HideableView hide={this.state.isHidden} style={styles.functionButton}><Text style={{color: 'white'}}>Done</Text></HideableView></TouchableHighlight>}
+              }}><View style={styles.functionButton}><Text style={{color: 'white'}}>Done</Text></View></TouchableHighlight></HideableView>}
             savePreference={() => {
               return {
                 folder: 'RNSketchCanvas',

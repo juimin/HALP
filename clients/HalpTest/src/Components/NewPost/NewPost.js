@@ -23,7 +23,6 @@ import HideableView from '../Helper/HideableView';
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-//import { loginAction, setUserAction } from '../../Redux/Actions';
 
 var ImagePicker = require('react-native-image-picker');
 var options = {
@@ -46,6 +45,7 @@ export default class NewPost extends Component {
         {
           source: require('../../Images/davint.png'),
           isHidden: true,
+          imageURL: null,
         };
     }
     
@@ -66,21 +66,15 @@ export default class NewPost extends Component {
 
     //stupid way to send data back from child component without redux
     //pass returnData while navigating
-    returnData(url) {
-      // ImageResizer.createResizedImage( url, 480, 640, "JPEG", 100)
-      //   .then( ( { uri } ) => 
-      //     this.setState({source: {uri: uri}, isHidden: false}),
-      //     console.log("testing")
-      //   ).catch( err => {
-      //     console.log( err )
-      //     //return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
-      //   } )
+    returnData(url, externalurl) {
       Image.getSize(url, (width, height) => console.log(width, height));
-      this.setState({source: {uri: url}, isHidden: false});
+      this.setState({source: {uri: url}, isHidden: false, imageURL: externalurl});
+      console.log("success:", this.state.imageURL);
       }
     
     render() {
-      if (!this.state.isHidden) {
+      //once auth works, only render page if user is logged in
+      if (this.state.imageURL != null) {
         return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
       }
       return(

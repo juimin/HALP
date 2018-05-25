@@ -4,7 +4,8 @@ import {
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
-   MAKE_POST
+   MAKE_POST,
+   PICTURE_SUCCESS
 
 } from './ActionTypes.js';
 
@@ -22,7 +23,8 @@ export const removeSubscription = sub => ({type: REMOVE_SUBSCRIPTIONS, payload: 
 export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
 //POSTS
-export const makePost = () => ({type: MAKE_POST, payload: post})
+export const makePost = (post) => ({type: MAKE_POST, payload: post})
+export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pizza})
 
 export default {
    // Home Screen actions
@@ -32,5 +34,6 @@ export default {
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // Posts
-   makePost
+   makePost,
+   setPictureSuccess
 }
