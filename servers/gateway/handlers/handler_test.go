@@ -235,7 +235,7 @@ func TestContextHandler(t *testing.T) {
 		boardStore := boards.NewMongoStore(mongoSession, "test", "board")
 		postStore := posts.NewMongoStore(mongoSession, "posts", "post")
 
-		_, err = NewContextReceiver(c.key, mongoStore, redisStore, commentStore, postStore, boardStore, nil, nil, nil, nil)
+		_, err = NewContextReceiver(c.key, mongoStore, redisStore, commentStore, postStore, boardStore)
 
 		if err != nil {
 			actualErr = err.Error()

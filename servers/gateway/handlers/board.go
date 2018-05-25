@@ -158,15 +158,8 @@ func (cr *ContextReceiver) CreateBoardHandler(w http.ResponseWriter, r *http.Req
 					status = http.StatusInternalServerError
 					canProceed = false
 				} else {
-					// Add the board to the search trie
-					err = cr.BoardTrie.Insert(toBeInsertedBoard.Title, toBeInsertedBoard.ID, 0)
-					if err != nil {
-						status = http.StatusInternalServerError
-						canProceed = false
-					} else {
-						w.WriteHeader(status)
-						json.NewEncoder(w).Encode(&toBeInsertedBoard)
-					}
+					w.WriteHeader(status)
+					json.NewEncoder(w).Encode(&toBeInsertedBoard)
 				}
 			}
 		}
