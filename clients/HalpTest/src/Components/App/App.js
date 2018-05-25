@@ -16,7 +16,7 @@ import Tabs from '../Navigation/TabNav';
  * as a modal. Defaults to the Tabs navigator.
  */
 const AppRootStack = StackNavigator({
-   // Add the tab navigator as a modal
+   // Add the tab navigator as a modal?
    Tabs: {
       screen: Tabs,
    },
