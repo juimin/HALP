@@ -25,9 +25,6 @@ export default class GuestHome extends Component {
             <Button color={Theme.colors.primaryColor} title="Sign Up"
                onPress={() => this.props.navigation.navigate('Signup')}
             />
-            <Button color={Theme.colors.primaryColor} title="Try Me"
-               onPress={() => this.setState({loggedin: true})}
-            />
             <Button color={Theme.colors.primaryColor} title="Canvas Test"
                onPress={() => this.props.navigation.navigate('Canvas')}
             />

@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/JuiMin/HALP/servers/gateway/indexes"
 	"github.com/JuiMin/HALP/servers/gateway/models/boards"
 	"github.com/JuiMin/HALP/servers/gateway/models/posts"
 
@@ -93,12 +94,69 @@ func generateContextHandler() (*handlers.ContextReceiver, string, string, string
 
 	fmt.Printf("Mongodb Online...\n")
 
-	cr, err := handlers.NewContextReceiver(sessionKey, userStore, redisStore, commentStore, postStore, boardStore)
+	// Search Tries
+	userTrie := indexes.NewSearchTrie()
+	commentTrie := indexes.NewSearchTrie()
+	boardTrie := indexes.NewSearchTrie()
+	postTrie := indexes.NewSearchTrie()
+
+	// IMPORT DATA FROM THE DATABASE FOR EACH TRIE
+	users, err := userStore.GetAll()
+	if err == nil {
+		for _, u := range users {
+			// Insert the keys into the trie by building+room
+			err := userTrie.Insert(u.UserName, u.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", u.UserName, u.ID, err)
+			}
+		}
+	} else {
+		fmt.Printf("%v", err == nil)
+	}
+
+	boards, err := boardStore.GetAllBoards()
+	if err == nil {
+		for _, b := range boards {
+			// Insert the keys into the trie by building+room
+			err := boardTrie.Insert(b.Title, b.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", b.Title, b.ID, err)
+			}
+		}
+	} else {
+		fmt.Printf("%v\n", err)
+	}
+
+	posts, err := postStore.GetAll()
+	if err == nil {
+		for _, p := range posts {
+			// Insert the keys into the trie by building+room
+			err := postTrie.Insert(p.Title, p.ID, 0)
+			if err != nil {
+				log.Printf("Failed to insert %s for ID: %v, Error: %v", p.Title, p.ID, err)
+			}
+		}
+	} else {
+		fmt.Printf("%v\n", err)
+	}
+
+	// Build the CR
+	cr, err := handlers.NewContextReceiver(
+		sessionKey,
+		userStore,
+		redisStore,
+		commentStore,
+		postStore,
+		boardStore,
+		userTrie,
+		commentTrie,
+		boardTrie,
+		postTrie)
 
 	return cr, port, tlscert, tlskey, err
 }
 
-func generateMux(cr *handlers.ContextReceiver, tlscert string, tlskey string, port string) *handlers.CORSHandler {
+func generateMux(cr *handlers.ContextReceiver) *handlers.CORSHandler {
 	// Create a new mux to start the server
 	mux := http.NewServeMux()
 
@@ -118,7 +176,7 @@ func generateMux(cr *handlers.ContextReceiver, tlscert string, tlskey string, po
 	mux.HandleFunc("/boards/createboard", cr.CreateBoardHandler)
 	mux.HandleFunc("/bookmarks", cr.BookmarksHandler)
 	mux.HandleFunc("/favorites", cr.FavoritesHandler)
-
+	mux.HandleFunc("/search", cr.SearchHandler)
 	// CORS Handling
 	// This takes over for the mux after it has done everything the server needs
 	corsHandler := handlers.NewCORSHandler(mux)
@@ -133,7 +191,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	corsHandler := generateMux(cr, tlscert, tlskey, port)
+	corsHandler := generateMux(cr)
 	fmt.Println("CORS Mounted Successfully...")
 
 	// Notify that the server is started
