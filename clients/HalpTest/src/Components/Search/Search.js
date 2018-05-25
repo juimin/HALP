@@ -152,7 +152,7 @@ class Search extends Component {
                <Text style={Styles.searchTitle}>{(this.state.searchTerm == "") ? "Subscriptions": "Results"}</Text>
                <List containerStyle={Styles.searchList} >
                   {
-                     this.state.items[this.state.searching].map((item, i) => (
+                     this.state.items.map((item, i) => (
                         <ListItem
                            roundAvatar
                            avatar={{uri:item.image_url}}
