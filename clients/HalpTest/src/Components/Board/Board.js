@@ -28,6 +28,7 @@ class Board extends Component {
 		return (
 			<View style={Styles.home}>
 				<Text>{JSON.stringify(this.props.activeBoard)}</Text>
+				<Text>Something</Text>
 			</View>
 		)
 	}
