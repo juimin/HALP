@@ -21,7 +21,7 @@ const mapDispatchToProps = (dispatch) => {
    return {
       addAuthToken: token => { dispatch(setTokenAction(token)) },
       setUser: usr => { dispatch(setUserAction(usr)) },
-      savePassword: pass => { dispatch(savePasswordAction(pass))}
+		savePassword: pass => { dispatch(savePasswordAction(pass))}
    }
 }
 
@@ -68,9 +68,7 @@ class LoginScreen extends Component {
             // Save the user to the thing
             this.props.setUser(user)
             this.props.navigation.goBack()
-         } else {
-				this.props.logout()
-			}
+         }
       }).catch(err => {
          Alert.alert(
             'Error getting response from server',

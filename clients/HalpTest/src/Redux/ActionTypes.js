@@ -8,6 +8,7 @@ export const SAVEPASSWORD = "SAVEPASSWORD";
 
 // BOARDS
 export const GETBOARD = "GETBOARD";
+export const SETBOARD = "SETBOARD";
 
 // For SEARCH
 export const SEARCH = "SEARCH";

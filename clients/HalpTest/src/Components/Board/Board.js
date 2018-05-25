@@ -8,13 +8,32 @@ import { Button, View, Text } from 'react-native';
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
-export default class Board extends Component {
-  render() {
-  	return (
-      <View style={Styles.home}>
-         <Text>Board</Text>
-         
-      </View>
-  	)
-  }
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import ReduxActions from '../../Redux/Actions';
+
+
+const mapStateToProps = (state) => {
+	console.log(state)
+	return {
+      authToken: state.AuthReducer.authToken,
+      user: state.AuthReducer.user,
+      password: state.AuthReducer.password,
+      activeBoard: state.BoardReducer.activeBoard
+	}
 }
+
+class Board extends Component {
+	render() {
+		console.log(this.props.activeBoard)
+		console.log(this.props.user)	
+		return (
+			<View style={Styles.home}>
+				<Text>{JSON.stringify(this.props.activeBoard)}</Text>
+			</View>
+		)
+	}
+}
+
+export default connect(mapStateToProps)(Board)

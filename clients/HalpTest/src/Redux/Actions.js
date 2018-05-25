@@ -1,6 +1,6 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
-   GETBOARD,
+   GETBOARD, SETBOARD,
    SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
@@ -16,6 +16,7 @@ export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass}
 
 // get board
 export const getBoard = (board) => ({type: GETBOARD, payload: board})
+export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
 
 // SEARCH PAGE
 export const searchPosts = term => ({type: SEARCH, searchTerm: term})
@@ -28,6 +29,9 @@ export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 export default {
    // Home Screen actions
    logoutAction, setTokenAction, setUserAction, savePasswordAction,
+
+   // BOARD
+   setActiveBoard,
    // Search Actions
    searchPosts,
    // Subscriptions

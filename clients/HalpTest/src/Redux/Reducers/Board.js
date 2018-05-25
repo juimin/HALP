@@ -1,7 +1,8 @@
-import { GETBOARD } from '../ActionTypes';
+import { GETBOARD, SETBOARD } from '../ActionTypes';
 
 const initialState = {
-   boards: {}
+   boards: {},
+   activeBoard: null,
 }
 
 export default (state=initialState, action) => {
@@ -11,6 +12,10 @@ export default (state=initialState, action) => {
          b[action.payload.key] = action.payload.board
          return Object.assign({}, state, {
             boards: b
+         })
+      case SETBOARD:
+         return Object.assign({}, state, {
+            activeBoard: action.payload
          })
       default:
          return state

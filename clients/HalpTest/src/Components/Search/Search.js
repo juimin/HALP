@@ -28,6 +28,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
    return {
 		restoreToken: (token) => { dispatch(ReduxActions.setTokenAction(token)) },
+		setActiveBoard: (board) => { dispatch(ReduxActions.setActiveBoard(board))},
 		logout: () => { dispatch(ReduxActions.logoutAction())}
    }
 }
@@ -35,13 +36,13 @@ const mapDispatchToProps = (dispatch) => {
 class Search extends Component {
    constructor(props) {
       super(props)
-      // Generate a class variable for input, we don't need this in global state
+		// Generate a class variable for input, we don't need this in global state
 		this.state = { 
 			searchTerm: "",
 			items: []
 		}
-
 		this.search = this.search.bind(this)
+		this.load = this.load.bind(this)
    }
 
    onComponentWillMount() {
@@ -78,9 +79,11 @@ class Search extends Component {
 					if (user != null) {
 						// Save the user to the thing
 						this.props.setUser(user)
+						return true
 					} else {
 						// Log out if we can't make a new session
 						this.props.logout()
+						return false
 					}
 				}).catch(err => {
 					Alert.alert(
@@ -92,6 +95,37 @@ class Search extends Component {
          }
       }
 	}
+
+	load() {
+		var items = this.state.items
+		if (this.props.user != null) {
+			this.props.user.favorites.forEach((item, index) => {
+				fetch(API_URL + "/boards/single?id=" + item, {
+					method: "GET",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+				  }
+				}).then(response => {
+					if (response.status == 200) {
+						return response.json()
+					} else {
+						return null
+					}
+				}).then(body => {
+					if (body != null) {
+						items.push(body)
+						this.setState({
+							searchTerm: "",
+							items: items
+						})
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			});
+		}
+	}
 	
 	search(text) {
 		// Search
@@ -101,6 +135,7 @@ class Search extends Component {
 			if (this.props.user != null) {
 				// Append each board
 				this.props.user.favorites.forEach((item, index) => {
+					console.log(item)
 					fetch(API_URL + "/boards/single?id=" + item, {
 						method: "GET",
 						headers: {
@@ -135,10 +170,13 @@ class Search extends Component {
 				items: items
 			})
 		}
-
 	}
 
    render() {
+		console.log(this.state)
+		if (this.state.searchTerm == "" && this.state.items.length == 0) {
+			this.load()
+		}
       return (
          <View style={Styles.searchScreen}>
             <SearchBar 
@@ -155,11 +193,17 @@ class Search extends Component {
                      this.state.items.map((item, i) => (
                         <ListItem
                            roundAvatar
-                           avatar={{uri:item.image_url}}
+                           avatar={{uri:item.image}}
                            key={i}
                            title={item.title} 
                            containerStyle={Styles.searchListItem}
-                           onPress={() => this.props.navigation.navigate('Board')}
+                           onPress={() => {
+										console.log(item)
+										this.props.setActiveBoard(item)
+										console.log("set active board")
+										this.props.navigation.navigate('Board')
+									}
+									}
                         />
                      ))
                   }
@@ -167,7 +211,7 @@ class Search extends Component {
             </ ScrollView>
          </View>
       )
-   }
+	}
 }
 
-export default connect(mapStateToProps)(Search)
+export default connect(mapStateToProps, mapDispatchToProps)(Search)
