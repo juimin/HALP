@@ -85,13 +85,18 @@ class Search extends Component {
 					}
 				});
 			});
+		} else {
+			this.setState({
+				searchTerm: "",
+				items: items
+			})
 		}
 	}
 	
 	search(text) {
 		// Search
 		if (text == "") {
-			this.load()
+			this.load();
 		} else {
 			// Perform the search
 			var items = []
