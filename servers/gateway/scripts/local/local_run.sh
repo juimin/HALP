@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-./services.sh
+./local_services.sh
 
 export GATEWAYPATH=$GOPATH/src/github.com/JuiMin/HALP/servers/gateway
 cd $GATEWAYPATH

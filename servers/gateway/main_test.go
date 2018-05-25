@@ -90,13 +90,13 @@ func TestGenerateMux(t *testing.T) {
 	os.Setenv("TLSKEY", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/privkey.pem")
 	os.Setenv("TLSCERT", os.Getenv("GOPATH")+"/src/github.com/JuiMin/HALP/servers/gateway/tls/fullchain.pem")
 	os.Setenv("SESSIONKEY", "spUPraqUgethu4AF?x")
-	cr, port, tlscert, tlskey, err := generateContextHandler()
+	cr, _, _, _, err := generateContextHandler()
 
 	if err != nil {
 		t.Errorf("There was a problem generating the cr")
 	}
 
-	corsHandler := generateMux(cr, tlscert, tlskey, port)
+	corsHandler := generateMux(cr)
 
 	if corsHandler == nil {
 		t.Errorf("CORS handler can't be nil")
