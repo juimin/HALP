@@ -64,6 +64,18 @@ export default class NewPost extends Component {
     //   ),
     // }
 
+    // ActionSheet demo
+    // <Button color={Theme.colors.primaryColor} 
+    //             onPress={this.showActionSheet} title="shiet"/>
+    //             <ActionSheet
+    //             ref={o => this.ActionSheet = o}
+    //             title={'make your choice:'}
+    //             options={['davin', 'derek', 'Cancel']}
+    //             cancelButtonIndex={2}
+    //             destructiveButtonIndex={1}
+    //             onPress={(index) => { /* do something */ }}
+    //             />
+
     //stupid way to send data back from child component without redux
     //pass returnData while navigating
     returnData(url, externalurl) {
@@ -120,17 +132,8 @@ export default class NewPost extends Component {
                      }
                   });
             }} 
-            title = "Camera Butt"/>
-            <Button color={Theme.colors.primaryColor} 
-                onPress={this.showActionSheet} title="shiet"/>
-                <ActionSheet
-                ref={o => this.ActionSheet = o}
-                title={'make your choice:'}
-                options={['davin', 'derek', 'Cancel']}
-                cancelButtonIndex={2}
-                destructiveButtonIndex={1}
-                onPress={(index) => { /* do something */ }}
-                />
+            title = "New Photo"/>
+            
             <HideableView hide={this.state.isHidden}><Image style={{height: 200, width: 100}} source = {this.state.source} /></HideableView>
         </View>
       );
