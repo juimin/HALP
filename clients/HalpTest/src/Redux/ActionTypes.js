@@ -2,8 +2,12 @@
 
 // FOR LOGGING IN & OUT
 export const LOGOUT = "LOGOUT";
-export const LOGIN = "LOGIN";
+export const SETTOKEN = "SETTOKEN";
 export const SETUSER = "SETUSER";
+export const SAVEPASSWORD = "SAVEPASSWORD";
+
+// BOARDS
+export const GETBOARD = "GETBOARD";
 
 // For SEARCH
 export const SEARCH = "SEARCH";

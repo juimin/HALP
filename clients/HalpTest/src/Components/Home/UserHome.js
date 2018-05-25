@@ -17,8 +17,9 @@ import Theme from '../../Styles/Theme';
 
 const mapStateToProps = (state) => {
 	return {
-      AuthToken: state.AuthReducer.authToken,
-		loggedIn: state.AuthReducer.loggedIn
+		authToken: state.AuthReducer.authToken,
+		password: state.AuthReducer.password,
+		user: state.AuthReducer.user
 	}
 }
 
@@ -28,7 +29,8 @@ class UserHome extends Component {
       return(
          <View style={Styles.home}>
             <Text>Dashboard for logged in User</Text>
-            <Text>{this.props.AuthToken}</Text>
+            <Text>{JSON.stringify(this.props.user)}</Text>
+            <Text>{JSON.stringify(this.props.password)}</Text>
          </View>
       )
    }

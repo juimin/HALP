@@ -1,5 +1,6 @@
 import { 
-   LOGOUT, LOGIN, SETUSER,
+   LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
+   GETBOARD,
    SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
@@ -8,9 +9,13 @@ import {
 } from './ActionTypes.js';
 
 // These are action creators, you can use these to create actions
-export const loginAction = (token) => ({type:LOGIN, payload: token})
+export const setTokenAction = (token) => ({type:SETTOKEN, payload: token})
 export const logoutAction = () => ({type:LOGOUT, payload: null})
 export const setUserAction = (usr) => ({type: SETUSER, payload: usr})
+export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass})
+
+// get board
+export const getBoard = (board) => ({type: GETBOARD, payload: board})
 
 // SEARCH PAGE
 export const searchPosts = term => ({type: SEARCH, searchTerm: term})
@@ -22,7 +27,7 @@ export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
 export default {
    // Home Screen actions
-   logoutAction, loginAction, setUserAction,
+   logoutAction, setTokenAction, setUserAction, savePasswordAction,
    // Search Actions
    searchPosts,
    // Subscriptions
