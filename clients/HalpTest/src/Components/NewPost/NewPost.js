@@ -19,10 +19,29 @@ import { API_URL } from '../../Constants/Constants';
 // import HALP compnents
 import CanvasTest from '../Canvas/CanvasTest'
 import HideableView from '../Helper/HideableView';
+import HomeScreen from '../Home/GuestHome';
+import HomeNav from '../Navigation/HomeNav';
+
 
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+const mapStateToProps = (state) => {
+	return {
+    AuthToken: state.AuthReducer.authToken,
+		loggedIn: state.AuthReducer.loggedIn
+	}
+}
+
+var mongoObjectId = () => {
+  var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+  return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
+      return (Math.random() * 16 | 0).toString(16);
+  }).toLowerCase();
+};
+
+const testboard = '5b077a0d0324ac00012a223a';
 
 var ImagePicker = require('react-native-image-picker');
 var options = {
@@ -38,14 +57,14 @@ var options = {
     //maxHeight: 480,
 }; 
 // Define the new Post
-export default class NewPost extends Component {
+class NewPost extends Component {
     constructor(props) {
         super(props);
         this.state = 
         {
           source: require('../../Images/davint.png'),
           isHidden: true,
-          imageURL: null,
+          imageURL: '',
           //add form elements to state
           board: '',
           title: '',
@@ -70,7 +89,7 @@ export default class NewPost extends Component {
         {
           source: require('../../Images/davint.png'),
           isHidden: true,
-          imageURL: null,
+          imageURL: '',
           //add form elements to state
           board: '',
           title: '',
@@ -104,7 +123,7 @@ export default class NewPost extends Component {
         this.errorMessages.title = '';
       }
 
-      if (this.state.caption.length == 0 && this.state.imageURL == null) {
+      if (this.state.caption.length == 0 && this.state.imageURL.length == 0) {
         this.errors.caption = true;
         this.errors.imageURL = true;
         this.errorMessages.caption = "Must have either image or caption";
@@ -120,8 +139,55 @@ export default class NewPost extends Component {
       return !errored
     }
 
-    //submit
+    //submit (use this.props.AuthToken)
+    //need (at the very least) author_id? how to get that
     submit = () => {
+      console.log('title', this.state.title);
+      console.log('imageURL', this.state.imageURL);
+      console.log('caption', this.state.caption);
+      console.log('board', this.state.board);
+      if (this.validate()) {
+        var x = fetch(API_URL + 'posts/new', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "title": this.state.title,
+            "image_url": this.state.imageURL,
+            "caption": this.state.caption,
+            "author_id": mongoObjectId(),
+            "board_id": this.state.board
+            })
+        }).then(response => {
+          if (response.status == 201) {
+            console.log("submitted new post")
+          } else {
+              console.log('response', response)
+              Alert.alert(
+                  'Post Error',
+                  'Please try again',
+                  [
+                   {text: 'OK', onPress: () => console.log('ok')},
+                  ]
+               )
+           }
+        }).catch(err => {
+           Alert.alert(
+              'Error getting response from server',
+              err,
+              [
+                {text: 'OK', onPress: () => console.log('ok')},
+              ]
+            )
+        })
+     } else {
+        this.setState(this.state)
+     }
+      
+      //console.log(this.props);
+      //this.props.navigation.navigate(HomeScreen); //doesn't work lol
     }
 
     takePiture = () => {
@@ -192,7 +258,7 @@ export default class NewPost extends Component {
     //image size is 1080 * 1536 /8
     render() {
       //once auth works, only render page if user is logged in
-      // if (this.state.imageURL != null) {
+      // if (this.state.imageURL.length == 0) {
       //   return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
       // }
 
@@ -205,8 +271,8 @@ export default class NewPost extends Component {
               style={{ height: 50, width: 100 }}
               mode='dropdown'
               onValueChange={(itemValue, itemIndex) => this.setState({board: itemValue})}>
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
+              <Picker.Item label="Java" value={testboard} />
+              <Picker.Item label="JavaScript" value={testboard} />
             </Picker>
             <FormLabel>Title *</FormLabel>
             <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.title = text}}/>
@@ -224,4 +290,4 @@ export default class NewPost extends Component {
    }
 }
 
-
+export default connect(mapStateToProps)(NewPost)
