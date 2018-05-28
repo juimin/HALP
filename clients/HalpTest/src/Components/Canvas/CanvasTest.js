@@ -43,8 +43,15 @@ const s3 = new AWS.S3({
 
 });
 var myBucket = 'halp-staging';
-var filename = 'hello.jpg'; //change to post id? either way this will be the uploaded image filename
-var uploadurl = 'https://' + myBucket + '.nyc3.digitaloceanspaces.com/'+ filename
+//generates something that resembles bson id
+var mongoObjectId = function () {
+  var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
+  return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function() {
+      return (Math.random() * 16 | 0).toString(16);
+  }).toLowerCase();
+};
+var filename = String(mongoObjectId()) + '.jpg'; //change to post id? either way this will be the uploaded image filename
+var uploadurl = 'https://' + myBucket + '.nyc3.digitaloceanspaces.com/'+ filename;
 
 export default class CanvasTest extends React.Component {
   constructor(props){
@@ -53,9 +60,6 @@ export default class CanvasTest extends React.Component {
       source: null,
       isHidden: false,
     };
-
-    this.upFile = this.upFile.bind(this)
-    this.uploadObject = this.uploadObject.bind(this)
   }
 
   upFile = (data) => {

@@ -3,7 +3,7 @@
 
 // Import required react components
 import React, { Component } from 'react';
-import { Button, View, Text, TouchableWithoutFeedback, Alert, Image, ScrollView} from 'react-native';
+import { Button, View, Text, TouchableWithoutFeedback, Alert, Image, ScrollView, Picker} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ActionSheet from 'react-native-actionsheet'
@@ -46,7 +46,82 @@ export default class NewPost extends Component {
           source: require('../../Images/davint.png'),
           isHidden: true,
           imageURL: null,
+          //add form elements to state
+          board: '',
+          title: '',
+          caption: '',
         };
+
+        this.errors = {
+          board: false,
+          title: false,
+          caption: false,
+        };
+
+        this.errorMessages = {
+          board: '',
+          title: '',
+          caption: '',
+        };
+    }
+
+    resetForm = () => {
+      this.state = 
+        {
+          source: require('../../Images/davint.png'),
+          isHidden: true,
+          imageURL: null,
+          //add form elements to state
+          board: '',
+          title: '',
+          caption: '',
+        };
+
+        this.errors = {
+          board: false,
+          title: false,
+          caption: false,
+          imageURL: false,
+        };
+
+        this.errorMessages = {
+          board: '',
+          title: '',
+          caption: '',
+          imageURL: '',
+        };
+    
+    }
+
+    validate = () => {
+      var errored = false;
+      if (this.state.title.length == 0) {
+        this.errors.title = true;
+        this.errorMessages.title = "Title cannot be left blank";
+        errored = true;
+      } else {
+        this.errors.title = false;
+        this.errorMessages.title = '';
+      }
+
+      if (this.state.caption.length == 0 && this.state.imageURL == null) {
+        this.errors.caption = true;
+        this.errors.imageURL = true;
+        this.errorMessages.caption = "Must have either image or caption";
+        this.errorMessages.imageURL = "Must have either image or caption";
+        errored = true;
+      } else {
+        this.errors.caption = false;
+        this.errors.imageURL = false;
+        this.errorMessages.caption = '';
+        this.errorMessages.imageURL = '';
+      }
+
+      return !errored
+    }
+
+    //submit
+    submit = () => {
     }
 
     takePiture = () => {
@@ -93,17 +168,6 @@ export default class NewPost extends Component {
     showActionSheet = () => {
         this.ActionSheet.show()
     }
-    // static navigationOptions = {
-    //   headerTitle: 'New Post',
-    //   headerLeft: (
-    //     // Add the Icon for canceling the Home
-    //     <Icon name="close" onPress={() => navigation.goBack(null)}/>
-    //   ),
-    //   headerRight: (
-    //     // Add the Icon for canceling the Home
-    //     <Button title="POST" onPress={() => navigation.goBack(null)}></Button>
-    //   ),
-    // }
 
     // ActionSheet demo
     // <Button color={Theme.colors.primaryColor} 
@@ -125,19 +189,37 @@ export default class NewPost extends Component {
       console.log("success:", this.state.imageURL);
       }
     
+    //image size is 1080 * 1536 /8
     render() {
       //once auth works, only render page if user is logged in
-      if (this.state.imageURL != null) {
-        return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
-      }
+      // if (this.state.imageURL != null) {
+      //   return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
+      // }
+
+      //for now just using other forms' style
+      //also need to generate list of picker.items for user's boards
       return(
-         <View style={Styles.newPostView}>
+         <ScrollView>
+            <Picker
+              selectedValue={this.state.board}
+              style={{ height: 50, width: 100 }}
+              mode='dropdown'
+              onValueChange={(itemValue, itemIndex) => this.setState({board: itemValue})}>
+              <Picker.Item label="Java" value="java" />
+              <Picker.Item label="JavaScript" value="js" />
+            </Picker>
+            <FormLabel>Title *</FormLabel>
+            <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.title = text}}/>
+            <FormValidationMessage>{this.errorMessages.title}</FormValidationMessage>
+            <HideableView hide={this.state.isHidden}><Image style={{width: 135, height: 192}} source = {this.state.source} /></HideableView>
             <Button color={Theme.colors.primaryColor}
                 onPress={this.takePiture} 
             title = "Upload Image"/>
-            
-            <HideableView hide={this.state.isHidden}><Image style={{height: 200, width: 100}} source = {this.state.source} /></HideableView>
-        </View>
+            <FormLabel>caption</FormLabel>
+            <FormInput onChangeText={(text) => {this.state.caption = text}}/>
+            <FormValidationMessage>{this.errorMessages.caption}</FormValidationMessage>
+            <Button color={Theme.colors.primaryColor} title="Post" onPress={this.submit}></Button>
+        </ScrollView>
       );
    }
 }
