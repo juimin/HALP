@@ -169,6 +169,8 @@ func generateMux(cr *handlers.ContextReceiver) *handlers.CORSHandler {
 	mux.HandleFunc("/posts/new", cr.NewPostHandler)
 	mux.HandleFunc("/posts/update", cr.UpdatePostHandler)
 	mux.HandleFunc("/posts/get", cr.GetPostHandler)
+	mux.HandleFunc("/posts/get/board", cr.GetPostByBoardHandler)
+	mux.HandleFunc("/posts/get/author", cr.GetPostByAuthorHandler)
 	mux.HandleFunc("/boards", cr.BoardsAllHandler)
 	mux.HandleFunc("/boards/single", cr.SingleBoardHandler)
 	mux.HandleFunc("/boards/updatepost", cr.UpdatePostCountHandler)
