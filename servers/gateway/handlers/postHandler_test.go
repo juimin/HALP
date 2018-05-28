@@ -424,3 +424,173 @@ func TestGetPostHandler(t *testing.T) {
 		}
 	}
 }
+
+func TestGetPostByAuthorHandler(t *testing.T) {
+
+	newPost := &posts.NewPost{
+		Title:    "PP",
+		ImageURL: "https://google.com",
+		Caption:  "Hello there",
+		AuthorID: bson.NewObjectId(),
+		BoardID:  bson.NewObjectId(),
+	}
+
+	cr := prepTestCR()
+
+	// Insert a test Post
+	insertedPost, err := cr.PostStore.Insert(newPost)
+
+	if err != nil {
+		t.Errorf("Error inserting a test post")
+	}
+
+	gph := http.HandlerFunc(cr.GetPostByAuthorHandler)
+
+	cases := []struct {
+		name         string
+		method       string
+		expectedCode int
+		handler      http.HandlerFunc
+		body         io.Reader
+		destination  string
+	}{
+		{
+			name:         "test getting a nonexistent post",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=507f1f77bcf86cd799439011",
+		},
+		{
+			name:         "test getting a valid post",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get/author?id=" + insertedPost.AuthorID.Hex(),
+		},
+		{
+			name:         "test getting an invalid id",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9",
+		},
+		{
+			name:         "test getting an invalid url parameter",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?hello=5ad7838d9",
+		},
+		{
+			name:         "test getting a post with invalid method POST",
+			method:       "PATCH",
+			expectedCode: http.StatusMethodNotAllowed,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
+		},
+	}
+	//CHANGE INVALID METHOD ABOVE to prevent test caching
+	for _, c := range cases {
+		recorder := httptest.NewRecorder()
+		req, err := http.NewRequest(c.method, c.destination, c.body)
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			c.handler.ServeHTTP(recorder, req)
+			if recorder.Code != c.expectedCode {
+				t.Errorf("%s Failed. Expected %d but got %d", c.name, c.expectedCode, recorder.Code)
+			}
+		}
+	}
+}
+
+func TestGetPostByBoardHandler(t *testing.T) {
+
+	newPost := &posts.NewPost{
+		Title:    "PP",
+		ImageURL: "https://google.com",
+		Caption:  "Hello there",
+		AuthorID: bson.NewObjectId(),
+		BoardID:  bson.NewObjectId(),
+	}
+
+	cr := prepTestCR()
+
+	// Insert a test Post
+	insertedPost, err := cr.PostStore.Insert(newPost)
+
+	if err != nil {
+		t.Errorf("Error inserting a test post")
+	}
+
+	gph := http.HandlerFunc(cr.GetPostByBoardHandler)
+
+	cases := []struct {
+		name         string
+		method       string
+		expectedCode int
+		handler      http.HandlerFunc
+		body         io.Reader
+		destination  string
+	}{
+		{
+			name:         "test getting a nonexistent post",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=507f1f77bcf86cd799439011",
+		},
+		{
+			name:         "test getting a valid post",
+			method:       "GET",
+			expectedCode: http.StatusAccepted,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=" + insertedPost.BoardID.Hex(),
+		},
+		{
+			name:         "test getting an invalid id",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9",
+		},
+		{
+			name:         "test getting an invalid url parameter",
+			method:       "GET",
+			expectedCode: http.StatusBadRequest,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?hello=5ad7838d9",
+		},
+		{
+			name:         "test getting a post with invalid method POST",
+			method:       "PATCH",
+			expectedCode: http.StatusMethodNotAllowed,
+			handler:      gph,
+			body:         nil,
+			destination:  "/posts/get?id=5ad7838d9137245e1228435d",
+		},
+	}
+	//CHANGE INVALID METHOD ABOVE to prevent test caching
+	for _, c := range cases {
+		recorder := httptest.NewRecorder()
+		req, err := http.NewRequest(c.method, c.destination, c.body)
+		if err != nil {
+			t.Errorf("%s Failed: Error %v", c.name, err)
+		} else {
+			c.handler.ServeHTTP(recorder, req)
+			if recorder.Code != c.expectedCode {
+				t.Errorf("%s Failed. Expected %d but got %d", c.name, c.expectedCode, recorder.Code)
+			}
+		}
+	}
+}
