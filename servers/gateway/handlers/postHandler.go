@@ -194,3 +194,47 @@ func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
+
+// GetPostByBoardHandler returns all the posts
+func (cr *ContextReceiver) GetPostByBoardHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		id := r.URL.Query().Get("id")
+		if len(id) == 0 || !bson.IsObjectIdHex(id) {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			boardid := bson.ObjectIdHex(id)
+			post, err := cr.PostStore.GetByBoardID(boardid)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.WriteHeader(http.StatusAccepted)
+			json.NewEncoder(w).Encode(post)
+
+		}
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// GetPostByAuthorHandler gets all the posts by the given author
+func (cr *ContextReceiver) GetPostByAuthorHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		id := r.URL.Query().Get("id")
+		if len(id) == 0 || !bson.IsObjectIdHex(id) {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			authorid := bson.ObjectIdHex(id)
+			posts, err := cr.PostStore.GetByAuthorID(authorid)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.WriteHeader(http.StatusAccepted)
+			json.NewEncoder(w).Encode(posts)
+
+		}
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
