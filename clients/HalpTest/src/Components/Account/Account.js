@@ -30,6 +30,7 @@ import Theme from '../../Styles/Theme';
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setTokenAction, setUserAction, savePasswordAction } from '../../Redux/Actions';
 
 const mapStateToProps = (state) => {
 	return {
@@ -37,6 +38,14 @@ const mapStateToProps = (state) => {
 		password: state.AuthReducer.password,
 		user: state.AuthReducer.user
 	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+   return {
+      addAuthToken: token => { dispatch(setTokenAction(token)) },
+      setUser: usr => { dispatch(setUserAction(usr)) },
+		savePassword: pass => { dispatch(savePasswordAction(pass))}
+   }
 }
 
 class Account extends Component {
@@ -67,7 +76,6 @@ class Account extends Component {
 						<Text>Sign Up</Text>
 					</Button>
 				</Container>
-			
 			);
 		}
 
@@ -87,13 +95,14 @@ class Account extends Component {
 									title: "Options"
 								},
 								buttonIndex => {
-									console.log(this.state)
+									this.props.addAuthToken("")
+									this.props.setUser(null)
+									this.props.savePassword("")
 									this.setState({
 										menu: {
 											selectedIndex: buttonIndex
 										}
 									});
-									console.log(this.state)
 								}
 							)}
 						>
@@ -115,4 +124,4 @@ class Account extends Component {
   }
 }
 
-export default connect(mapStateToProps)(Account)
+export default connect(mapStateToProps, mapDispatchToProps)(Account)
