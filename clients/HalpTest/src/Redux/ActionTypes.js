@@ -11,7 +11,6 @@ export const GETBOARD = "GETBOARD";
 export const SETBOARD = "SETBOARD";
 
 // For SEARCH
-export const SEARCH = "SEARCH";
 export const UPDATE = "UPDATE";
 export const GET_SUBSCRIPTIONS = "GET_SUBSCRIPTIONS";
 export const ADD_SUBSCRIPTIONS = "ADD_SUBSCRIPTIONS";

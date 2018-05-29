@@ -1,7 +1,6 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
    GETBOARD, SETBOARD,
-   SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS
@@ -17,9 +16,6 @@ export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass}
 // get board
 export const getBoard = (board) => ({type: GETBOARD, payload: board})
 export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
-
-// SEARCH PAGE
-export const searchPosts = term => ({type: SEARCH, searchTerm: term})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
