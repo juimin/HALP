@@ -21,9 +21,6 @@ class GuestHome extends Component {
    render() {
       return(
          <View style={Styles.home}>
-            <Button color={Theme.colors.primaryColor} title="Log in"
-               onPress={() => this.props.navigation.navigate('Login')}
-            />
             <Button color={Theme.colors.primaryColor} title="Sign Up"
                onPress={() => this.props.navigation.navigate('Signup')}
             />

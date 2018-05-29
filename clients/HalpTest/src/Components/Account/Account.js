@@ -54,10 +54,17 @@ class Account extends Component {
 		if (this.props.user == null) {
 			return(
 				<Container style={Styles.home}>
+					<Text>Returning User?</Text>
 					<Button rounded style={Styles.button} 
 						onPress={() => this.props.navigation.navigate('Login')}
 					>
 						<Text>Log In</Text>
+					</Button>
+					<Text>Like this app?</Text>
+					<Button rounded style={Styles.button} 
+						onPress={() => this.props.navigation.navigate('Signup')}
+					>
+						<Text>Sign Up</Text>
 					</Button>
 				</Container>
 			
