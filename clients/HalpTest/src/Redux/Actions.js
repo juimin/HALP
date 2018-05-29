@@ -3,7 +3,9 @@ import {
    GETBOARD, SETBOARD,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
-   GET_SUBSCRIPTIONS
+   GET_SUBSCRIPTIONS,
+   MAKE_POST,
+   PICTURE_SUCCESS
 
 } from './ActionTypes.js';
 
@@ -22,6 +24,10 @@ export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
 export const removeSubscription = sub => ({type: REMOVE_SUBSCRIPTIONS, payload: sub})
 export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
+//POSTS
+export const makePost = (post) => ({type: MAKE_POST, payload: post})
+export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pizza})
+
 export default {
    // Home Screen actions
    logoutAction, setTokenAction, setUserAction, savePasswordAction,
@@ -29,5 +35,8 @@ export default {
    // BOARD
    setActiveBoard,
    // Subscriptions
-   addSubscription, removeSubscription, getSubscriptions
+   addSubscription, removeSubscription, getSubscriptions,
+   // Posts
+   makePost,
+   setPictureSuccess
 }

@@ -11,6 +11,7 @@ Capstone Project: Providing a mobile solution for community assistance on everyd
 | iOS Client | -- |
 | Web Client | -- |
 | Web Site   | [Halp App Site](https://halpapp.github.io/) |
+| API Server | https://staging.halp.derekwang.net |
 
 ## Deployment Status
 

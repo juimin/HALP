@@ -44,6 +44,15 @@ export default StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
    },
+   
+   // New Post View
+   newPostView: { 
+        flex: 1, 
+        // backgroundColor: '#fff', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: 5
+    },
 
    searchScreen: {
       backgroundColor: Theme.colors.primaryBackgroundColor
@@ -93,6 +102,20 @@ export default StyleSheet.create({
    signinFormInput: {
       borderBottomColor: Theme.colors.inactiveTintColor
    },
+
+   boardPicker: {
+    height: 50,
+    width: 200,
+   },
+
+   buttonTheme: {
+    backgroundColor: Theme.colors.primaryColor,
+    alignSelf: 'center',
+    },
+
+    closeIcon: {
+        padding: 5
+    },
 
    settingTitle: {
       margin: 10,
