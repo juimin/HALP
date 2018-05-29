@@ -28,8 +28,6 @@ export default {
 
    // BOARD
    setActiveBoard,
-   // Search Actions
-   searchPosts,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions
 }
