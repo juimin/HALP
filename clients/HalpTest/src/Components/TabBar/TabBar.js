@@ -9,7 +9,11 @@ import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
 export default class TabBar extends Component {
-   renderItem = (route, index) => {
+    returnData2 = (board) => {
+        console.log("success returning board to TabBar.js navigator:", board);
+    }
+
+    renderItem = (route, index) => {
       const {
          navigation,
          jumpToIndex,
@@ -76,7 +80,7 @@ export default class TabBar extends Component {
          <TouchableWithoutFeedback
             key={route.key}
             style={Styles.navigationTab}
-            onPress={() => isNewPost ? navigation.navigate('NewPostModal') : jumpToIndex(index)}
+            onPress={() => isNewPost ? navigation.navigate('NewPostModal', {returnData2: this.returnData2.bind(this)}) : jumpToIndex(index)}
          >
             <View style={Styles.navigationTab}>
                <Icon style={{ color }} size={size + 7} name="add-circle"/>

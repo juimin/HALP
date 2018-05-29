@@ -14,30 +14,13 @@ import Theme from '../../Styles/Theme';
 
 // Export the Stack Navigator as a component
 export default StackNavigator({
-//    NewPost: {
-//       screen: (props) => <NewPost title="New Post"/>,
-//       navigationOptions: ({ navigation }) => ({
-//          headerTitle: 'New Post',
-//          headerLeft: (
-//             // Add the Icon for canceling the Home
-//             <Icon name="close" onPress={() => navigation.goBack(null)}/>
-//          ),
-//          headerRight: (
-//             // Add the Icon for canceling the Home
-//             <Button title="POST" onPress={() => navigation.goBack(null)}></Button>
-//          ),
-//       }),
-//    },
-//     Canvas: {
-//         screen: CanvasTest,
-//     },
     NewPost: {
         screen: NewPost,
         navigationOptions: ({ navigation }) => ({
             headerTitle: 'New Post',
             headerLeft: (
             // Add the Icon for canceling the Home
-            <Icon size={25} name="close" onPress={() => navigation.goBack(null)}/>
+            <Icon style = {Styles.closeIcon} size={25} name="close" onPress={() => navigation.goBack(null)}/>
             ),
             // headerRight: (
             // <Button title="POST" onPress={() => navigation.goBack(null)}></Button>

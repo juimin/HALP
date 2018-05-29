@@ -3,12 +3,13 @@
 
 // Import required react components
 import React, { Component } from 'react';
-import { Button, View, Text, TouchableWithoutFeedback, Alert, Image, ScrollView, Picker} from 'react-native';
+import { View, TouchableWithoutFeedback, Alert, Image, ScrollView } from 'react-native';
+import { Picker, Button, Text } from 'native-base';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ActionSheet from 'react-native-actionsheet'
 import ImageResizer from 'react-native-image-resizer';
-import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
+import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 
 
 // Import stylesheet and thematic settings
@@ -36,7 +37,6 @@ const mapStateToProps = (state) => {
 //user.favorites should contain list of boards
 //right now it's hardcoded but replace this later
 
-
 var mongoObjectId = () => {
   var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
   return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
@@ -45,6 +45,7 @@ var mongoObjectId = () => {
 };
 
 const testboard = '5b077a0d0324ac00012a223a';
+const testfavs = [testboard, '5b01b3017912ed0001434678']
 
 var ImagePicker = require('react-native-image-picker');
 var options = {
@@ -68,6 +69,7 @@ class NewPost extends Component {
           source: require('../../Images/davint.png'),
           isHidden: true,
           imageURL: '',
+          favorites: [],
           board: '',
           title: '',
           caption: '',
@@ -84,6 +86,14 @@ class NewPost extends Component {
           title: '',
           caption: '',
         };
+    }
+
+    componentWillMount() {
+      if (this.props.user) {
+        this.loadFavorites();
+        
+      }
+      //this.loadFavorites();
     }
 
     resetForm = () => {
@@ -149,13 +159,52 @@ class NewPost extends Component {
       return !errored
     }
 
+    //load boards based on user subscriptions
+    loadFavorites = () => {
+      var x = fetch(API_URL + 'boards', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then(response => {
+        if (response.status == 200) {
+          //array containing objects with board name/id
+          return response.json()
+        // } else {
+        //   Alert.alert("error getting user's favorites");
+        //   this.setState({favorites: []});
+        }
+      }).then(data => {
+          var favs = [];
+          if (this.props.user.favorites.length == 0) {
+            favs.push({
+              key:   testboard,
+              value: 'Your favorite boards will show up here!'
+            })
+          } else {
+            this.props.user.favorites.forEach((element) => {
+              //each element should be a boardID
+              data.forEach((item) => {
+                //each element should be a boardID
+                if (item.id == element) {
+                  favs.push({
+                    key:   item.id,
+                    value: item.title
+                  });
+                }
+              });
+            });
+          }
+          this.setState({favorites: favs});
+      }).catch(err => {
+        Alert.alert("Error getting user's favorites");
+        this.setState({favorites: []});
+      })
+    }
+
     //submit
     submit = () => {
-      console.log('current user', this.props.user)
-      console.log('title', this.state.title);
-      console.log('imageURL', this.state.imageURL);
-      console.log('caption', this.state.caption);
-      console.log('board', this.state.board);
       if (this.validate()) {
         var x = fetch(API_URL + 'posts/new', {
           method: 'POST',
@@ -173,9 +222,9 @@ class NewPost extends Component {
         }).then(response => {
           if (response.status == 201) {
             //Alert.alert('Post Success', 'Successfully submitted new post')
+            this.props.navigation.state.params.returnData2(this.state.board)
             this.props.navigation.goBack(null);
           } else {
-              console.log('response', response)
               Alert.alert(
                   'Post Error',
                   'Please try again',
@@ -198,10 +247,8 @@ class NewPost extends Component {
      }
     }
 
-    takePiture = () => {
+    takePicture = () => {
       ImagePicker.launchCamera(options, (response) => {
-        console.log('Response = ', response);
-      
         if (response.didCancel) {
           console.log('User cancelled image picker');
         }
@@ -209,8 +256,7 @@ class NewPost extends Component {
           console.log('ImagePicker Error: ', response.error);
         }
         else {
-          console.log('success');
-          console.log(response.height, response.width)
+          console.log('success! image HxW:', response.height, response.width)
           const { error, uri, originalRotation } = response
 
           if ( uri && !error ) {
@@ -231,7 +277,6 @@ class NewPost extends Component {
                 this.props.navigation.navigate('Canvas', {source: source, returnData: this.returnData.bind(this)});
               } ).catch( err => {
                 console.log( err )
-
                 return Alert.alert( 'Unable to resize the photo', 'Please try again!' )
               } )
           }
@@ -265,38 +310,46 @@ class NewPost extends Component {
     
     //image size is 1080 * 1536 so /8 to fit photo to display in the form
     render() {
-      if (this.props.user == null) {
+      if (!this.props.user) {
         return (
           <View style={Styles.home}>
             <Text>You must be logged in to make a post</Text>
           </View>
         )
       }
-      //for now just using other forms' style
-      //also need to generate list of picker.items for user's boards
+
+      let favItems = this.state.favorites.map( (f) => {
+        return <Picker.Item key={f['key']} value={f['key']} label={f['value']} />
+      });
+
+      // react-native button example - replaced by native-base buttons
+      // <Button color={Theme.colors.primaryColor}
+      //           onPress={this.takePicture} 
+      //       title = "Upload Image"/>
+
       return(
          <ScrollView>
             <Picker
               selectedValue={this.state.board}
-              style={{ height: 50, width: 200 }}
+              style={Styles.boardPicker}
               mode='dropdown'
-              onValueChange={(itemValue, itemIndex) => this.setState({board: itemValue})}>
+              onValueChange={ (fav) => ( this.setState({board:fav}) ) } >
               <Picker.Item label="Choose board" value='' />
-              <Picker.Item label="Testing" value={testboard} />
-              <Picker.Item label="Cooking" value='5b01b3017912ed0001434678' />
+              {favItems}
             </Picker>
             <FormValidationMessage>{this.errorMessages.board}</FormValidationMessage>
             <FormLabel>Title *</FormLabel>
             <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.title = text}}/>
             <FormValidationMessage>{this.errorMessages.title}</FormValidationMessage>
-            <HideableView hide={this.state.isHidden}><Image style={{width: 135, height: 192}} source = {this.state.source} /></HideableView>
-            <Button color={Theme.colors.primaryColor}
-                onPress={this.takePiture} 
-            title = "Upload Image"/>
+            <HideableView style={Styles.newPostView} hide={this.state.isHidden}><Image style={{width: 135, height: 192}} source = {this.state.source} /></HideableView>
+            <View style={Styles.newPostView}>
+            <Button rounded style={Styles.buttonTheme}
+                onPress={this.takePicture} 
+            ><Text>Upload Image</Text></Button></View>
             <FormLabel>Caption</FormLabel>
             <FormInput onChangeText={(text) => {this.state.caption = text}}/>
             <FormValidationMessage>{this.errorMessages.caption}</FormValidationMessage>
-            <Button color={Theme.colors.primaryColor} title="Post" onPress={this.submit}></Button>
+            <View style={Styles.newPostView}><Button rounded style={Styles.buttonTheme} onPress={this.submit}><Text>Post</Text></Button></View>
         </ScrollView>
       );
    }
