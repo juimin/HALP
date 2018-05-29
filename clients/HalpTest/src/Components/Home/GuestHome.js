@@ -27,9 +27,9 @@ class GuestHome extends Component {
             <Button color={Theme.colors.primaryColor} title="Sign Up"
                onPress={() => this.props.navigation.navigate('Signup')}
             />
-            <Button color={Theme.colors.primaryColor} title="Canvas Test"
+            {/* <Button color={Theme.colors.primaryColor} title="Canvas Test"
                onPress={() => this.props.navigation.navigate('Canvas')}
-            />
+            /> */}
          </View>
       )
    }
