@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, View, Text } from 'react-native';
+import { ScrollView, Button, Switch, Slider, Text } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -11,9 +11,17 @@ import Theme from '../../Styles/Theme'
 export default class Settings extends Component {
    render() {
       return (
-         <View style={Styles.home}>
-            <Text>Settings for logged in User</Text>
-         </View>
+         <ScrollView >
+            <Text style={Styles.settingTitle}>Toggle Settings</Text>
+            <Switch />
+            <Switch />
+            <Switch />
+            <Switch />
+            <Text style={Styles.settingTitle}>Other Settings Settings</Text>
+            <Slider />
+            <Slider />
+            <Slider />
+         </ScrollView>
       )
    }
 }

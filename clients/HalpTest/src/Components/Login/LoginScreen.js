@@ -13,14 +13,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { loginAction, setUserAction } from '../../Redux/Actions';
+import { setTokenAction, setUserAction, savePasswordAction } from '../../Redux/Actions';
 
 const endpoint = "sessions"
 
 const mapDispatchToProps = (dispatch) => {
    return {
-      addAuthToken: token => { dispatch(loginAction(token)) },
-      setUser: usr => { dispatch(setUserAction(usr)) }
+      addAuthToken: token => { dispatch(setTokenAction(token)) },
+      setUser: usr => { dispatch(setUserAction(usr)) },
+		savePassword: pass => { dispatch(savePasswordAction(pass))}
    }
 }
 
@@ -38,7 +39,6 @@ class LoginScreen extends Component {
    }
 
    login() {
-      console.log("something should happen...")
       fetch(API_URL + endpoint, {
          method: 'POST',
          headers: {
@@ -48,18 +48,26 @@ class LoginScreen extends Component {
          body: JSON.stringify(this.state)
       }).then(response => {
          if (response.status == 202) {
+				// Save token and password for later use
             this.props.addAuthToken(response.headers.get("authorization"))
-            console.log
-            this.props.navigation.goBack()
+            this.props.savePassword(this.state.password)
+            return response.json()
          } else {
             // Something went wrong with the server
             Alert.alert(
                'Sign Up Error',
-               response.status.toString(),
+               'Sign In Error: Invalid Credentials',
                [
                   {text: 'OK', onPress: () => console.log('OK Pressed')},
                ]
             )
+            return null
+         }
+      }).then(user => {
+         if (user != null) {
+            // Save the user to the thing
+            this.props.setUser(user)
+            this.props.navigation.goBack()
          }
       }).catch(err => {
          Alert.alert(
@@ -68,7 +76,7 @@ class LoginScreen extends Component {
             [
               {text: 'OK', onPress: () => console.log('OK Pressed')},
             ]
-          )
+			)
       })
    }
 

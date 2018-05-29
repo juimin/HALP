@@ -79,7 +79,7 @@ export default class TabBar extends Component {
             onPress={() => isNewPost ? navigation.navigate('NewPostModal') : jumpToIndex(index)}
          >
             <View style={Styles.navigationTab}>
-               <Icon style={{ color }} size={size + 10} name="add-circle"/>
+               <Icon style={{ color }} size={size + 7} name="add-circle"/>
             </View>
          </TouchableWithoutFeedback>
       );

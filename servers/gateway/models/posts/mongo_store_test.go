@@ -9,6 +9,21 @@ import (
 	mgo "gopkg.in/mgo.v2"
 )
 
+func TestGetAll(t *testing.T) {
+	conn, err := mgo.Dial("localhost:27017")
+
+	if err != nil {
+		t.Errorf("Dialing Mongo Failed: %v", err)
+	}
+
+	ms := NewMongoStore(conn, "test_db_board", "test_col_board")
+
+	_, err = ms.GetAll()
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+}
+
 func TestNewMongoStore(t *testing.T) {
 
 	ms, err := mgo.Dial("localhost:27017")

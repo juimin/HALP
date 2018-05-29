@@ -100,5 +100,11 @@ export default StyleSheet.create({
 
    signinFormInput: {
       borderBottomColor: Theme.colors.inactiveTintColor
+   },
+
+   settingTitle: {
+      margin: 10,
+      fontSize: 20,
+      color: 'black'
    }
 });

@@ -29,10 +29,13 @@ import { bindActionCreators } from 'redux';
 
 const mapStateToProps = (state) => {
 	return {
-    AuthToken: state.AuthReducer.authToken,
-		loggedIn: state.AuthReducer.loggedIn
+    user: state.AuthReducer.user
 	}
 }
+
+//user.favorites should contain list of boards
+//right now it's hardcoded but replace this later
+
 
 var mongoObjectId = () => {
   var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
@@ -65,7 +68,6 @@ class NewPost extends Component {
           source: require('../../Images/davint.png'),
           isHidden: true,
           imageURL: '',
-          //add form elements to state
           board: '',
           title: '',
           caption: '',
@@ -90,7 +92,6 @@ class NewPost extends Component {
           source: require('../../Images/davint.png'),
           isHidden: true,
           imageURL: '',
-          //add form elements to state
           board: '',
           title: '',
           caption: '',
@@ -136,12 +137,21 @@ class NewPost extends Component {
         this.errorMessages.imageURL = '';
       }
 
+      if (this.state.board.length == 0) {
+        this.errors.board = true;
+        this.errorMessages.board = "Choose a board to post on";
+        errored = true;
+      } else {
+        this.errors.board = false;
+        this.errorMessages.board = false;
+      }
+
       return !errored
     }
 
-    //submit (use this.props.AuthToken)
-    //need (at the very least) author_id? how to get that
+    //submit
     submit = () => {
+      console.log('current user', this.props.user)
       console.log('title', this.state.title);
       console.log('imageURL', this.state.imageURL);
       console.log('caption', this.state.caption);
@@ -157,12 +167,13 @@ class NewPost extends Component {
             "title": this.state.title,
             "image_url": this.state.imageURL,
             "caption": this.state.caption,
-            "author_id": mongoObjectId(),
+            "author_id": this.props.user.id,
             "board_id": this.state.board
             })
         }).then(response => {
           if (response.status == 201) {
-            console.log("submitted new post")
+            //Alert.alert('Post Success', 'Successfully submitted new post')
+            this.props.navigation.goBack(null);
           } else {
               console.log('response', response)
               Alert.alert(
@@ -185,9 +196,6 @@ class NewPost extends Component {
      } else {
         this.setState(this.state)
      }
-      
-      //console.log(this.props);
-      //this.props.navigation.navigate(HomeScreen); //doesn't work lol
     }
 
     takePiture = () => {
@@ -255,25 +263,29 @@ class NewPost extends Component {
       console.log("success:", this.state.imageURL);
       }
     
-    //image size is 1080 * 1536 /8
+    //image size is 1080 * 1536 so /8 to fit photo to display in the form
     render() {
-      //once auth works, only render page if user is logged in
-      // if (this.state.imageURL.length == 0) {
-      //   return(<Image style={{height: 320, width: 150}} source = {this.state.source} />)
-      // }
-
+      if (this.props.user == null) {
+        return (
+          <View style={Styles.home}>
+            <Text>You must be logged in to make a post</Text>
+          </View>
+        )
+      }
       //for now just using other forms' style
       //also need to generate list of picker.items for user's boards
       return(
          <ScrollView>
             <Picker
               selectedValue={this.state.board}
-              style={{ height: 50, width: 100 }}
+              style={{ height: 50, width: 200 }}
               mode='dropdown'
               onValueChange={(itemValue, itemIndex) => this.setState({board: itemValue})}>
-              <Picker.Item label="Java" value={testboard} />
-              <Picker.Item label="JavaScript" value={testboard} />
+              <Picker.Item label="Choose board" value='' />
+              <Picker.Item label="Testing" value={testboard} />
+              <Picker.Item label="Cooking" value='5b01b3017912ed0001434678' />
             </Picker>
+            <FormValidationMessage>{this.errorMessages.board}</FormValidationMessage>
             <FormLabel>Title *</FormLabel>
             <FormInput style={Styles.signinFormInput} onChangeText={(text) => {this.state.title = text}}/>
             <FormValidationMessage>{this.errorMessages.title}</FormValidationMessage>
@@ -281,7 +293,7 @@ class NewPost extends Component {
             <Button color={Theme.colors.primaryColor}
                 onPress={this.takePiture} 
             title = "Upload Image"/>
-            <FormLabel>caption</FormLabel>
+            <FormLabel>Caption</FormLabel>
             <FormInput onChangeText={(text) => {this.state.caption = text}}/>
             <FormValidationMessage>{this.errorMessages.caption}</FormValidationMessage>
             <Button color={Theme.colors.primaryColor} title="Post" onPress={this.submit}></Button>
