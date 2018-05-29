@@ -2,8 +2,7 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { ScrollView, View} from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { ScrollView } from 'react-native';
 import {
 	Container,
 	Right,
@@ -21,8 +20,8 @@ import {
 	ActionSheet,
 } from 'native-base';
 
-// Import React Native Elements
-import { ButtonGroup } from 'react-native-elements';
+// Import Component pieces
+import LoginScreen from './LoginScreen';
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
@@ -62,20 +61,7 @@ class Account extends Component {
    render() {
 		if (this.props.user == null) {
 			return(
-				<Container style={Styles.home}>
-					<Text>Returning User?</Text>
-					<Button rounded style={Styles.button} 
-						onPress={() => this.props.navigation.navigate('Login')}
-					>
-						<Text>Log In</Text>
-					</Button>
-					<Text>Like this app?</Text>
-					<Button rounded style={Styles.button} 
-						onPress={() => this.props.navigation.navigate('Signup')}
-					>
-						<Text>Sign Up</Text>
-					</Button>
-				</Container>
+				<LoginScreen {...this.props} />
 			);
 		}
 
