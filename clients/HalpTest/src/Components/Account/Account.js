@@ -3,6 +3,10 @@
 // Import react components
 import React, { Component } from 'react';
 import { ScrollView, View } from 'react-native';
+
+// For the tabs
+import Saved from './AccountTabs/Saved';
+
 import {
 	Container,
 	Right,
@@ -126,18 +130,23 @@ class Account extends Component {
 							<Text>Comments</Text>
 						</Col>
 					</Grid>
-					<Tabs initialPage={1} tabStyle={Styles.allTabs}>
-					<Tab heading="Tab1" tabStyle={Styles.eachTab}>
+					<Tabs initialPage={0} tabStyle={Styles.allTabs}>
+					<Tab heading="Saved" tabStyle={Styles.eachTab}>
 						<View>
-							<Text>FUCKKKK</Text>
+							<Saved />
 						</View>
 					</Tab>
-					<Tab heading="Tab2" tabStyle={Styles.eachTab}>
+					<Tab heading="Posts" tabStyle={Styles.eachTab}>
 						<View>
 							<Text>FUCKKKK2</Text>
 						</View>
 					</Tab>
-					<Tab heading="Tab3" tabStyle={Styles.eachTab}>
+					<Tab heading="Comments" tabStyle={Styles.eachTab}>
+						<View>
+							<Text>FUCKKKK3</Text>
+						</View>
+					</Tab>
+					<Tab heading="History" tabStyle={Styles.eachTab}>
 						<View>
 							<Text>FUCKKKK3</Text>
 						</View>

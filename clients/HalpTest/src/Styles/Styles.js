@@ -171,5 +171,30 @@ export default StyleSheet.create({
    button: {
       backgroundColor: Theme.colors.primaryColor,
       alignSelf: "center",
+   },
+
+   savedNothing: {
+     alignItems: 'center',
+     width: "100%"
+   },
+
+   savedSomething: {
+     alignItems: 'center',
+     width: "100%"
+   },
+
+   tabImages: {
+       width: null, 
+       flex: 1
+   },
+
+   tabHeader: {
+
+   },
+   
+   tabCard: {
+      flex: 1,
+      height: 200,
+      width: "95%"
    }
 });
