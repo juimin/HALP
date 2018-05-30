@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 
 // Default Thematic Coloring so you can use it in multiple objects
 import Theme from './Theme';
+import Styles from './Styles';
 
 // Generate the stylesheet
 export default StyleSheet.create({
@@ -44,6 +45,15 @@ export default StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
    },
+   
+   // New Post View
+   newPostView: { 
+        flex: 1, 
+        // backgroundColor: '#fff', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: 5
+    },
 
    searchScreen: {
       backgroundColor: Theme.colors.primaryBackgroundColor
@@ -84,5 +94,106 @@ export default StyleSheet.create({
       marginLeft: 0,
       width: "100%",
       padding: 0
+   },
+
+   accountStatBar: {
+      height: "40%"
+   },
+
+   signinFormInput: {
+      borderBottomColor: Theme.colors.inactiveTintColor
+   },
+
+   boardPicker: {
+    height: 50,
+    width: 200,
+   },
+
+   buttonTheme: {
+    backgroundColor: Theme.colors.primaryColor,
+    alignSelf: 'center',
+    },
+
+    closeIcon: {
+        padding: 5
+    },
+
+   settingTitle: {
+      margin: 10,
+      fontSize: 20,
+      color: 'black'
+   },
+
+   accountThumbnail: {
+      marginLeft: "20%",
+      marginTop: "25%"
+   },
+
+   accountTitle: {
+      marginLeft: "5%",
+   },
+
+   accountHeader: {
+      backgroundColor: Theme.colors.secondaryColor,
+      borderBottomColor: Theme.colors.secondaryColor
+   },
+
+    boardHeader: {
+        marginLeft: 0,
+        width: "100%",
+        padding: 0,
+        backgroundColor: Theme.colors.secondaryColor,
+        borderBottomColor: Theme.colors.secondaryColor
+    },
+
+    boardSubs: {
+        color: Theme.colors.secondaryTextColor
+    },
+
+    boardDesc: {
+        textAlign: 'left'
+    },
+
+    boardSubButton: {
+        alignSelf: 'flex-end',
+    },
+
+    subscribeButtonColor: {
+        marginTop: "3%",
+        backgroundColor: Theme.colors.primaryColor,
+        marginLeft: "3%",
+        height: "80%",
+        justifyContent: 'center'
+    },
+
+    subscribeButton: {
+        marginTop: "3%",
+        marginLeft: "3%",
+        backgroundColor: "gray",
+        height: "80%",
+        justifyContent: 'center'
+    },
+
+    postThumb: {
+        width: 50,
+        height: 50,
+    },
+
+    compactPostText: {
+        textAlign: 'left',
+    },
+
+    cardButton: {
+        width: '75%',
+    },
+
+    largePost: {
+      height: 350,
+    },
+
+    button: {
+      backgroundColor: Theme.colors.primaryColor,
+      alignSelf: "center",
    }
+   
 });

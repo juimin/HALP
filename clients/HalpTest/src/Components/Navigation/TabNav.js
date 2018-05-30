@@ -33,5 +33,6 @@ export default TabNavigator(
    {
       tabBarPosition: 'bottom',
       tabBarComponent: TabBar,
+      swipeEnabled: false,
    }
 );

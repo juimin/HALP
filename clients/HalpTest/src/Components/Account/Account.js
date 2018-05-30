@@ -2,51 +2,113 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { Button, ScrollView, View, Text } from 'react-native';
-import { TabNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { ScrollView } from 'react-native';
+import {
+	Container,
+	Right,
+	Body,
+	Left,
+	Title,
+	Subtitle,
+	Header,
+	Button,
+	Icon,
+	Thumbnail,
+	FooterTab,
+	Content,
+	Text,
+	ActionSheet,
+} from 'native-base';
 
-// Import React Native Elements
-import { ButtonGroup, Card } from 'react-native-elements';
+// Import Component pieces
+import LoginScreen from './LoginScreen';
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
+// Import redux
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setTokenAction, setUserAction, savePasswordAction } from '../../Redux/Actions';
 
-export default class Account extends Component {
+const mapStateToProps = (state) => {
+	return {
+		authToken: state.AuthReducer.authToken,
+		password: state.AuthReducer.password,
+		user: state.AuthReducer.user
+	}
+}
 
-   constructor()  {
-      super()
+const mapDispatchToProps = (dispatch) => {
+   return {
+      addAuthToken: token => { dispatch(setTokenAction(token)) },
+      setUser: usr => { dispatch(setUserAction(usr)) },
+		savePassword: pass => { dispatch(savePasswordAction(pass))}
+   }
+}
+
+class Account extends Component {
+
+   constructor(props) {
+      super(props)
       this.state = {
-         selectedIndex: 0
+			menu: {
+				selectedIndex: -1
+			}
       }
-      this.switchSelection = this.switchSelection.bind(this)
-   }
-
-   switchSelection(selectedIndex) {
-      // Set the index so that the component knows where we are
-      this.setState({selectedIndex})
-   }
+	}
 
    render() {
-      const { selectedIndex } = this.state  
+		// iF THE USER IS NOT SIGNED IN...
+		if (this.props.user == null) {
+			return(
+				<LoginScreen {...this.props} />
+			);
+		}
+
       return (
-         <View>
-            <Card title="Test Card" style={Styles.accountHeader}>
-               
-            </Card>
-            <ButtonGroup
-               onPress={this.switchSelection}
-               selectedIndex={selectedIndex}
-               buttons={['Saved', 'Posts', 'Comments', 'History']}
-               containerStyle={Styles.accountNavButtons}
-            />
-            <ScrollView>
-               {
-                  // Apend cards here
-                }
-            </ScrollView>
-         </View>
+        <Container>
+			  	<Header style={Styles.accountHeader}>	
+					<Right>
+						<Button transparent>
+							<Icon name='create' />
+						</Button>
+						<Button transparent
+							onPress={() =>
+							ActionSheet.show(
+								{
+									options: ['Log Out' , 'Cancel'],
+									cancelButtonIndex: 1,
+									title: "Options"
+								},
+								buttonIndex => {
+									this.props.addAuthToken("")
+									this.props.setUser(null)
+									this.props.savePassword("")
+									this.setState({
+										menu: {
+											selectedIndex: buttonIndex
+										}
+									});
+								}
+							)}
+						>
+							<Icon name='more' />
+						</Button>
+					</Right>
+				</Header>
+				<Header span style={Styles.accountHeader}>
+					<Left>
+					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"}} />
+					</Left>
+					<Body style={Styles.accountTitle}>
+						<Title>Name</Title>
+						<Subtitle>Filler</Subtitle>
+					</Body>
+				</Header>
+        </Container>
       )
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Account)
