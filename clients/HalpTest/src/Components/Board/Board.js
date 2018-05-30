@@ -93,15 +93,16 @@ class Board extends Component {
 
 	render() {
 
-		let postItems = this.state.posts.map( (post) => {
+		let postItems = this.state.posts.reverse().map( (post, i) => {
 			console.log(post);
-			return <LargePost key={post.id} post={post} />
+			return <LargePost key={i} post={post} />
 		  });
 
 		return (
 			<ScrollView>
 			  	<Header style={Styles.boardHeader}>	
 					<Right>
+						<SubscribeButton user={this.props.user} board={this.props.activeBoard} subbed={this.isSubscribed()} authToken={this.props.authToken} returnData={this.returnData.bind(this)}/>
 						<Button transparent>
 							<Icon name='create' />
 						</Button>
@@ -128,15 +129,15 @@ class Board extends Component {
 						</Button>
 					</Right>
 				</Header>
-				<Header span style={Styles.boardHeader2}>
+				<Header span style={Styles.boardHeader}>
 					<Left>
 					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"}} />
 					</Left>
 					<Body style={Styles.accountTitle}>
 						<Title>{this.props.activeBoard.title}</Title>
-						<Right style={Styles.boardSubButton}>
+						{/* <Right style={Styles.boardSubButton}>
 							<SubscribeButton user={this.props.user} board={this.props.activeBoard} subbed={this.isSubscribed()} authToken={this.props.authToken} returnData={this.returnData.bind(this)}/>
-						</Right> 
+						</Right>  */}
 						<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers</Subtitle>
 						<Subtitle style={Styles.boardDesc}>{this.props.activeBoard.description}</Subtitle>
 					</Body>

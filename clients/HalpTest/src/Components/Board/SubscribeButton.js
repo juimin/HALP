@@ -106,17 +106,17 @@ export default class SubscribeButton extends Component {
     render() {
         if (!this.props.user) {
             return(
-                <Button style={Styles.subscribeButton} onPress={() => console.log(this.props.user)}><Text>Not Logged In</Text></Button>
+                <Button disabled iconLeft style={Styles.subscribeButton}><Icon type="MaterialIcons" name="add" /><Text>Subscribe</Text></Button>
             )
         }
         if (this.state.subscribed) {
             return (
-                <Button style={Styles.subscribeButton} onPress={() => this.unsubscribe()}><Icon type="MaterialIcons" name="remove" /><Text>Unsubscribe</Text></Button>
+                <Button iconLeft style={Styles.subscribeButtonColor} onPress={() => this.unsubscribe()}><Icon type="MaterialIcons" name="remove" /><Text>Unsubscribe</Text></Button>
             )
         }
         
         return (
-            <Button style={Styles.subscribeButton} onPress={() => this.subscribe()}><Icon type="MaterialIcons" name="add" /><Text>Subscribe</Text></Button>
+            <Button iconLeft style={Styles.subscribeButtonColor} onPress={() => this.subscribe()}><Icon type="MaterialIcons" name="add" /><Text>Subscribe</Text></Button>
         )
     }
 

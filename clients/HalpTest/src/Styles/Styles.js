@@ -141,14 +141,8 @@ export default StyleSheet.create({
         marginLeft: 0,
         width: "100%",
         padding: 0,
-        backgroundColor: Theme.colors.primaryColor,
-    },
-
-    boardHeader2: {
-        marginLeft: 0,
-        width: "100%",
-        padding: 0,
-        backgroundColor: Theme.colors.primaryColor,
+        backgroundColor: Theme.colors.secondaryColor,
+        borderBottomColor: Theme.colors.secondaryColor
     },
 
     boardSubs: {
@@ -163,10 +157,12 @@ export default StyleSheet.create({
         alignSelf: 'flex-end',
     },
 
+    subscribeButtonColor: {
+        backgroundColor: Theme.colors.primaryColor,
+    },
+
     subscribeButton: {
-        padding: 5,
-        height: '100%',
-        width: '95%'
+
     },
 
     postThumb: {
@@ -178,8 +174,12 @@ export default StyleSheet.create({
         textAlign: 'left',
     },
 
+    cardButton: {
+        width: '75%',
+    },
+
     largePost: {
-        height: 400,
+      height: 350,
     },
 
     button: {
