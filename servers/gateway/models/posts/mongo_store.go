@@ -99,7 +99,7 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 func (s *MongoStore) GetLastN(n int) ([]*Post, error) {
 	var results []*Post
 	col := s.session.DB(s.dbname).C(s.colname)
-	if err := col.Find(bson.M{}).Sort("TimeCreated").Limit(n).All(&results); err != nil {
+	if err := col.Find(bson.M{}).Sort("-time_created").Limit(n).All(&results); err != nil {
 		return nil, fmt.Errorf("Error getting the last N posts %v", err)
 	}
 	return results, nil
