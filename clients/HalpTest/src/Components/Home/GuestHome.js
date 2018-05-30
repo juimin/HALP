@@ -22,17 +22,10 @@ import Theme from '../../Styles/Theme';
 
 const mapStateToProps = state => {
     return {
-        boards: state.BoardsReducer.items,
-        loading: state.BoardsReducer.loading,
-        error: state.BoardsReducer.error
+        boards: state.BoardReducer.boards,
+        activeBoard: state.BoardReducer.activeBoard
     };
 };
-
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         fetchBoards: () => { dispatch(fetchBoards()) } 
-//     };
-// };
 
 class HardPosts extends Component {
     render() {
@@ -64,36 +57,8 @@ class BoardsList extends React.Component {
             <HardPosts id={3} upvotes={56} downvotes={12} comments={75} title="How hot is the hot potato?" author_id="jumbotron" board_id="Potatoes" time_created={40} image_url="https://scontent.fsea1-1.fna.fbcdn.net/v/t1.0-1/p200x200/14291794_1171930419548193_8185068610699574818_n.jpg?_nc_cat=0&oh=392bea7d0e4a1dc83b5bd4b45f230ec2&oe=5BC3F8E9&efg=eyJhZG1pc3Npb25fY29udHJvbCI6MCwidXBsb2FkZXJfaWQiOiI3OTAxMjc0Mjc3Mjg0OTYifQ%3D%3D" />
             <HardPosts id={4} upvotes={809} downvotes={7} comments={1} title="Where is Carmen San Diego?" author_id="rickDsanchez" board_id="Where Ya At?" time_created={67} image_url="https://images.rapgenius.com/78844aada7bacd1807df3c54a34462da.372x450x1.jpg" />
             <HardPosts id={5} upvotes={34} downvotes={5} comments={58} title="Where Waldo at?" author_id="mortymcfly" board_id="Where Ya At?" time_created={80} image_url="https://static1.squarespace.com/static/56438e3fe4b0c2d5ac1d4d26/5643945ae4b0eadf5c6537e9/5664d039e4b058c26c239306/1525966385398/maps_troy.jpg?format=1500w" />
-            <HardPosts id={5} upvotes={34} downvotes={5} comments={58} title={/*console.log("pepe", (boards.length != 0) ? boards[0].title : "fuck me" )*/console.log("testes", boards)} author_id="mortymcfly" board_id="Where Ya At?" time_created={80} image_url="https://static1.squarespace.com/static/56438e3fe4b0c2d5ac1d4d26/5643945ae4b0eadf5c6537e9/5664d039e4b058c26c239306/1525966385398/maps_troy.jpg?format=1500w" />
         </ScrollView>
       )
     }
 }
 export default connect(mapStateToProps)(BoardsList);
-  
-// export default PostsList;
-
-  // Import redux
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
-
-// // Export the default class
-// class GuestHome extends Component {
-//    render() {
-//       return(
-//          <View style={Styles.home}>
-//             <Button color={Theme.colors.primaryColor} title="Log in"
-//                onPress={() => this.props.navigation.navigate('Login')}
-//             />
-//             <Button color={Theme.colors.primaryColor} title="Sign Up"
-//                onPress={() => this.props.navigation.navigate('Signup')}
-//             />
-//             <Button color={Theme.colors.primaryColor} title="Canvas Test"
-//                onPress={() => this.props.navigation.navigate('Canvas')}
-//             />
-//          </View>
-//       )
-//    }
-// }
-
-// export default GuestHome

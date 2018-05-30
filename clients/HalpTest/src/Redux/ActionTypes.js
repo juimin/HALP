@@ -7,8 +7,8 @@ export const SETUSER = "SETUSER";
 export const SAVEPASSWORD = "SAVEPASSWORD";
 
 // BOARDS
-export const GETBOARD = "GETBOARD";
-export const SETBOARD = "SETBOARD";
+export const ADDBOARD = "ADDBOARD";
+export const SETACTIVEBOARD = "SETACTIVEBOARD";
 
 // For SEARCH
 export const UPDATE = "UPDATE";

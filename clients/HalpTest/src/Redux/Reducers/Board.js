@@ -1,4 +1,6 @@
-import { GETBOARD, SETBOARD } from '../ActionTypes';
+import { 
+	ADDBOARD, SETACTIVEBOARD
+} from '../ActionTypes';
 
 const initialState = {
    boards: {},
@@ -7,13 +9,13 @@ const initialState = {
 
 export default (state=initialState, action) => {
    switch(action.type) {
-      case GETBOARD:
+      case ADDBOARD:
          var b = state.boards
          b[action.payload.key] = action.payload.board
          return Object.assign({}, state, {
             boards: b
          })
-      case SETBOARD:
+      case SETACTIVEBOARD:
          return Object.assign({}, state, {
             activeBoard: action.payload
          })

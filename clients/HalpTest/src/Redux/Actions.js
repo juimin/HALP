@@ -1,6 +1,6 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
-   GETBOARD, SETBOARD,
+   ADDBOARD, SETACTIVEBOARD,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
@@ -19,8 +19,8 @@ export const setUserAction = (usr) => ({type: SETUSER, payload: usr})
 export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass})
 
 // get board
-export const getBoard = (board) => ({type: GETBOARD, payload: board})
-export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
+export const addBoard = (board) => ({type: ADDBOARD, payload: board})
+export const setActiveBoard = (board) => ({type: SETACTIVEBOARD, payload: board})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
@@ -32,7 +32,6 @@ export const fetchBoardsBeginAction = () => ({type: FETCH_BOARDS_BEGIN})
 export const fetchBoardsSuccessAction = (boards) => ({type: FETCH_BOARDS_SUCCESS, payload: boards })
 export const fetchBoardsFailiureAction = (error) => ({type: FETCH_BOARDS_FAILIURE, payload: error })
 
-
 //POSTS
 export const makePost = (post) => ({type: MAKE_POST, payload: post})
 export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pizza})
@@ -40,9 +39,8 @@ export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pi
 export default {
    // Home Screen actions
    logoutAction, setTokenAction, setUserAction, savePasswordAction,
-
    // BOARD
-   setActiveBoard,
+   addBoard, setActiveBoard,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // HomeScreen Boards
