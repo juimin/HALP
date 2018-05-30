@@ -112,6 +112,9 @@ class HomeScreen extends Component {
 
    // Here we should run initialization scripts
    render() {
+		console.log((this.props.posts.length > 0) ? this.props.posts[0] : this.props.posts)
+		console.log(this.props.posts.length)
+		console.log((this.props.posts.length > 1) ? this.props.posts[1] : this.props.posts)
       // This will be the same any user
       return (
          // <GuestHome {...this.props} />
