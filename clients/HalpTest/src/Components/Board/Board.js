@@ -140,12 +140,14 @@ class Board extends Component {
 					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"}} />
 					</Left>
 					<Body style={Styles.accountTitle}>
-						<Title>{this.props.activeBoard.title}</Title>
 						<View flexDirection={"row"}>
-							<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers   </Subtitle>
-							<Subtitle style={{backgroundColor:"gray"}} onPress={() => {console.log("Potato")}}>
-								Subscribe
-							</Subtitle>
+							<View flexDirection={"column"}>
+								<Title>{this.props.activeBoard.title}</Title>
+								<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers</Subtitle>
+							</View>
+							<Button style={{marginLeft: "5%", backgroundColor: "gray"}}>
+								<Text>Subscribe</Text>
+							</Button>
 						</View>
 						<Subtitle style={Styles.boardDesc}>{this.props.activeBoard.description}</Subtitle>
 					</Body>
