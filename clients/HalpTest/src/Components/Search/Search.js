@@ -138,8 +138,8 @@ class Search extends Component {
    }
    
    getAllBoards() {
-      console.log("?ASD?FASD?FADS?F?S")
       // Get all boards
+      console.log("ffu")
       fetch(API_URL + "boards", {
          method: 'GET',
          headers: {
@@ -166,7 +166,6 @@ class Search extends Component {
    }
 
    render() {
-      console.log(this.state.allboards)
       return (
          <View style={Styles.searchScreen}>
             <SearchBar 
@@ -200,7 +199,7 @@ class Search extends Component {
                   (this.state.items.length == 0) ? <Text style={Styles.searchTitle}>    No Boards Found</Text> : <Text></Text>
                }
                {
-                  (this.state.items.length == 0) ? <Text style={Styles.searchTitle}>All Boards</Text> : <Text></Text>
+                  (this.state.searchTerm.length == 0) ? <Text style={Styles.searchTitle}>All Boards</Text> : <Text></Text>
                }
                <List containerStyle={Styles.searchList}>
                {
