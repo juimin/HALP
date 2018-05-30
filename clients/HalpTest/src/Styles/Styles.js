@@ -222,6 +222,12 @@ export default StyleSheet.create({
       height: 350,
     },
 
+    fullImage: {
+        height: 435,
+        width: null,
+        flex: 1
+    },
+
     button: {
       backgroundColor: Theme.colors.primaryColor,
       alignSelf: "center",
@@ -256,4 +262,5 @@ export default StyleSheet.create({
       alignItems: 'flex-start',
       padding: 5
    }
+   
 });
