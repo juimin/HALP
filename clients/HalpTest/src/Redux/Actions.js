@@ -24,8 +24,10 @@ export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
 
 // HomeScreen Boards 
 export const fetchBoardsBeginAction = () => ({type: FETCH_BOARDS_BEGIN})
-export const fetchBoardsSuccessAction = boards => ({type: FETCH_BOARDS_SUCCESS, payload: { boards }});
-export const fetchBoardsFailiureAction = error => ({type: FETCH_BOARDS_FAILIURE, payload: { error }});
+export const fetchBoardsSuccessAction = (boards) => ({type: FETCH_BOARDS_SUCCESS, payload: boards })
+export const fetchBoardsFailiureAction = (error) => ({type: FETCH_BOARDS_FAILIURE, payload: error })
+
+
 
 export default {
    // Home Screen actions

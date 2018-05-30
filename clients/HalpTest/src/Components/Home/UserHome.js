@@ -17,7 +17,7 @@ import Theme from '../../Styles/Theme';
 
 const mapStateToProps = (state) => {
 	return {
-      AuthToken: state.AuthReducer.authToken,
+            AuthToken: state.AuthReducer.authToken,
 		loggedIn: state.AuthReducer.loggedIn
 	}
 }
