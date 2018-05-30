@@ -135,7 +135,7 @@ class Post extends Component {
                      <Button transparent>
                         <Icon active name="arrow-round-down" style={{color: "gray"}}/>
                      </Button>
-                     <Button transparent onPress={() => this.props.navigation.navigate('Comment')}>
+                     <Button transparent onPress={() => this.props.navigation.navigate('Comment', {source: photo})}>
                         <Icon active style={{color: "gray"}} name="undo"/>
                      </Button>
                      <Button transparent onPress={this.toggleBookmark}>
