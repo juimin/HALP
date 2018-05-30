@@ -184,7 +184,7 @@ export default StyleSheet.create({
 
     button: {
       backgroundColor: Theme.colors.primaryColor,
-      alignSelf: "center"
+      alignSelf: "center",
    }
    
 });

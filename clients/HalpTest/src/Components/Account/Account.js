@@ -2,8 +2,7 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { ScrollView, View} from 'react-native';
-import { TabNavigator } from 'react-navigation';
+import { ScrollView } from 'react-native';
 import {
 	Container,
 	Right,
@@ -21,8 +20,8 @@ import {
 	ActionSheet,
 } from 'native-base';
 
-// Import React Native Elements
-import { ButtonGroup } from 'react-native-elements';
+// Import Component pieces
+import LoginScreen from './LoginScreen';
 
 // Import the styles and themes
 import Styles from '../../Styles/Styles';
@@ -30,6 +29,7 @@ import Theme from '../../Styles/Theme';
 // Import redux
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { setTokenAction, setUserAction, savePasswordAction } from '../../Redux/Actions';
 
 const mapStateToProps = (state) => {
 	return {
@@ -37,6 +37,14 @@ const mapStateToProps = (state) => {
 		password: state.AuthReducer.password,
 		user: state.AuthReducer.user
 	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+   return {
+      addAuthToken: token => { dispatch(setTokenAction(token)) },
+      setUser: usr => { dispatch(setUserAction(usr)) },
+		savePassword: pass => { dispatch(savePasswordAction(pass))}
+   }
 }
 
 class Account extends Component {
@@ -51,16 +59,10 @@ class Account extends Component {
 	}
 
    render() {
+		// iF THE USER IS NOT SIGNED IN...
 		if (this.props.user == null) {
 			return(
-				<Container style={Styles.home}>
-					<Button rounded style={Styles.button} 
-						onPress={() => this.props.navigation.navigate('Login')}
-					>
-						<Text>Log In</Text>
-					</Button>
-				</Container>
-			
+				<LoginScreen {...this.props} />
 			);
 		}
 
@@ -80,13 +82,14 @@ class Account extends Component {
 									title: "Options"
 								},
 								buttonIndex => {
-									console.log(this.state)
+									this.props.addAuthToken("")
+									this.props.setUser(null)
+									this.props.savePassword("")
 									this.setState({
 										menu: {
 											selectedIndex: buttonIndex
 										}
 									});
-									console.log(this.state)
 								}
 							)}
 						>
@@ -108,4 +111,4 @@ class Account extends Component {
   }
 }
 
-export default connect(mapStateToProps)(Account)
+export default connect(mapStateToProps, mapDispatchToProps)(Account)

@@ -5,6 +5,7 @@ import { StackNavigator } from 'react-navigation';
 // Import Halp Components
 import Account from '../Account/Account';
 import SearchNav from './SearchNav';
+import SignupScreen from '../SignUp/SignupScreen';
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
@@ -12,12 +13,18 @@ import SearchNav from './SearchNav';
 // navigating between the Compoents listed
 const RootStack = StackNavigator({
       Account: {
-         screen: Account
+			  screen: Account,
+			  navigationOptions: {
+          header: null
+        }
+      },
+      Signup: {
+			  screen: SignupScreen,
       }
    },
    {
       initialRouteName: 'Account',
-      headerMode: 'none',
+      headerMode: 'screen',
    },
 );
 
