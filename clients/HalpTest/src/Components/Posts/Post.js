@@ -52,7 +52,6 @@ class Post extends Component {
    hoursSince = (time) => {
       var original = new Date(time);
       var current = new Date();
-      //console.log(current, original);
       //get difference in hours
       var hours = Math.round(Math.abs(current - original) / (60*60*1000));
       if (hours < 24) {
@@ -68,32 +67,32 @@ class Post extends Component {
   }
 
   toggleBookmark() {
-   // Check if we are logged in.
-   if (this.props.user != null) {
-      fetch(API_URL + "bookmarks", {
-         method: "PATCH",
-         headers: {
-            'authorization': this.props.authToken,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({
-            "adding": !this.props.user.bookmarks.includes(this.props.activePost.id),
-            "updateID": this.props.activePost.id
+      // Check if we are logged in.
+      if (this.props.user != null) {
+         fetch(API_URL + "bookmarks", {
+            method: "PATCH",
+            headers: {
+               'authorization': this.props.authToken,
+               'Accept': 'application/json',
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+               "adding": !this.props.user.bookmarks.includes(this.props.activePost.id),
+               "updateID": this.props.activePost.id
+            })
+         }).then(response => {
+            if (response.status == 200) {
+               return response.json()
+            } else {
+               return null
+            }
+         }).then(usr => {
+            this.props.setUser(usr)
+         }).catch(err => {
+            console.log(err)
          })
-      }).then(response => {
-         if (response.status == 200) {
-            return response.json()
-         } else {
-            return null
-         }
-      }).then(usr => {
-         this.props.setUser(usr)
-      }).catch(err => {
-         console.log(err)
-      })
+      }
    }
-}
 
 
    render() {
@@ -102,7 +101,7 @@ class Post extends Component {
       let photo = post.image_url.length != 0 ? {uri: post.image_url} : {uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'};
       let boardName = this.state.board == null ? "Missing Board Name" : this.state.board.title
       let bookmarked = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
-        
+      let upvote = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
       return(
          <Container>
             <Card>
