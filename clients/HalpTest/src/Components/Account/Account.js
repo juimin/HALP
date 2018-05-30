@@ -69,8 +69,8 @@ class Account extends Component {
 				testPosts: [
 					{
 						id: '5b0e2dc93f33260001ab06ed',
-						title: "Real Life DAMn",
-						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
 						caption: "I am the realest caption",
 						author_id: '5b0e01ee00031000019fc400',
 						comments: {good: "23423",bod: "242342",greatest: "242342"},
@@ -82,8 +82,8 @@ class Account extends Component {
 					},
 					{
 						id: '5b0e2dc93f33260001ab06ed',
-						title: "Real Life DAMn",
-						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
 						caption: "I am the realest caption",
 						author_id: '5b0e01ee00031000019fc400',
 						comments: {good: "23423",bod: "242342",greatest: "242342"},
@@ -95,8 +95,8 @@ class Account extends Component {
 					},
 					{
 						id: '5b0e2dc93f33260001ab06ed',
-						title: "Real Life DAMn",
-						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						title: "Real Life ",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
 						caption: "I am the realest caption",
 						author_id: '5b0e01ee00031000019fc400',
 						comments: {good: "23423",bod: "242342",greatest: "242342"},
@@ -108,8 +108,8 @@ class Account extends Component {
 					},
 					{
 						id: '5b0e2dc93f33260001ab06ed',
-						title: "Real Life DAMn",
-						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
 						caption: "I am the realest caption",
 						author_id: '5b0e01ee00031000019fc400',
 						comments: {good: "23423",bod: "242342",greatest: "242342"},
@@ -121,8 +121,8 @@ class Account extends Component {
 					},
 					{
 						id: '5b0e2dc93f33260001ab06ed',
-						title: "Real Life DAMn",
-						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
 						caption: "I am the realest caption",
 						author_id: '5b0e01ee00031000019fc400',
 						comments: {good: "23423",bod: "242342",greatest: "242342"},
