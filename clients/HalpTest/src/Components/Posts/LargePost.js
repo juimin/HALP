@@ -33,7 +33,13 @@ import { connect } from "react-redux";
 
 import { TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 
-import { setActivePost } from '../../Redux/Actions'; 
+import { setActivePost } from '../../Redux/Actions';
+
+const mapStateToProps = state => {
+   return {
+      user: state.AuthReducer.user
+   }
+}
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -138,4 +144,4 @@ class LargePost extends Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(LargePost)
+export default connect(mapStateToProps, mapDispatchToProps)(LargePost)
