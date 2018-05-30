@@ -8,7 +8,7 @@ Capstone Project: Providing a mobile solution for community assistance on everyd
 | ----------------- |:---------------------------------:|
 | Server            | [![Build Status](https://travis-ci.org/JuiMin/HALP.svg?branch=master)](https://travis-ci.org/JuiMin/HALP) [![Coverage Status](https://coveralls.io/repos/github/JuiMin/HALP/badge.svg?branch=master)](https://coveralls.io/github/JuiMin/HALP?branch=master)      |
 | Android Client | Under Construction |
-| iOS Client | -- |
+| iOS Client | Under Construction |
 | Web Client | -- |
 | Web Site   | [Halp App Site](https://halpapp.github.io/) |
 | API Server | https://staging.halp.derekwang.net |
