@@ -10,6 +10,9 @@ export const SAVEPASSWORD = "SAVEPASSWORD";
 export const ADDBOARD = "ADDBOARD";
 export const SETACTIVEBOARD = "SETACTIVEBOARD";
 
+// POSTS
+export const ADDPOSTS = "ADDPOSTS";
+
 // For SEARCH
 export const UPDATE = "UPDATE";
 export const GET_SUBSCRIPTIONS = "GET_SUBSCRIPTIONS";

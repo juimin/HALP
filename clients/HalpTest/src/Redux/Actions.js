@@ -1,11 +1,12 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
    ADDBOARD, SETACTIVEBOARD,
+   ADDPOSTS,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
    FETCH_BOARDS_BEGIN, 
-   FETCH_BOARDS_SUCCESS, 
+   FETCH_BOARDS_SUCCESS,
    FETCH_BOARDS_FAILIURE,
    MAKE_POST,
    PICTURE_SUCCESS
@@ -21,6 +22,8 @@ export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass}
 // get board
 export const addBoard = (board) => ({type: ADDBOARD, payload: board})
 export const setActiveBoard = (board) => ({type: SETACTIVEBOARD, payload: board})
+
+export const addPosts = (post) => ({type: ADDPOSTS, payload: post})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
@@ -41,6 +44,8 @@ export default {
    logoutAction, setTokenAction, setUserAction, savePasswordAction,
    // BOARD
    addBoard, setActiveBoard,
+   // pOSTS
+   addPosts,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // HomeScreen Boards

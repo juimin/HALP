@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 
 // Import the different views based on user state
 import GuestHome from './GuestHome';
+import LargePost from '../Posts/LargePost';
+
 
 import { 
    Container,
@@ -17,7 +19,8 @@ import {
    Title,
    Right,
    Button,
-   Content,
+	Content,
+	Text,
    Picker,
    Card,
    Icon
@@ -25,8 +28,8 @@ import {
 
 const mapStateToProps = state => {
    return {
-       boards: state.BoardReducer.boards,
-       activeBoard: state.BoardReducer.activeBoard
+		posts: state.PostReducer.posts,
+		activePost: state.PostReducer.activePost
    };
 };
 
@@ -34,10 +37,11 @@ class HomeScreen extends Component {
    constructor(props) {
       super(props)
       this.state = {
-         pickerIndex: 0
+         pickerIndex: 0,
+         maxPosts: 20
       }
-
       this.onValueChange = this.onValueChange.bind(this)
+      this.increaseMaxPosts = this.increaseMaxPosts.bind(this)
    }
 
    onValueChange(value) {
@@ -46,9 +50,26 @@ class HomeScreen extends Component {
       });
     }
 
+    increaseMaxPosts() {
+
+      this.setState({
+        pickerIndex: this.state.pickerIndex,
+        maxPosts: this.state.maxPosts + 20
+      })
+	 }
+	 
+	 // Initial Post getter defaulting to default sorting
+	 componentWillMount() {
+		console.log("Mounting")
+		// Gettin posts
+	 }
+
+    componentWillUpdate() {
+      console.log(this.state.maxPosts)
+    }
+
    // Here we should run initialization scripts
    render() {
-      console.log(this.props.boards)
       // This will be the same any user
       return (
          // <GuestHome {...this.props} />
@@ -70,21 +91,27 @@ class HomeScreen extends Component {
                </Right>
             </Header>
             <Content>
-            <Picker
-              mode="dropdown"
-              selectedValue={this.state.pickerIndex}
-              onValueChange={this.onValueChange}
-              style={{width: "40%"}}
-            >
-              <Picker.Item label="New" value={0} />
-              <Picker.Item label="Top" value={1} />
-              <Picker.Item label="Comments" value={2} />
-            </Picker>
-            <Content>
-               <Card></Card>
+              <Picker
+                mode="dropdown"
+                selectedValue={this.state.pickerIndex}
+                onValueChange={this.onValueChange}
+                style={{width: "40%"}}
+              >
+                <Picker.Item label="New" value={0} />
+                <Picker.Item label="Top" value={1} />
+                <Picker.Item label="Comments" value={2} />
+              </Picker>
+              <Content>
+                	{
+                    	this.props.posts.map((item, index) => {
+								<LargePost post={item}/>
+							})
+               	}
+              	</Content>
+					<Button rounded style={Styles.button} onPress={this.increaseMaxPosts}>
+						<Text>Get More Posts</Text>
+					</Button>
             </Content>
-            </Content>
-
          </Container>
       );
    }

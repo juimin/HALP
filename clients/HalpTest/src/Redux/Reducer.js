@@ -1,6 +1,6 @@
 // Import all our reducers
 import AuthReducer from './Reducers/Auth';
-import HomeReducer from './Reducers/Home'
+import PostReducer from './Reducers/Posts'
 import BoardReducer from './Reducers/Board';
 
 // Import the reducer combination
@@ -10,6 +10,6 @@ import { combineReducers } from 'redux'
 // and then bring them all together as the single app reducer here
 export default combineReducers({
    AuthReducer,
-   HomeReducer,
-   BoardReducer
+   BoardReducer,
+   PostReducer
 })
