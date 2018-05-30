@@ -11,7 +11,6 @@ import { Picker } from 'react-native'
 import { connect } from "react-redux";
 
 // Import the different views based on user state
-import GuestHome from './GuestHome';
 import LargePost from '../Posts/LargePost';
 
 

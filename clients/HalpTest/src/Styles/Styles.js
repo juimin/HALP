@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 
 // Default Thematic Coloring so you can use it in multiple objects
 import Theme from './Theme';
-import GuestHome from '../Components/Home/GuestHome';
 import Styles from './Styles';
 
 // Generate the stylesheet
@@ -55,36 +54,6 @@ export default StyleSheet.create({
         justifyContent: 'center',
         padding: 5
     },
-
-   // Tile Scroll
-   tileList: {
-    flex: 1, 
-    flexDirection: 'column',
-    // What is the color for the background behind the tiles?
-    backgroundColor: Theme.colors.primaryBackgroundColor,
-    borderColor: '#F0F0F0'
-    //borderWidth:
-    //alignItems: 'center'
-   },
-   // Each Tile
-   eachTile: {
-    flex: 1,
-    width: GuestHome.width - 50,
-    //margin: 7,
-    height: 300,
-    borderColor: Theme.colors.primaryBackgroundColor,
-    //backgroundColor: "#42b6f4",
-    // alignItems: 'center'
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 10
-   },
-
-   //tile image
-   tileImage: {
-    width: GuestHome.width - 100,
-    height: 200
-   },
 
    searchScreen: {
       backgroundColor: Theme.colors.primaryBackgroundColor
