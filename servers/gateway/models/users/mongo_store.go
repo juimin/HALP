@@ -41,6 +41,17 @@ func NewMongoStore(sess *mgo.Session, dbName string, collectionName string) *Mon
 	}
 }
 
+// GetAll gets every post from the store
+func (s *MongoStore) GetAll() ([]*User, error) {
+	var result []*User
+	col := s.session.DB(s.dbname).C(s.colname)
+	err := col.Find(bson.M{}).All(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 //Insert inserts a new user into the store
 func (s *MongoStore) Insert(nu *NewUser) (*User, error) {
 	user, err := nu.ToUser()

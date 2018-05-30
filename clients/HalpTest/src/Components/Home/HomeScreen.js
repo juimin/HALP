@@ -18,15 +18,14 @@ import { bindActionCreators } from 'redux';
 
 const mapStateToProps = (state) => {
 	return {
-      AuthToken: state.AuthReducer.authToken,
-		loggedIn: state.AuthReducer.loggedIn
+		user: state.AuthReducer.user
 	}
 }
 
 class HomeScreen extends Component {
    // Here we should run initialization scripts
    render() {
-      if (this.props.loggedIn) {
+      if (this.props.user != null) {
          return (
             <UserHome {...this.props} />
          );

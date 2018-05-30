@@ -1,32 +1,29 @@
-import { LOGIN, LOGOUT, SETUSER } from '../ActionTypes';
-import { loginAction, logoutAction, setUserAction } from '../Actions';
-
-// Import the api URL
-import { API_URL } from '../../Constants/Constants';
-
-// Set the api endpoint handler
-const endpoint = "";
+import { SETTOKEN, LOGOUT, SETUSER, SAVEPASSWORD } from '../ActionTypes';
 
 // Set the initial state of this part
 const initialState = {
 	user: null,
-	authToken: null,
-	loggedIn: false
+	authToken: "",
+	password: ""
 };
 
 // This file exports the reducer used for login tasks
 export default (state=initialState, action) => {
 	switch (action.type) {
-		case LOGIN:
+		case SETTOKEN:
 			// In the case that we are logging in we need to perform the login and the do the setting of the state's auth token
 			return Object.assign({}, state, {
-				authToken: action.payload,
-				loggedIn: true
+				authToken: action.payload
 			})
 		case LOGOUT:
 			return Object.assign({}, state, {
-				loggedIn: false,
-				authToken: ""
+				authToken: "",
+				user: null,
+				password: ""
+			})
+		case SAVEPASSWORD:
+			return Object.assign({}, state, {
+				password: action.payload	
 			})
 		case SETUSER:
 			return Object.assign({}, state, {

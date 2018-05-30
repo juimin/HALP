@@ -40,4 +40,10 @@ type Store interface {
 
 	// CommentVote deals with comment votes
 	SecondaryCommentVote(id bson.ObjectId, vote *SecondaryCommentVote) (*SecondaryComment, error)
+
+	// GetAll gets every comment
+	GetAllComment() ([]*Comment, error)
+
+	// GetAllSecondary gets every secondary comment
+	GetAllSecondary() ([]*SecondaryComment, error)
 }

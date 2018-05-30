@@ -2,8 +2,13 @@
 
 // FOR LOGGING IN & OUT
 export const LOGOUT = "LOGOUT";
-export const LOGIN = "LOGIN";
+export const SETTOKEN = "SETTOKEN";
 export const SETUSER = "SETUSER";
+export const SAVEPASSWORD = "SAVEPASSWORD";
+
+// BOARDS
+export const GETBOARD = "GETBOARD";
+export const SETBOARD = "SETBOARD";
 
 // For SEARCH
 export const SEARCH = "SEARCH";
@@ -19,3 +24,10 @@ export const FETCH_BOARDS_FAILIURE = "FETCH_BOARDS_FAILIURE";
 
 // Not 100% sure if we need to export these action types
 // export default {LOGIN, FETCH_BOARDS_BEGIN, FETCH_BOARDS_FAILIURE, FETCH_BOARDS_SUCCESS}
+//FOR POSTING
+export const MAKE_POST = "MAKE_POST";
+export const PICTURE_SUCCESS = "PICTURE_SUCCESS";
+//can re-use GET_SUBSCRIPTIONS
+
+// 
+

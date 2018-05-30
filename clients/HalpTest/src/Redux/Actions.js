@@ -1,18 +1,27 @@
 import { 
-   LOGOUT, LOGIN, SETUSER,
+   LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
+   GETBOARD, SETBOARD,
    SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
    FETCH_BOARDS_BEGIN, 
    FETCH_BOARDS_SUCCESS, 
-   FETCH_BOARDS_FAILIURE
+   FETCH_BOARDS_FAILIURE,
+   MAKE_POST,
+   PICTURE_SUCCESS
+
 } from './ActionTypes.js';
 
 // These are action creators, you can use these to create actions
-export const loginAction = (token) => ({type:LOGIN, payload: token})
+export const setTokenAction = (token) => ({type:SETTOKEN, payload: token})
 export const logoutAction = () => ({type:LOGOUT, payload: null})
 export const setUserAction = (usr) => ({type: SETUSER, payload: usr})
+export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass})
+
+// get board
+export const getBoard = (board) => ({type: GETBOARD, payload: board})
+export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
 
 // SEARCH PAGE
 export const searchPosts = term => ({type: SEARCH, searchTerm: term})
@@ -28,14 +37,23 @@ export const fetchBoardsSuccessAction = (boards) => ({type: FETCH_BOARDS_SUCCESS
 export const fetchBoardsFailiureAction = (error) => ({type: FETCH_BOARDS_FAILIURE, payload: error })
 
 
+//POSTS
+export const makePost = (post) => ({type: MAKE_POST, payload: post})
+export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pizza})
 
 export default {
    // Home Screen actions
-   logoutAction, loginAction, setUserAction,
+   logoutAction, setTokenAction, setUserAction, savePasswordAction,
+
+   // BOARD
+   setActiveBoard,
    // Search Actions
    searchPosts,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // HomeScreen Boards
-   fetchBoardsBeginAction, fetchBoardsSuccessAction, fetchBoardsFailiureAction
+   fetchBoardsBeginAction, fetchBoardsSuccessAction, fetchBoardsFailiureAction,
+   // Posts
+   makePost,
+   setPictureSuccess
 }
