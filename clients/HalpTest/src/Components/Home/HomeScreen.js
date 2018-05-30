@@ -22,8 +22,11 @@ import {
    Right,
    Button,
 	Content,
+	CardItem,
 	Text,
-   Picker,
+	Form,
+	Picker,
+	H3,
    Card,
    Icon
 } from 'native-base';
@@ -82,10 +85,10 @@ class HomeScreen extends Component {
       });
     }
 
-    increaseMaxPosts() {
-      this.setState({
-        pickerIndex: this.state.pickerIndex,
-        maxPosts: this.state.maxPosts + 20
+	increaseMaxPosts() {
+		this.setState({
+			pickerIndex: this.state.pickerIndex,
+			maxPosts: this.state.maxPosts + 20
 		})
 
 		// Gettin posts
@@ -112,9 +115,6 @@ class HomeScreen extends Component {
 
    // Here we should run initialization scripts
    render() {
-		console.log((this.props.posts.length > 0) ? this.props.posts[0] : this.props.posts)
-		console.log(this.props.posts.length)
-		console.log((this.props.posts.length > 1) ? this.props.posts[1] : this.props.posts)
       // This will be the same any user
       return (
          // <GuestHome {...this.props} />
@@ -135,7 +135,20 @@ class HomeScreen extends Component {
                   </Button>
                </Right>
             </Header>
-            <Content>
+				<Content>
+					<Picker
+						iosHeader="Select one"
+						mode="dropdown"
+						selectedValue={this.state.pickerIndex}
+						onValueChange={this.onValueChange.bind(this)}
+					>
+					<Picker.Item label="Most Recent" value={0} />
+					<Picker.Item label="More Filters Coming Soon" value={1} />
+					</Picker>
+				</Content>
+            <Content style={{
+					padding: "3%"
+				}}>
               <Content>
                 	{
                     	this.props.posts.map((item, i) => {
