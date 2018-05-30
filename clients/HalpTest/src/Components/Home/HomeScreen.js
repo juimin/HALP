@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
+import { API_URL } from '../../Constants/Constants';
+
 // Import react-redux connect 
 import { connect } from "react-redux";
 
@@ -26,6 +28,8 @@ import {
    Icon
 } from 'native-base';
 
+import { addPosts } from '../../Redux/Actions';
+
 const mapStateToProps = state => {
    return {
 		posts: state.PostReducer.posts,
@@ -33,15 +37,43 @@ const mapStateToProps = state => {
    };
 };
 
+const mapDispatchToProps = dispatch => {
+	return {
+		addPosts: (posts) => {dispatch(addPosts(posts))}
+	}
+}
+
 class HomeScreen extends Component {
    constructor(props) {
       super(props)
       this.state = {
          pickerIndex: 0,
-         maxPosts: 20
+			maxPosts: 20
       }
       this.onValueChange = this.onValueChange.bind(this)
-      this.increaseMaxPosts = this.increaseMaxPosts.bind(this)
+		this.increaseMaxPosts = this.increaseMaxPosts.bind(this)
+		
+		// Gettin posts
+		fetch(API_URL + "posts/get/recent?n=" + this.state.maxPosts, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}).then(response => {
+			if (response.status == 202) {
+				return response.json()
+			} else {
+				return null
+			}
+		}).then(json => {
+			if (json != null) {
+				this.props.addPosts(json)
+				// this.setState(this.state)
+			}
+		}).catch(err => {
+			console.log(err)
+		})
    }
 
    onValueChange(value) {
@@ -51,22 +83,32 @@ class HomeScreen extends Component {
     }
 
     increaseMaxPosts() {
-
       this.setState({
         pickerIndex: this.state.pickerIndex,
         maxPosts: this.state.maxPosts + 20
-      })
-	 }
-	 
-	 // Initial Post getter defaulting to default sorting
-	 componentWillMount() {
-		console.log("Mounting")
-		// Gettin posts
-	 }
+		})
 
-    componentWillUpdate() {
-      console.log(this.state.maxPosts)
-    }
+		// Gettin posts
+		fetch(API_URL + "posts/get/recent?n=" + this.state.maxPosts, {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+		}).then(response => {
+			if (response.status == 202) {
+				return response.json()
+			} else {
+				return null
+			}
+		}).then(json => {
+			if (json != null) {
+				this.props.addPosts(json)
+			}
+		}).catch(err => {
+			console.log(err)
+		})
+	 }
 
    // Here we should run initialization scripts
    render() {
@@ -91,20 +133,10 @@ class HomeScreen extends Component {
                </Right>
             </Header>
             <Content>
-              <Picker
-                mode="dropdown"
-                selectedValue={this.state.pickerIndex}
-                onValueChange={this.onValueChange}
-                style={{width: "40%"}}
-              >
-                <Picker.Item label="New" value={0} />
-                <Picker.Item label="Top" value={1} />
-                <Picker.Item label="Comments" value={2} />
-              </Picker>
               <Content>
                 	{
-                    	this.props.posts.map((item, index) => {
-								<LargePost post={item}/>
+                    	this.props.posts.map((item, i) => {
+								return <LargePost key={i} post={item}/>
 							})
                	}
               	</Content>
@@ -117,4 +149,4 @@ class HomeScreen extends Component {
    }
 }
 
-export default connect(mapStateToProps)(HomeScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)

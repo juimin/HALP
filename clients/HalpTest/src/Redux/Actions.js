@@ -23,7 +23,7 @@ export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass}
 export const addBoard = (board) => ({type: ADDBOARD, payload: board})
 export const setActiveBoard = (board) => ({type: SETACTIVEBOARD, payload: board})
 
-export const addPosts = (post) => ({type: ADDPOSTS, payload: post})
+export const addPosts = (posts) => ({type: ADDPOSTS, payload: posts})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
