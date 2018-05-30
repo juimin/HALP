@@ -206,3 +206,57 @@ func (s *MongoStore) BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpd
 	// Successful update
 	return user, nil
 }
+
+// PostVoteInjector is a Temp struct for allowing the bookmarks updater to inject the new list of bookmarks
+type PostVoteInjector struct {
+	PostVotes map[string]bool
+}
+
+// CommentVoteInjector is a Temp struct for allowing the bookmarks updater to inject the new list of bookmarks
+type CommentVoteInjector struct {
+	CommentVotes map[string]bool
+}
+
+// PostVoteUpdate handles updating upvotes for the user
+func (s *MongoStore) PostVoteUpdate(userID bson.ObjectId, updates *PostVoting) (*User, error) {
+	user, err := s.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	user.PostVote(updates)
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update: bson.M{"$set": &PostVoteInjector{
+			PostVotes: user.PostVotes,
+		}},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}
+
+// CommentVoteUpdate handles updating upvotes for the user
+func (s *MongoStore) CommentVoteUpdate(userID bson.ObjectId, updates *CommentVoting) (*User, error) {
+	user, err := s.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	user.CommentVote(updates)
+	col := s.session.DB(s.dbname).C(s.colname)
+	change := mgo.Change{
+		Update: bson.M{"$set": &CommentVoteInjector{
+			CommentVotes: user.CommentVotes,
+		}},
+		ReturnNew: true,
+	}
+	// Error Updating
+	if _, err := col.FindId(userID).Apply(change, user); err != nil {
+		return nil, err
+	}
+	// Successful update
+	return user, nil
+}

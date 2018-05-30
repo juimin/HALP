@@ -128,3 +128,121 @@ func (cr *ContextReceiver) BookmarksHandler(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
+
+// PostVoteHandler Handles the voting on a post
+func (cr *ContextReceiver) PostVoteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PATCH" {
+		// Get request gets the current user
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		} else {
+			state := &SessionState{}
+			// Get the sesssion
+			err = cr.SessionStore.Get(sid, state)
+			// Check the session is in play
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			} else {
+				// Now that we have a valid session we can update the user
+				updates := &users.PostVoting{}
+				// Check if the r body is there
+				if r.Body == nil {
+					w.WriteHeader(http.StatusBadRequest)
+				} else {
+					err = json.NewDecoder(r.Body).Decode(updates)
+					// Check if the object is the right format
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					} else {
+						err = state.User.PostVote(updates)
+						if err != nil {
+							w.WriteHeader(http.StatusInternalServerError)
+						} else {
+							_, err = cr.UserStore.PostVoteUpdate(state.User.ID, updates)
+							if err != nil {
+								w.WriteHeader(http.StatusInternalServerError)
+							} else {
+								// Create new session with same id
+								err = cr.SessionStore.Delete(sid)
+								if err != nil {
+									w.WriteHeader(http.StatusInternalServerError)
+								} else {
+									err = cr.SessionStore.Save(sid, state)
+									if err != nil {
+										w.WriteHeader(http.StatusInternalServerError)
+									} else {
+										// Everything was good
+										w.WriteHeader(http.StatusOK)
+										json.NewEncoder(w).Encode(state.User)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// CommentVoteHandler Handles the voting on a comment
+func (cr *ContextReceiver) CommentVoteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PATCH" {
+		// Get request gets the current user
+		sid, err := sessions.GetSessionID(r, cr.SigningKey)
+		if err != nil {
+			w.WriteHeader(http.StatusForbidden)
+		} else {
+			state := &SessionState{}
+			// Get the sesssion
+			err = cr.SessionStore.Get(sid, state)
+			// Check the session is in play
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			} else {
+				// Now that we have a valid session we can update the user
+				updates := &users.CommentVoting{}
+				// Check if the r body is there
+				if r.Body == nil {
+					w.WriteHeader(http.StatusBadRequest)
+				} else {
+					err = json.NewDecoder(r.Body).Decode(updates)
+					// Check if the object is the right format
+					if err != nil {
+						w.WriteHeader(http.StatusBadRequest)
+					} else {
+						err = state.User.CommentVote(updates)
+						if err != nil {
+							w.WriteHeader(http.StatusInternalServerError)
+						} else {
+							_, err = cr.UserStore.CommentVoteUpdate(state.User.ID, updates)
+							if err != nil {
+								w.WriteHeader(http.StatusInternalServerError)
+							} else {
+								// Create new session with same id
+								err = cr.SessionStore.Delete(sid)
+								if err != nil {
+									w.WriteHeader(http.StatusInternalServerError)
+								} else {
+									err = cr.SessionStore.Save(sid, state)
+									if err != nil {
+										w.WriteHeader(http.StatusInternalServerError)
+									} else {
+										// Everything was good
+										w.WriteHeader(http.StatusOK)
+										json.NewEncoder(w).Encode(state.User)
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}

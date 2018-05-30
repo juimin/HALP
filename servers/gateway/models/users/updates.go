@@ -28,6 +28,20 @@ type BookmarksUpdate struct {
 	UpdateID bson.ObjectId `json:"updateID"`
 }
 
+// PostVoting handles voting on posts
+type PostVoting struct {
+	Vote   bool          `json:"vote"`
+	PostID bson.ObjectId `json:"postId"`
+	Remove bool          `json:"remove"`
+}
+
+// CommentVoting handles voting on cvomments
+type CommentVoting struct {
+	Vote      bool          `json:"vote"`
+	CommentID bson.ObjectId `json:"commentID"`
+	Remove    bool          `json:"remove"`
+}
+
 //ApplyUpdates applies the updates to the user. An error
 //is returned if the updates are invalid
 func (u *User) ApplyUpdates(updates *UserUpdate) error {
@@ -90,6 +104,42 @@ func (u *User) UpdateBookmarks(updates *BookmarksUpdate) error {
 	}
 	if !success {
 		return fmt.Errorf("Could not remove the item from the favorites")
+	}
+	return nil
+}
+
+// PostVote handles updating the user with a vote
+func (u *User) PostVote(updates *PostVoting) error {
+	// If there is a thing in here, then we need to figure out what to do
+	if _, ok := u.PostVotes[updates.PostID.Hex()]; ok {
+		if updates.Remove {
+			// Remove the entry
+			delete(u.PostVotes, updates.PostID.Hex())
+		} else {
+			u.PostVotes[updates.PostID.Hex()] = updates.Vote
+		}
+	} else {
+		if !updates.Remove {
+			u.PostVotes[updates.PostID.Hex()] = updates.Vote
+		}
+	}
+	return nil
+}
+
+// CommentVote handles updating the user with a vote
+func (u *User) CommentVote(updates *CommentVoting) error {
+	// If there is a thing in here, then we need to figure out what to do
+	if _, ok := u.CommentVotes[updates.CommentID.Hex()]; ok {
+		if updates.Remove {
+			// Remove the entry
+			delete(u.PostVotes, updates.CommentID.Hex())
+		} else {
+			u.PostVotes[updates.CommentID.Hex()] = updates.Vote
+		}
+	} else {
+		if !updates.Remove {
+			u.PostVotes[updates.CommentID.Hex()] = updates.Vote
+		}
 	}
 	return nil
 }
