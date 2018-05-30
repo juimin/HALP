@@ -124,15 +124,10 @@ class HomeScreen extends Component {
                <Body>
                   <Title style={{
                      color: Theme.colors.primaryColor,
-                     alignSelf: "flex-end",
+                     alignSelf: "center",
                      fontWeight: "bold"
                   }}>HALP</Title>
                </Body>
-               <Right>
-                  <Button transparent>
-                     <Icon style={{color: 'gray'}} name='more'/>
-                  </Button>
-               </Right>
             </Header>
 
             <Content style={{
