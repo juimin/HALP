@@ -20,7 +20,7 @@ import { API_URL } from '../../Constants/Constants';
 // import HALP compnents
 import CanvasTest from '../Canvas/CanvasTest'
 import HideableView from '../Helper/HideableView';
-import HomeScreen from '../Home/GuestHome';
+import HomeScreen from '../Home/HomeScreen';
 import HomeNav from '../Navigation/HomeNav';
 
 

@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 
 // Default Thematic Coloring so you can use it in multiple objects
 import Theme from './Theme';
+import Styles from './Styles';
 
 // Generate the stylesheet
 export default StyleSheet.create({
