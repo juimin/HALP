@@ -15,11 +15,6 @@ export default class SubscribeButton extends Component {
               subscribed: this.props.subbed
 		}
     }
-
-    // isSubscribed = () => {
-    //     return this.props.user.favorites.includes(this.props.board.id);
-    // }
-
     
 
     updateUser = (add) => {
@@ -37,12 +32,11 @@ export default class SubscribeButton extends Component {
         }).then(response => {
             if (response.status == 200) {
                 console.log("user success")
-                return response.json()
+                this.updateBoard(add);
+                //return response.json()
             } else {
 				console.log(response.status, response.statusText);
 			}
-        }).then(data => {
-            //console.log(data);
         }).catch(err => {
             console.log("error updating user", err)
         });
@@ -57,17 +51,15 @@ export default class SubscribeButton extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "temp": add,
+                "temp": add
             })
         }).then(response => {
             if (response.status == 200) {
                 console.log("board success")
-                return response.json()
+                //return response
             } else {
 				console.log(response.status, response.statusText);
 			}
-        }).then(data => {
-            //console.log(data);
         }).catch(err => {
             console.log("error updating board", err)
         });
@@ -84,7 +76,6 @@ export default class SubscribeButton extends Component {
             this.state.subscribed = true;
             this.props.returnData(true);
             this.updateUser(true);
-            //this.updateBoard(true);
         }
     }
 
@@ -99,24 +90,23 @@ export default class SubscribeButton extends Component {
             this.state.subscribed = false;
             this.props.returnData(false);
             this.updateUser(false);
-            //this.updateBoard(false);
         }
     }
     
     render() {
         if (!this.props.user) {
             return(
-                <Button disabled iconLeft style={Styles.subscribeButton}><Icon type="MaterialIcons" name="add" /><Text>Subscribe</Text></Button>
+                <Button disabled style={Styles.subscribeButton} onPress={() => Alert.alert("Error", "Log in to subscribe to a board")}><Text>Subscribe</Text></Button>
             )
         }
         if (this.state.subscribed) {
             return (
-                <Button iconLeft style={Styles.subscribeButtonColor} onPress={() => this.unsubscribe()}><Icon type="MaterialIcons" name="remove" /><Text>Unsubscribe</Text></Button>
+                <Button style={Styles.subscribeButtonColor} onPress={() => this.unsubscribe()}><Text>Unsubscribe</Text></Button>
             )
         }
         
         return (
-            <Button iconLeft style={Styles.subscribeButtonColor} onPress={() => this.subscribe()}><Icon type="MaterialIcons" name="add" /><Text>Subscribe</Text></Button>
+            <Button style={Styles.subscribeButtonColor} onPress={() => this.subscribe()}><Text>Subscribe</Text></Button>
         )
     }
 

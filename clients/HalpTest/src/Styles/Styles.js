@@ -159,11 +159,19 @@ export default StyleSheet.create({
     },
 
     subscribeButtonColor: {
+        marginTop: "3%",
         backgroundColor: Theme.colors.primaryColor,
+        marginLeft: "3%",
+        height: "80%",
+        justifyContent: 'center'
     },
 
     subscribeButton: {
-
+        marginTop: "3%",
+        marginLeft: "3%",
+        backgroundColor: "gray",
+        height: "80%",
+        justifyContent: 'center'
     },
 
     postThumb: {
