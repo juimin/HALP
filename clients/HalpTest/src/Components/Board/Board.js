@@ -97,7 +97,7 @@ class Board extends Component {
 	render() {
 
 		let postItems = this.state.posts.reverse().map( (post, i) => {
-			return <LargePost key={i} post={post} />
+			return <LargePost key={i} post={post} navigation={this.props.navigation} />
 		});
 
 		return (
@@ -121,13 +121,11 @@ class Board extends Component {
 									title: "Options"
 								},
 								buttonIndex => {
-									console.log(this.state)
 									this.setState({
 										menu: {
 											selectedIndex: buttonIndex
 										}
 									});
-									console.log(this.state)
 								}
 							)}
 						>

@@ -1,7 +1,7 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
    ADDBOARD, SETACTIVEBOARD,
-   ADDPOSTS,
+   ADDPOSTS, SETACTIVEPOST,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
@@ -24,6 +24,7 @@ export const addBoard = (board) => ({type: ADDBOARD, payload: board})
 export const setActiveBoard = (board) => ({type: SETACTIVEBOARD, payload: board})
 
 export const addPosts = (posts) => ({type: ADDPOSTS, payload: posts})
+export const setActivePost = post => ({type: SETACTIVEPOST, payload: post})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
@@ -45,7 +46,7 @@ export default {
    // BOARD
    addBoard, setActiveBoard,
    // pOSTS
-   addPosts,
+   addPosts, setActivePost,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // HomeScreen Boards
