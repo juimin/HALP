@@ -7,6 +7,8 @@ import { Button, View, Text, TouchableWithoutFeedback} from 'react-native';
 import { StackNavigator, DrawerNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
+import { Root } from 'native-base';
+
 // Import Navigation Components
 import NewPostStack from '../Navigation/NewPostNav';
 import Tabs from '../Navigation/TabNav';
@@ -48,7 +50,9 @@ class App extends Component {
    render() {
       return(
          <Provider store={store}>
-            <AppRootStack />
+            <Root>
+               <AppRootStack />
+            </Root>
          </Provider>
       );
    }

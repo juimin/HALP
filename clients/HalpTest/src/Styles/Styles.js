@@ -153,5 +153,24 @@ export default StyleSheet.create({
       margin: 10,
       fontSize: 20,
       color: 'black'
+   },
+
+   accountThumbnail: {
+      marginLeft: "20%",
+      marginTop: "25%"
+   },
+
+   accountTitle: {
+      marginLeft: "5%",
+   },
+
+   accountHeader: {
+      backgroundColor: Theme.colors.secondaryColor,
+      borderBottomColor: Theme.colors.secondaryColor
+   },
+
+   button: {
+      backgroundColor: Theme.colors.primaryColor,
+      alignSelf: "center",
    }
 });
