@@ -134,7 +134,38 @@ export default StyleSheet.create({
 
    accountHeader: {
       backgroundColor: Theme.colors.secondaryColor,
-      borderBottomColor: Theme.colors.secondaryColor
+      borderBottomColor: Theme.colors.secondaryColor,
+   },
+
+   accountHeaderTwo: {
+      backgroundColor: Theme.colors.secondaryColor,
+      borderBottomColor: Theme.colors.secondaryColor,
+      marginLeft: 0,
+      width: "100%",
+      padding: 0,
+      height: 120,
+   },
+
+   statsBar: {
+      //marginTop: "25%",
+      flex: 1,
+      flexDirection: 'row',
+      width: "100%"
+   },
+
+   eachStat: {
+    width: 50, 
+    height: 50,
+    backgroundColor: 'white',
+    alignItems: 'center'
+   },
+
+   allTabs: {
+    backgroundColor: 'white'
+   },
+
+   eachTab: {
+    backgroundColor: 'white'
    },
 
    button: {
