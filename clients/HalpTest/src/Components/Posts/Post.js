@@ -99,7 +99,7 @@ class Post extends Component {
    render() {
 
       let post = this.props.activePost;
-      let photo = post.image_url.length != 0 ? {uri: post.image_url} : {uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'};
+      let photo = post.image_url.length != 0 ? {uri: post.image_url} : {uri: 'https://halp-staging.nyc3.digitaloceanspaces.com/Logo-09.png'};
       let boardName = this.state.board == null ? "Missing Board Name" : this.state.board.title
       let bookmarked = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
       let upvote = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
