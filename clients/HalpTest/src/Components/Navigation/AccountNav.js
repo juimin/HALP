@@ -14,16 +14,13 @@ import LoginScreen from '../Login/LoginScreen';
 // navigating between the Compoents listed
 const RootStack = StackNavigator({
       Account: {
-			screen: Account,
-			navigationOptions: {
-            header: null
-         }
-      },
-      Login: {
-         screen: LoginScreen,
+			  screen: Account,
+			  navigationOptions: {
+          header: null
+        }
       },
       Signup: {
-			screen: SignupScreen,
+			  screen: SignupScreen,
       }
    },
    {

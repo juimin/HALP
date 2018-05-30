@@ -59,6 +59,7 @@ class Account extends Component {
 	}
 
    render() {
+		// iF THE USER IS NOT SIGNED IN...
 		if (this.props.user == null) {
 			return(
 				<LoginScreen {...this.props} />
