@@ -66,7 +66,7 @@ class NewPost extends Component {
         super(props);
         this.state = 
         {
-          source: require('../../Images/davint.png'),
+          source: null,
           isHidden: true,
           imageURL: '',
           favorites: [],
@@ -99,7 +99,7 @@ class NewPost extends Component {
     resetForm = () => {
       this.state = 
         {
-          source: require('../../Images/davint.png'),
+          source: null,
           isHidden: true,
           imageURL: '',
           board: '',
