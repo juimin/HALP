@@ -1,7 +1,6 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
    GETBOARD, SETBOARD,
-   SEARCH,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
@@ -20,9 +19,6 @@ export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass}
 export const getBoard = (board) => ({type: GETBOARD, payload: board})
 export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
 
-// SEARCH PAGE
-export const searchPosts = term => ({type: SEARCH, searchTerm: term})
-
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
 export const removeSubscription = sub => ({type: REMOVE_SUBSCRIPTIONS, payload: sub})
@@ -38,8 +34,6 @@ export default {
 
    // BOARD
    setActiveBoard,
-   // Search Actions
-   searchPosts,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
    // Posts
