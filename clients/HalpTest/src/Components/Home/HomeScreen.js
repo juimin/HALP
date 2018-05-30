@@ -145,7 +145,7 @@ class HomeScreen extends Component {
               <Content>
                 	{
                     	this.props.posts.map((item, i) => {
-								return <LargePost key={i} post={item}/>
+								return <LargePost key={i} post={item} {...this.props}/>
 							})
                	}
               	</Content>

@@ -27,9 +27,21 @@ import {
     CardItem,
 } from 'native-base';
 
+// Import react-redux connect 
+import { connect } from "react-redux";
+
+
 import { TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 
-export default class LargePost extends Component {
+import { setActivePost } from '../../Redux/Actions'; 
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setActivePost: post => dispatch(setActivePost(post))
+    }
+}
+
+class LargePost extends Component {
     constructor(props) {
         //props are primarily post objects
         super(props)
@@ -74,16 +86,17 @@ export default class LargePost extends Component {
     }
 
     render() {
-        
         let post = this.props.post;
         let photo = post.image_url.length != 0 ? {uri: post.image_url} : {uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'};
         let boardName = this.state.board == null ? "Missing Board Name" : this.state.board.title
-
         return(
             <Container key={post.id} style={Styles.largePost}>
                 <Content style={{padding:"1%"}}>
                     <Card>
-                        <CardItem>
+                        <CardItem  button onPress={() => {
+                            this.props.setActivePost(post)
+                            this.props.navigation.navigate("Post")
+                        }}>
                             <Left>
                                 <Body>
                                     <Text>{post.title}</Text>
@@ -91,10 +104,16 @@ export default class LargePost extends Component {
                                 </Body>
                             </Left>
                         </CardItem>
-                        <CardItem cardBody>
+                        <CardItem cardBody  button onPress={() => {
+                            this.props.setActivePost(post);
+                            this.props.navigation.navigate("Post");
+                        }}>
                             <Image source={photo} style={{height: 200, width: null, flex: 1}}/>
                         </CardItem>
-                        <CardItem>
+                        <CardItem button onPress={() => {
+                            this.props.setActivePost(post);
+                            this.props.navigation.navigate("Post")}
+                        }>
                             <Left>
                                 <View style={{flexDirection: "column"}}> 
                                     <Text note>{String(post.upvotes - post.downvotes) + " Points"}</Text>
@@ -118,3 +137,5 @@ export default class LargePost extends Component {
         )
     }
 }
+
+export default connect(null, mapDispatchToProps)(LargePost)

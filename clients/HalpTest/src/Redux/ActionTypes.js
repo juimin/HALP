@@ -12,6 +12,7 @@ export const SETACTIVEBOARD = "SETACTIVEBOARD";
 
 // POSTS
 export const ADDPOSTS = "ADDPOSTS";
+export const SETACTIVEPOST = "SETACTIVEPOST";
 
 // For SEARCH
 export const UPDATE = "UPDATE";

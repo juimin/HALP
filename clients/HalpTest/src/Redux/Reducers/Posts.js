@@ -1,5 +1,6 @@
 import { 
-	ADDPOSTS 
+ADDPOSTS,
+SETACTIVEPOST
 } from '../ActionTypes';
 
 const initialState = {
@@ -12,6 +13,10 @@ export default (state=initialState, action) => {
       case ADDPOSTS:
          return Object.assign({}, state, {
             posts: action.payload
+         })
+      case SETACTIVEPOST:
+         return Object.assign({}, state, {
+            activePost: action.payload
          })
       default:
          return state
