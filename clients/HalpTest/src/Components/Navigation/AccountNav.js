@@ -6,7 +6,6 @@ import { StackNavigator } from 'react-navigation';
 import Account from '../Account/Account';
 import SearchNav from './SearchNav';
 import SignupScreen from '../SignUp/SignupScreen';
-import LoginScreen from '../Login/LoginScreen';
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components

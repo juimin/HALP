@@ -183,14 +183,15 @@ class SignupScreen extends Component {
 				)
          })
       } else {
-         // Rerender the component
-         this.setState(this.state)
+			// Rerender the component
+         this.validateForm()
       }
    }
 
    render() {
+		console.log(this.state)
       return (
-			<Container >
+			<Container>
 				<Content style={{paddingRight:"5%"}}>
 					<Form>
 						<Item floatingLabel error={this.state.errored.email} success={this.state.success.email}>
