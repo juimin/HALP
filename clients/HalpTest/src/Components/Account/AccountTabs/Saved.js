@@ -116,7 +116,7 @@ class Saved extends Component {
             return (
                 <Container>
                     {/* <Header style={Styles.tabHeader} /> */}
-                    <Content style={{padding: 20}}>
+                    <Content>
                         {this.state.testPosts.map(testPost =>
                             <Card style={Styles.tabCard}>
                                 <CardItem>

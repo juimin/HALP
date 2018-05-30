@@ -194,7 +194,7 @@ export default StyleSheet.create({
    
    tabCard: {
       flex: 1,
-      height: 200,
-      width: "95%"
+      height: 170,
+      width: "98%"
    }
 });
