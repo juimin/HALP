@@ -36,6 +36,20 @@ export default class LargePost extends Component {
         }
     }
 
+    hoursSince = (time) => {
+        var original = new Date(time);
+        var current = new Date();
+        //console.log(current, original);
+        //get difference in hours
+        var hours = Math.round(Math.abs(current - original) / (60*60*1000));
+        if (hours < 24) {
+            return String(hours) + "h ago";
+        }
+        //over one day
+        hours = Math.round(Math.abs(current - original) / (60*60*1000*24));
+        return String(hours) + "d ago";
+    }
+
     render() {
         
         let post = this.props.post;
@@ -43,7 +57,7 @@ export default class LargePost extends Component {
 
         return(
             <Container key={post.id} style={Styles.largePost}>
-                <Content>
+                <Content style={{padding:"3%"}}>
                 <Card>
                     <CardItem>
                     <Left>
@@ -58,19 +72,19 @@ export default class LargePost extends Component {
                     </CardItem>
                     <CardItem>
                     <Left>
-                        <Button transparent>
+                        <Button transparent style={Styles.cardButton}>
                         <Icon active name="thumbs-up" />
-                        <Text>{String(post.upvotes - post.downvotes)} Likes</Text>
+                        <Text>{String(post.upvotes - post.downvotes)}</Text>
                         </Button>
                     </Left>
                     <Body>
-                        <Button transparent>
+                        <Button transparent style={Styles.cardButton}>
                         <Icon active name="chatbubbles" />
-                        <Text>{String(post.comments.length)} Comments</Text>
+                        <Text>{String(post.comments.length)}</Text>
                         </Button>
                     </Body>
                     <Right>
-                        <Text>11h ago</Text>
+                        <Text>{this.hoursSince(post.time_created)}</Text>
                     </Right>
                     </CardItem>
                 </Card>

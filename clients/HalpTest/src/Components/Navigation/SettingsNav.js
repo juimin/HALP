@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 
 // Import Halp Components
 import Settings from '../Settings/Settings';
+import Web from '../Settings/Web';
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
@@ -15,6 +16,12 @@ const RootStack = StackNavigator({
          navigationOptions: {
             title: "Settings"
          }
+      },
+      Web: {
+            screen: Web,
+            navigationOptions: {
+                  title: "Browser"
+            }
       }
    },
    {
