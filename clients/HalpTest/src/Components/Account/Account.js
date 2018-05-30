@@ -5,11 +5,7 @@ import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
 
 // For the tabs
-import Saved from './AccountTabs/Saved';
-import Comments from './AccountTabs/Comments';
-import History from './AccountTabs/History';
 import TabPost from '../Posts/TabPost';
-import LargePost from '../Posts/LargePost';
 
 import {
 	Container,
@@ -57,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
    return {
       addAuthToken: token => { dispatch(setTokenAction(token)) },
       setUser: usr => { dispatch(setUserAction(usr)) },
-		savePassword: pass => { dispatch(savePasswordAction(pass))}
+	  savePassword: pass => { dispatch(savePasswordAction(pass))}
    }
 }
 
@@ -190,10 +186,10 @@ class Account extends Component {
 					</Body>
 				</Header>
 				<Content>
-					<Grid style={Styles.statsBar}>
+					<Grid style={Styles.statsBar} style={{borderTopWidth:1, borderTopColor:'gray'}}>
 						<Col style={Styles.eachStat}>
 							<Text>{this.props.user.favorites.length + this.props.user.bookmarks.length}</Text>
-							<Text>Points</Text>
+							<Text>Points {console.log("pp tape", this.props.user)}</Text>
 						</Col>
 						<Col style={Styles.eachStat}>
 							<Text>{Object.keys(this.props.user.postvotes).length}</Text>
@@ -204,7 +200,7 @@ class Account extends Component {
 							<Text>Comments</Text>
 						</Col>
 					</Grid>
-					<Tabs initialPage={0} tabStyle={{color: '#f44336'}}>
+					<Tabs initialPage={0} tabStyle={{color: '#f44336'}} style={{borderTopWidth:1, borderTopColor:'#D3D3D3'}}>
 						<Tab heading="Saved" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
 							<View style={{overflow: 'scroll'}}>
 								{
