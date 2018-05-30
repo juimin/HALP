@@ -43,7 +43,7 @@ export default StyleSheet.create({
    navigationTab: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center', 
    },
    
    // New Post View
@@ -253,9 +253,14 @@ export default StyleSheet.create({
    },
    
    tabCard: {
-      flex: 1,
-      height: 170,
-      width: "98%"
+      height: 175,
+      margin: 10,
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 10,
+      marginBottom: 5,
+      alignItems: 'flex-start',
+      padding: 5
    }
    
 });
