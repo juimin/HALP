@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Card, CardItem, Text, Subtitle, H2, View, Body, Button, Icon } from 'native-base';
+import { TouchableWithoutFeedback } from 'react-native';
 
 import { API_URL } from '../../Constants/Constants';
 // Import react-redux connect 
@@ -70,9 +71,11 @@ class Post extends Component {
                      <Text note>{boardName} · {this.hoursSince(post.time_created)}</Text>
                   </View>
                </CardItem>
+               <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Image', {photosrc: photo})}>
                <CardItem cardBody>
                   <Image source={photo} style={{height: 200, width: null, flex: 1}}/>
                </CardItem>
+               </TouchableWithoutFeedback>
                <CardItem>
                   <Body>
                      <Text>{this.props.activePost.caption}</Text>
