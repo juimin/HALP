@@ -1,9 +1,13 @@
 import { 
    LOGOUT, SETTOKEN, SETUSER, SAVEPASSWORD,
-   GETBOARD, SETBOARD,
+   ADDBOARD, SETACTIVEBOARD,
+   ADDPOSTS, SETACTIVEPOST,
    ADD_SUBSCRIPTIONS,
    REMOVE_SUBSCRIPTIONS,
    GET_SUBSCRIPTIONS,
+   FETCH_BOARDS_BEGIN, 
+   FETCH_BOARDS_SUCCESS,
+   FETCH_BOARDS_FAILIURE,
    MAKE_POST,
    PICTURE_SUCCESS
 
@@ -16,13 +20,21 @@ export const setUserAction = (usr) => ({type: SETUSER, payload: usr})
 export const savePasswordAction = (pass) => ({type: SAVEPASSWORD, payload: pass})
 
 // get board
-export const getBoard = (board) => ({type: GETBOARD, payload: board})
-export const setActiveBoard = (board) => ({type: SETBOARD, payload: board})
+export const addBoard = (board) => ({type: ADDBOARD, payload: board})
+export const setActiveBoard = (board) => ({type: SETACTIVEBOARD, payload: board})
+
+export const addPosts = (posts) => ({type: ADDPOSTS, payload: posts})
+export const setActivePost = post => ({type: SETACTIVEPOST, payload: post})
 
 // Subscriptions
 export const addSubscription = sub => ({type: ADD_SUBSCRIPTIONS, payload: sub})
 export const removeSubscription = sub => ({type: REMOVE_SUBSCRIPTIONS, payload: sub})
 export const getSubscriptions = () => ({type: GET_SUBSCRIPTIONS})
+
+// HomeScreen Boards 
+export const fetchBoardsBeginAction = () => ({type: FETCH_BOARDS_BEGIN})
+export const fetchBoardsSuccessAction = (boards) => ({type: FETCH_BOARDS_SUCCESS, payload: boards })
+export const fetchBoardsFailiureAction = (error) => ({type: FETCH_BOARDS_FAILIURE, payload: error })
 
 //POSTS
 export const makePost = (post) => ({type: MAKE_POST, payload: post})
@@ -31,11 +43,14 @@ export const setPictureSuccess = (pizza) => ({type: PICTURE_SUCCESS, payload: pi
 export default {
    // Home Screen actions
    logoutAction, setTokenAction, setUserAction, savePasswordAction,
-
    // BOARD
-   setActiveBoard,
+   addBoard, setActiveBoard,
+   // pOSTS
+   addPosts, setActivePost,
    // Subscriptions
    addSubscription, removeSubscription, getSubscriptions,
+   // HomeScreen Boards
+   fetchBoardsBeginAction, fetchBoardsSuccessAction, fetchBoardsFailiureAction,
    // Posts
    makePost,
    setPictureSuccess

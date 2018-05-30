@@ -2,10 +2,14 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 
 // For the tabs
 import Saved from './AccountTabs/Saved';
+import Comments from './AccountTabs/Comments';
+import History from './AccountTabs/History';
+import TabPost from '../Posts/TabPost';
+import LargePost from '../Posts/LargePost';
 
 import {
 	Container,
@@ -26,7 +30,8 @@ import {
 	Grid,
 	Col,
 	Tabs,
-	Tab
+	Tab,
+	Card
 } from 'native-base';
 
 // Import Component pieces
@@ -63,6 +68,75 @@ class Account extends Component {
       this.state = {
 			menu: {
 				selectedIndex: -1
+			},
+			test: {
+				testPosts: [
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life DAMn",
+						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life DAMn",
+						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life DAMn",
+						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life DAMn",
+						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life DAMn",
+						image_url: "http://s0.hulkshare.com/song_images/original/2/d/d/2dd00ab2a1e7d193ab7e6dc3bfae813f.jpg?dd=1388552400",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					}
+				]
 			}
       }
 	}
@@ -112,7 +186,7 @@ class Account extends Component {
 					</Left>
 					<Body style={Styles.accountTitle}>
 						<Title>{this.props.user.firstName + " " + this.props.user.lastName}</Title>
-						<Subtitle>Filler</Subtitle>
+						<Subtitle></Subtitle>
 					</Body>
 				</Header>
 				<Content>
@@ -130,27 +204,43 @@ class Account extends Component {
 							<Text>Comments</Text>
 						</Col>
 					</Grid>
-					<Tabs initialPage={0} tabStyle={Styles.allTabs}>
-					<Tab heading="Saved" tabStyle={Styles.eachTab}>
-						<View>
-							<Saved />
-						</View>
-					</Tab>
-					<Tab heading="Posts" tabStyle={Styles.eachTab}>
-						<View>
-							<Text>FUCKKKK2</Text>
-						</View>
-					</Tab>
-					<Tab heading="Comments" tabStyle={Styles.eachTab}>
-						<View>
-							<Text>FUCKKKK3</Text>
-						</View>
-					</Tab>
-					<Tab heading="History" tabStyle={Styles.eachTab}>
-						<View>
-							<Text>FUCKKKK3</Text>
-						</View>
-					</Tab>
+					<Tabs initialPage={0} tabStyle={{color: '#f44336'}}>
+						<Tab heading="Saved" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View style={{overflow: 'scroll'}}>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="Posts" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View style={{overflow: 'scroll'}}>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="Comments" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="History" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
 					</Tabs>
 				</Content>
 		</Container>

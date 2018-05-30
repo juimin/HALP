@@ -5,6 +5,7 @@ import { StackNavigator } from 'react-navigation';
 // Import Halp Components
 import Search from '../Search/Search';
 import BoardNav from './BoardNav';
+import Post from '../Posts/Post';
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
@@ -17,7 +18,15 @@ const RootStack = StackNavigator({
             header: null
          }
       },
-      Board: { screen: BoardNav }
+      Board: { 
+			screen: BoardNav,
+			navigationOptions: {
+            header: null
+         }
+		},
+		Post: {
+			screen: Post
+		}
    },
    {
       initialRouteName: 'Search',

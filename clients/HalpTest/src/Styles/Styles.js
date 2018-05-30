@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 
 // Default Thematic Coloring so you can use it in multiple objects
 import Theme from './Theme';
+import Styles from './Styles';
 
 // Generate the stylesheet
 export default StyleSheet.create({
@@ -42,7 +43,7 @@ export default StyleSheet.create({
    navigationTab: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center', 
    },
    
    // New Post View
@@ -168,7 +169,60 @@ export default StyleSheet.create({
     backgroundColor: 'white'
    },
 
-   button: {
+    boardHeader: {
+        marginLeft: 0,
+        width: "100%",
+        padding: 0,
+        backgroundColor: Theme.colors.secondaryColor,
+        borderBottomColor: Theme.colors.secondaryColor
+    },
+
+    boardSubs: {
+        color: Theme.colors.secondaryTextColor
+    },
+
+    boardDesc: {
+        textAlign: 'left'
+    },
+
+    boardSubButton: {
+        alignSelf: 'flex-end',
+    },
+
+    subscribeButtonColor: {
+        marginTop: "3%",
+        backgroundColor: Theme.colors.primaryColor,
+        marginLeft: "3%",
+        height: "80%",
+        justifyContent: 'center'
+    },
+
+    subscribeButton: {
+        marginTop: "3%",
+        marginLeft: "3%",
+        backgroundColor: "gray",
+        height: "80%",
+        justifyContent: 'center'
+    },
+
+    postThumb: {
+        width: 50,
+        height: 50,
+    },
+
+    compactPostText: {
+        textAlign: 'left',
+    },
+
+    cardButton: {
+        width: '75%',
+    },
+
+    largePost: {
+      height: 350,
+    },
+
+    button: {
       backgroundColor: Theme.colors.primaryColor,
       alignSelf: "center",
    },
@@ -193,8 +247,13 @@ export default StyleSheet.create({
    },
    
    tabCard: {
-      flex: 1,
-      height: 170,
-      width: "98%"
+      height: 175,
+      margin: 10,
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 10,
+      marginBottom: 5,
+      alignItems: 'flex-start',
+      padding: 5
    }
 });

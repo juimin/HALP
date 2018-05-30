@@ -4,6 +4,7 @@ import { StackNavigator } from 'react-navigation';
 
 // Import Halp Components
 import HomeScreen from '../Home/HomeScreen';
+import Post from '../Posts/Post'
 import CanvasTest from '../Canvas/CanvasTest';
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
@@ -15,8 +16,12 @@ export default StackNavigator(
 		Home: {
 			screen: HomeScreen,
 			navigationOptions: {
+				header: null,
 				title: "HALP"
 			}
+		},
+		Post: {
+			screen: Post,
 		},
 		Canvas: {
 			screen: CanvasTest,

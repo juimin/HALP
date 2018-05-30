@@ -1,23 +1,22 @@
 import { 
-	ADDBOARD, SETACTIVEBOARD
+ADDPOSTS,
+SETACTIVEPOST
 } from '../ActionTypes';
 
 const initialState = {
-   boards: [],
-   activeBoard: null,
+   posts: [],
+   activePost: null,
 }
 
 export default (state=initialState, action) => {
    switch(action.type) {
-      case ADDBOARD:
-         var b = state.boards
-         b.push(action.payload.board)
+      case ADDPOSTS:
          return Object.assign({}, state, {
-            boards: b
+            posts: action.payload
          })
-      case SETACTIVEBOARD:
+      case SETACTIVEPOST:
          return Object.assign({}, state, {
-            activeBoard: action.payload
+            activePost: action.payload
          })
       default:
          return state

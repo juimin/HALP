@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -190,6 +191,74 @@ func (cr *ContextReceiver) GetPostHandler(w http.ResponseWriter, r *http.Request
 
 		}
 
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// GetPostByBoardHandler returns all the posts
+func (cr *ContextReceiver) GetPostByBoardHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		id := r.URL.Query().Get("id")
+		if len(id) == 0 || !bson.IsObjectIdHex(id) {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			boardid := bson.ObjectIdHex(id)
+			post, err := cr.PostStore.GetByBoardID(boardid)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.WriteHeader(http.StatusAccepted)
+			json.NewEncoder(w).Encode(post)
+
+		}
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// GetPostByAuthorHandler gets all the posts by the given author
+func (cr *ContextReceiver) GetPostByAuthorHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		id := r.URL.Query().Get("id")
+		if len(id) == 0 || !bson.IsObjectIdHex(id) {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			authorid := bson.ObjectIdHex(id)
+			posts, err := cr.PostStore.GetByAuthorID(authorid)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			w.WriteHeader(http.StatusAccepted)
+			json.NewEncoder(w).Encode(posts)
+
+		}
+
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// GetLastNHandler is a handler for getting the last N posts
+func (cr *ContextReceiver) GetLastNHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		n := r.URL.Query().Get("n")
+		if len(n) == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			n, err := strconv.Atoi(n)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			} else {
+				posts, err := cr.PostStore.GetLastN(n)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+				}
+				w.WriteHeader(http.StatusAccepted)
+				json.NewEncoder(w).Encode(posts)
+			}
+		}
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
