@@ -95,6 +95,16 @@ func (s *MongoStore) Delete(id bson.ObjectId) error {
 	return col.RemoveId(id)
 }
 
+// GetLastN gets the last N posts inserted into the store
+func (s *MongoStore) GetLastN(n int) ([]*Post, error) {
+	var results []*Post
+	col := s.session.DB(s.dbname).C(s.colname)
+	if err := col.Find(bson.M{}).Sort("-$natural").Limit(n).All(&results); err != nil {
+		return nil, fmt.Errorf("Error getting the last N posts %v", err)
+	}
+	return results, nil
+}
+
 // GetAll gets every post from the store
 func (s *MongoStore) GetAll() ([]*Post, error) {
 	var result []*Post
