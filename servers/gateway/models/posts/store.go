@@ -35,4 +35,7 @@ type Store interface {
 
 	// Get all posts returns all posts
 	GetAll() ([]*Post, error)
+
+	// GetLastN gets the last N posts
+	GetLastN(n int) ([]*Post, error)
 }
