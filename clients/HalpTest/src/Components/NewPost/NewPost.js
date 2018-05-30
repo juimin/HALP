@@ -37,13 +37,6 @@ const mapStateToProps = (state) => {
 //user.favorites should contain list of boards
 //right now it's hardcoded but replace this later
 
-var mongoObjectId = () => {
-  var timestamp = (new Date().getTime() / 1000 | 0).toString(16);
-  return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () => {
-      return (Math.random() * 16 | 0).toString(16);
-  }).toLowerCase();
-};
-
 const testboard = '5b077a0d0324ac00012a223a';
 const testfavs = [testboard, '5b01b3017912ed0001434678']
 
