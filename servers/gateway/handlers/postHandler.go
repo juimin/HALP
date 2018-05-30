@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -234,6 +235,30 @@ func (cr *ContextReceiver) GetPostByAuthorHandler(w http.ResponseWriter, r *http
 
 		}
 
+	} else {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+// GetLastNHandler is a handler for getting the last N posts
+func (cr *ContextReceiver) GetLastNHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		n := r.URL.Query().Get("n")
+		if len(n) == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			n, err := strconv.Atoi(n)
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			} else {
+				posts, err := cr.PostStore.GetLastN(n)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+				}
+				w.WriteHeader(http.StatusAccepted)
+				json.NewEncoder(w).Encode(posts)
+			}
+		}
 	} else {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
