@@ -184,12 +184,11 @@ class SignupScreen extends Component {
          })
       } else {
 			// Rerender the component
-         this.validateForm()
+         this.validateForm(	)
       }
    }
 
    render() {
-		console.log(this.state)
       return (
 			<Container>
 				<Content style={{paddingRight:"5%"}}>
