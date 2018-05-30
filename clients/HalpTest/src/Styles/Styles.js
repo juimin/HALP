@@ -137,8 +137,54 @@ export default StyleSheet.create({
       borderBottomColor: Theme.colors.secondaryColor
    },
 
-   button: {
+    boardHeader: {
+        marginLeft: 0,
+        width: "100%",
+        padding: 0,
+        backgroundColor: Theme.colors.primaryColor,
+    },
+
+    boardHeader2: {
+        marginLeft: 0,
+        width: "100%",
+        padding: 0,
+        backgroundColor: Theme.colors.primaryColor,
+    },
+
+    boardSubs: {
+        color: Theme.colors.secondaryTextColor
+    },
+
+    boardDesc: {
+        textAlign: 'left'
+    },
+
+    boardSubButton: {
+        alignSelf: 'flex-end',
+    },
+
+    subscribeButton: {
+        padding: 5,
+        height: '100%',
+        width: '95%'
+    },
+
+    postThumb: {
+        width: 50,
+        height: 50,
+    },
+
+    compactPostText: {
+        textAlign: 'left',
+    },
+
+    largePost: {
+        height: 400,
+    },
+
+    button: {
       backgroundColor: Theme.colors.primaryColor,
       alignSelf: "center"
    }
+   
 });

@@ -65,10 +65,7 @@ export default class CanvasTest extends React.Component {
   upFile = (data) => {
     var buff = new Buffer(data, 'base64')
     console.log("uploading2...")
-    var params = {ACL: "public-read", Body: buff, Bucket: myBucket, Key: filename, 
-      Metadata: {
-        'Content-Type': 'image/jpeg'
-      }
+    var params = {ACL: "public-read", Body: buff, Bucket: myBucket, Key: filename, ContentType: 'image/jpeg',
     };
     s3.upload(params, function(err, data) {
       if (err) {
