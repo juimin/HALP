@@ -2,7 +2,11 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
+
+// For the tabs
+import Saved from './AccountTabs/Saved';
+
 import {
 	Container,
 	Right,
@@ -18,6 +22,11 @@ import {
 	Content,
 	Text,
 	ActionSheet,
+	ListItem,
+	Grid,
+	Col,
+	Tabs,
+	Tab
 } from 'native-base';
 
 // Import Component pieces
@@ -97,16 +106,54 @@ class Account extends Component {
 						</Button>
 					</Right>
 				</Header>
-				<Header span style={Styles.accountHeader}>
+				<Header style={Styles.accountHeaderTwo}>
 					<Left>
 					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"}} />
 					</Left>
 					<Body style={Styles.accountTitle}>
-						<Title>Name</Title>
+						<Title>{this.props.user.firstName + " " + this.props.user.lastName}</Title>
 						<Subtitle>Filler</Subtitle>
 					</Body>
 				</Header>
-        </Container>
+				<Content>
+					<Grid style={Styles.statsBar}>
+						<Col style={Styles.eachStat}>
+							<Text>{this.props.user.favorites.length + this.props.user.bookmarks.length}</Text>
+							<Text>Points</Text>
+						</Col>
+						<Col style={Styles.eachStat}>
+							<Text>{Object.keys(this.props.user.postvotes).length}</Text>
+							<Text>Posts</Text>
+						</Col>
+						<Col style={Styles.eachStat}>
+							<Text>{Object.keys(this.props.user.commentvotes).length}</Text>
+							<Text>Comments</Text>
+						</Col>
+					</Grid>
+					<Tabs initialPage={0} tabStyle={Styles.allTabs}>
+					<Tab heading="Saved" tabStyle={Styles.eachTab}>
+						<View>
+							<Saved />
+						</View>
+					</Tab>
+					<Tab heading="Posts" tabStyle={Styles.eachTab}>
+						<View>
+							<Text>FUCKKKK2</Text>
+						</View>
+					</Tab>
+					<Tab heading="Comments" tabStyle={Styles.eachTab}>
+						<View>
+							<Text>FUCKKKK3</Text>
+						</View>
+					</Tab>
+					<Tab heading="History" tabStyle={Styles.eachTab}>
+						<View>
+							<Text>FUCKKKK3</Text>
+						</View>
+					</Tab>
+					</Tabs>
+				</Content>
+		</Container>
       )
   }
 }
