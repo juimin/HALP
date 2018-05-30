@@ -15,6 +15,7 @@ export default StackNavigator(
 		Home: {
 			screen: HomeScreen,
 			navigationOptions: {
+				header: null,
 				title: "HALP"
 			}
 		},
