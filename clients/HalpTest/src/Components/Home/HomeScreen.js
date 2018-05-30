@@ -5,6 +5,7 @@ import Styles from '../../Styles/Styles';
 import Theme from '../../Styles/Theme';
 
 import { API_URL } from '../../Constants/Constants';
+import { Picker } from 'react-native'
 
 // Import react-redux connect 
 import { connect } from "react-redux";
@@ -25,7 +26,6 @@ import {
 	CardItem,
 	Text,
 	Form,
-	Picker,
 	H3,
    Card,
    Icon
@@ -135,20 +135,19 @@ class HomeScreen extends Component {
                   </Button>
                </Right>
             </Header>
-				<Content>
+
+            <Content style={{
+					padding: "3%"
+				}}>
 					<Picker
 						iosHeader="Select one"
 						mode="dropdown"
 						selectedValue={this.state.pickerIndex}
 						onValueChange={this.onValueChange.bind(this)}
 					>
-					<Picker.Item label="Most Recent" value={0} />
-					<Picker.Item label="More Filters Coming Soon" value={1} />
+						<Picker.Item label="Most Recent" value={0} />
+						<Picker.Item label="More Filters Coming Soon" value={1} />
 					</Picker>
-				</Content>
-            <Content style={{
-					padding: "3%"
-				}}>
               <Content>
                 	{
                     	this.props.posts.map((item, i) => {
