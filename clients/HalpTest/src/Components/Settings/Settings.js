@@ -31,6 +31,9 @@ export default class Settings extends Component {
                     <ListItem onPress={() => this.props.navigation.navigate('Web', {uri: 'https://halpapp.github.io'})}>
                     <Text>Project Website</Text>
                     </ListItem>
+                    <ListItem onPress={() => this.props.navigation.navigate('About')}>
+                    <Text>About</Text>
+                    </ListItem>
                 </List>
                 </Content>
             </Container>

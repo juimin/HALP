@@ -96,7 +96,7 @@ class Board extends Component {
 
 	render() {
 
-		let postItems = this.state.posts.reverse().map( (post, i) => {
+		let postItems = this.state.posts.slice(0).reverse().map( (post, i) => {
 			return <LargePost key={i} post={post} />
 		});
 
@@ -142,12 +142,10 @@ class Board extends Component {
 					<Body style={Styles.accountTitle}>
 						<View flexDirection={"row"}>
 							<View flexDirection={"column"}>
-								<Title>{this.props.activeBoard.title}</Title>
+								<Title style={{textAlign: "left"}}>{this.props.activeBoard.title}</Title>
 								<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers</Subtitle>
 							</View>
-							<Button style={{marginLeft: "5%", backgroundColor: "gray"}}>
-								<Text>Subscribe</Text>
-							</Button>
+							<SubscribeButton subbed={this.isSubscribed()} authToken={this.props.authToken} board={this.props.activeBoard} user={this.props.user} returnData={this.returnData}/>
 						</View>
 						<Subtitle style={Styles.boardDesc}>{this.props.activeBoard.description}</Subtitle>
 					</Body>
