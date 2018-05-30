@@ -103,6 +103,7 @@ class Post extends Component {
       let boardName = this.state.board == null ? "Missing Board Name" : this.state.board.title
       let bookmarked = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
       let upvote = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
+      let downvote = (this.props.user != null ) ? (this.props.user.bookmarks.includes(post.id)) ? true : false : false
       return(
          <Container>
             <Card>
@@ -132,7 +133,7 @@ class Post extends Component {
                         <Icon active name="arrow-round-up"/>
                      </Button>
                      <Button transparent>
-                        <Icon active name="arrow-round-down"/>
+                        <Icon active name="arrow-round-down" style={{color: "gray"}}/>
                      </Button>
                      <Button transparent onPress={() => this.props.navigation.navigate('Comment')}>
                         <Icon active style={{color: "gray"}} name="undo"/>
