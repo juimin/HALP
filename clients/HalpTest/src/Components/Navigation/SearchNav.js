@@ -17,11 +17,13 @@ const RootStack = StackNavigator({
             header: null
          }
       },
-      Board: { screen: BoardNav }
+      Board: { 
+			screen: BoardNav
+		}
    },
    {
       initialRouteName: 'Search',
-      headerMode: 'screen',
+      headerMode: 'none',
    },
 );
 

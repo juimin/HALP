@@ -131,7 +131,7 @@ class HomeScreen extends Component {
             </Header>
 
             <Content style={{
-					padding: "3%"
+					padding: "2%"
 				}}>
 					<Picker
 						iosHeader="Select one"

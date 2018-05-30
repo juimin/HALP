@@ -57,6 +57,9 @@ class Board extends Component {
 			  subscribers: this.props.activeBoard.subscribers,
 			  posts: []
 		}
+		console.log(this.props.user)
+		console.log(this.props.activeBoard)
+		console.log(this.props)
 	}
 
 	componentWillMount = () => {
@@ -94,17 +97,20 @@ class Board extends Component {
 	render() {
 
 		let postItems = this.state.posts.reverse().map( (post, i) => {
-			console.log(post);
 			return <LargePost key={i} post={post} />
-		  });
+		});
 
 		return (
 			<ScrollView>
 			  	<Header style={Styles.boardHeader}>	
+				  	<Left>
+						<Button transparent onPress={() => {this.props.navigation.navigate("Search")}}>
+							<Icon name='arrow-round-back' />
+						</Button>
+					</Left>
 					<Right>
-						<SubscribeButton user={this.props.user} board={this.props.activeBoard} subbed={this.isSubscribed()} authToken={this.props.authToken} returnData={this.returnData.bind(this)}/>
 						<Button transparent>
-							<Icon name='create' />
+							<Icon name='search' />
 						</Button>
 						<Button transparent
 							onPress={() =>
@@ -135,10 +141,12 @@ class Board extends Component {
 					</Left>
 					<Body style={Styles.accountTitle}>
 						<Title>{this.props.activeBoard.title}</Title>
-						{/* <Right style={Styles.boardSubButton}>
-							<SubscribeButton user={this.props.user} board={this.props.activeBoard} subbed={this.isSubscribed()} authToken={this.props.authToken} returnData={this.returnData.bind(this)}/>
-						</Right>  */}
-						<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers</Subtitle>
+						<View flexDirection={"row"}>
+							<Subtitle style={Styles.boardSubs}>{this.state.subscribers} subscribers   </Subtitle>
+							<Subtitle style={{backgroundColor:"gray"}} onPress={() => {console.log("Potato")}}>
+								Subscribe
+							</Subtitle>
+						</View>
 						<Subtitle style={Styles.boardDesc}>{this.props.activeBoard.description}</Subtitle>
 					</Body>
 				</Header>
