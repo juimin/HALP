@@ -25,12 +25,12 @@ export default class Settings extends Component {
          <ScrollView >
             <Text style={Styles.settingTitle}>Settings</Text>
                <Content>
-               <ListItem onPress={() => {this.setState({
+               <ListItem>
+                  <CheckBox checked={this.state.setting1} onPress={() => {this.setState({
                   setting1: !this.state.setting1,
                   setting2: this.state.setting2,
                   setting3: this.state.setting3
-               })}}>
-                  <CheckBox checked={this.state.setting1} />
+               })}}/>
                   <Body>
                      <Text>Setting 1</Text>
                   </Body>
