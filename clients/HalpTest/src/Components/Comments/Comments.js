@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Header, Body, Title, Left, Right, Button, Text, Icon, Content } from 'native-base';
+import { Container, Header, Body, Title, Left, Right, Button, Text, Icon, Content, Textarea } from 'native-base';
 import { View, TouchableWithoutFeedback, Alert, Image, ScrollView } from 'react-native';
 
 import ImageResizer from 'react-native-image-resizer';
@@ -218,6 +218,7 @@ class Comments extends Component {
                      <Icon name='arrow-back' style={{color:"gray"}} />
                   </Button>
                </Left>
+               
             </Header>
           <View style={Styles.home}>
             <Text>You must be logged in to make a post</Text>
@@ -259,8 +260,8 @@ class Comments extends Component {
                             onPress={this.takePicture} 
                         ><Text>Upload Image</Text></Button>
                     </View>
-                    <FormLabel>Caption</FormLabel>
-                    <FormInput onChangeText={(text) => {this.state.caption = text}}/>
+                    <Textarea rowSpan={5} bordered placeholder="Caption" onChangeText={(text) => {this.state.caption = text}}/>
+          
                     <FormValidationMessage>{this.errorMessages.caption}</FormValidationMessage>
                     {/* <View style={Styles.newPostView}><Button rounded style={Styles.buttonTheme} onPress={this.submit}><Text>Post</Text></Button></View> */}
                 </ScrollView>
