@@ -215,7 +215,7 @@ class NewPost extends Component {
         }).then(response => {
           if (response.status == 201) {
             //Alert.alert('Post Success', 'Successfully submitted new post')
-            this.props.navigation.state.params.returnData2(this.state.board)
+            // this.props.navigation.state.params.returnData2(this.state.board)
             this.props.navigation.goBack(null);
           } else {
               Alert.alert(
