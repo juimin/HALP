@@ -134,7 +134,7 @@ class Board extends Component {
 				</Header>
 				<Header span style={Styles.boardHeader}>
 					<Left>
-					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://halp-staging.nyc3.digitaloceanspaces.com/Logo-09.png"}} />
+					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: this.props.activeBoard.image}} />
 					</Left>
 					<Body style={Styles.accountTitle}>
 						<View flexDirection={"row"}>
