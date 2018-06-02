@@ -18,6 +18,8 @@ import HideableView from '../Helper/HideableView';
 import RNFetchBlob from 'react-native-fetch-blob'
 global.Buffer = global.Buffer || require('buffer').Buffer
 
+console.disableYellowBox = true; //THIS SHOULD SUPPRESS THE YELLOW WARNING POPUP
+
 const mapStateToProps = (state) => {
   return {
     picture_success: state.PictureReducer.success

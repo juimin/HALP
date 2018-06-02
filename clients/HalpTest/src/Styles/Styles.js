@@ -43,7 +43,7 @@ export default StyleSheet.create({
    navigationTab: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center', 
    },
    
    // New Post View
@@ -135,7 +135,38 @@ export default StyleSheet.create({
 
    accountHeader: {
       backgroundColor: Theme.colors.secondaryColor,
-      borderBottomColor: Theme.colors.secondaryColor
+      borderBottomColor: Theme.colors.secondaryColor,
+   },
+
+   accountHeaderTwo: {
+      backgroundColor: Theme.colors.secondaryColor,
+      borderBottomColor: Theme.colors.secondaryColor,
+      marginLeft: 0,
+      width: "100%",
+      padding: 0,
+      height: 120,
+   },
+
+   statsBar: {
+      //marginTop: "25%",
+      flex: 1,
+      flexDirection: 'row',
+      width: "100%"
+   },
+
+   eachStat: {
+    width: 50, 
+    height: 50,
+    backgroundColor: 'white',
+    alignItems: 'center'
+   },
+
+   allTabs: {
+    backgroundColor: 'white'
+   },
+
+   eachTab: {
+    backgroundColor: 'white'
    },
 
     boardHeader: {
@@ -191,9 +222,45 @@ export default StyleSheet.create({
       height: 350,
     },
 
+    fullImage: {
+        height: 435,
+        width: null,
+        flex: 1
+    },
+
     button: {
       backgroundColor: Theme.colors.primaryColor,
       alignSelf: "center",
+   },
+
+   savedNothing: {
+     alignItems: 'center',
+     width: "100%"
+   },
+
+   savedSomething: {
+     alignItems: 'center',
+     width: "100%"
+   },
+
+   tabImages: {
+       width: null, 
+       flex: 1
+   },
+
+   tabHeader: {
+
+   },
+   
+   tabCard: {
+      height: 175,
+      margin: 10,
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 10,
+      marginBottom: 5,
+      alignItems: 'flex-start',
+      padding: 5
    }
    
 });

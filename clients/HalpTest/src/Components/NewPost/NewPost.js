@@ -37,7 +37,7 @@ const mapStateToProps = (state) => {
 //user.favorites should contain list of boards
 //right now it's hardcoded but replace this later
 
-const testboard = '5b077a0d0324ac00012a223a';
+const testboard = '5b0f32705131910001903c91';
 const testfavs = [testboard, '5b01b3017912ed0001434678']
 
 var ImagePicker = require('react-native-image-picker');
@@ -215,7 +215,7 @@ class NewPost extends Component {
         }).then(response => {
           if (response.status == 201) {
             //Alert.alert('Post Success', 'Successfully submitted new post')
-            this.props.navigation.state.params.returnData2(this.state.board)
+            // this.props.navigation.state.params.returnData2(this.state.board)
             this.props.navigation.goBack(null);
           } else {
               Alert.alert(
