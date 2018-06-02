@@ -39,11 +39,13 @@ class Search extends Component {
 		// Generate a class variable for input, we don't need this in global state
 		this.state = { 
 			searchTerm: "",
-			items: []
+         items: [],
+         allboards: []
 		}
 		// Bind the functions to this
 		this.search = this.search.bind(this)
-		this.load = this.load.bind(this)
+      this.load = this.load.bind(this)
+      this.getAllBoards = this.getAllBoards.bind(this)
    }
 
    componentWillMount() {
@@ -65,10 +67,11 @@ class Search extends Component {
 				}
 			}).catch(err => {
 				console.log(err)
-			})
+         })
 			// Load Subscriptions
-			this.load();
+         this.load();
       }
+      this.getAllBoards();
 	}
 
 	load() {
@@ -80,7 +83,8 @@ class Search extends Component {
 						items.push(board)
 						this.setState({
 							searchTerm: "",
-							items: items
+                     items: items,
+                     allboards: this.state.allboards
 						})
 					}
 				});
@@ -88,15 +92,23 @@ class Search extends Component {
 		} else {
 			this.setState({
 				searchTerm: "",
-				items: items
+				items: items,
+            allboards: this.state.allboards
 			})
-		}
+      }
+   
 	}
 	
 	search(text) {
 		// Search
 		if (text == "") {
-			this.load();
+         this.setState({
+            searchTerm: text,
+            items: [],
+            allboards: this.state.allboards
+         });
+         this.load();
+         this.getAllBoards();
 		} else {
 			// Perform the search
 			var items = []
@@ -108,7 +120,8 @@ class Search extends Component {
 								items.push(board)
 								this.setState({
 									searchTerm: text,
-									items: items
+									items: items,
+                           allboards: this.state.allboards
 								});
 							}
 						});
@@ -116,12 +129,41 @@ class Search extends Component {
 				} else {
 					this.setState({
 						searchTerm: text,
-						items: []
+						items: [],
+                  allboards: this.state.allboards
 					});
 				}
 			})
 		}
-	}
+   }
+   
+   getAllBoards() {
+      // Get all boards
+      console.log("ffu")
+      fetch(API_URL + "boards", {
+         method: 'GET',
+         headers: {
+               'Accept': 'application/json',
+               'Content-Type': 'application/json',
+         }
+      }).then(response => {
+         if (response.status = 200) {
+            return response.json()
+         } else {
+            return null
+         }
+      }).then(boards => {
+         if (boards != null) {
+            this.setState({
+               searchTerm: this.state.searchTerm,
+               items: this.state.items,
+               allboards: boards
+            })
+         }
+      }).catch(err => {
+         console.log(err)
+      })
+   }
 
    render() {
       return (
@@ -153,7 +195,32 @@ class Search extends Component {
                      ))
                   }
                </List>
-					<Text style={Styles.searchTitle}>{(this.state.items.length == 0) ? "No Boards Found": ""}</Text>
+               {
+                  (this.state.items.length == 0) ? <Text style={Styles.searchTitle}>    No Boards Found</Text> : <Text></Text>
+               }
+               {
+                  (this.state.searchTerm.length == 0) ? <Text style={Styles.searchTitle}>All Boards</Text> : <Text></Text>
+               }
+               <List containerStyle={Styles.searchList}>
+               {
+                  (this.state.searchTerm.length == 0) ?
+                     this.state.allboards.map((item, i) => {
+                        return <ListItem
+                        roundAvatar
+                        avatar={{uri:item.image}}
+                        key={i}
+                        title={item.title} 
+                        containerStyle={Styles.searchListItem}
+                        onPress={() => {
+                           this.props.setActiveBoard(item)
+                           this.props.navigation.navigate('Board')
+                        }
+                        }
+                     />
+                     })
+                     : <Text></Text>
+               }
+               </List> 
             </ ScrollView>
          </View>
       )

@@ -2,7 +2,11 @@
 
 // Import react components
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
+
+// For the tabs
+import TabPost from '../Posts/TabPost';
+
 import {
 	Container,
 	Right,
@@ -18,6 +22,12 @@ import {
 	Content,
 	Text,
 	ActionSheet,
+	ListItem,
+	Grid,
+	Col,
+	Tabs,
+	Tab,
+	Card
 } from 'native-base';
 
 // Import Component pieces
@@ -43,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
    return {
       addAuthToken: token => { dispatch(setTokenAction(token)) },
       setUser: usr => { dispatch(setUserAction(usr)) },
-		savePassword: pass => { dispatch(savePasswordAction(pass))}
+	  savePassword: pass => { dispatch(savePasswordAction(pass))}
    }
 }
 
@@ -54,6 +64,75 @@ class Account extends Component {
       this.state = {
 			menu: {
 				selectedIndex: -1
+			},
+			test: {
+				testPosts: [
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life ",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					},
+					{
+						id: '5b0e2dc93f33260001ab06ed',
+						title: "Real Life",
+						image_url: "https://ischool.uw.edu/fb-300x300.png",
+						caption: "I am the realest caption",
+						author_id: '5b0e01ee00031000019fc400',
+						comments: {good: "23423",bod: "242342",greatest: "242342"},
+						board_id: '5b01b3017912ed0001434678',
+						upvotes: 22,
+						downvotes: 302,
+						time_created: '2018-05-30T04:51:21.809Z',
+						time_edited: '2018-05-30T04:51:21.809Z'
+					}
+				]
 			}
       }
 	}
@@ -97,16 +176,70 @@ class Account extends Component {
 						</Button>
 					</Right>
 				</Header>
-				<Header span style={Styles.accountHeader}>
+				<Header style={Styles.accountHeaderTwo}>
 					<Left>
-					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://facebook.github.io/react-native/docs/assets/favicon.png"}} />
+					  <Thumbnail style={Styles.accountThumbnail} large source={{uri: "https://halp-staging.nyc3.digitaloceanspaces.com/Logo-09.png"}} />
 					</Left>
 					<Body style={Styles.accountTitle}>
-						<Title>Name</Title>
-						<Subtitle>Filler</Subtitle>
+						<Title>{this.props.user.firstName + " " + this.props.user.lastName}</Title>
+						<Subtitle></Subtitle>
 					</Body>
 				</Header>
-        </Container>
+				<Content>
+					<Grid style={Styles.statsBar} style={{borderTopWidth:1, borderTopColor:'gray'}}>
+						<Col style={Styles.eachStat}>
+							<Text>{this.props.user.favorites.length + this.props.user.bookmarks.length}</Text>
+							<Text>Points {console.log("pp tape", this.props.user)}</Text>
+						</Col>
+						<Col style={Styles.eachStat}>
+							<Text>{Object.keys(this.props.user.postvotes).length}</Text>
+							<Text>Posts</Text>
+						</Col>
+						<Col style={Styles.eachStat}>
+							<Text>{Object.keys(this.props.user.commentvotes).length}</Text>
+							<Text>Comments</Text>
+						</Col>
+					</Grid>
+					<Tabs initialPage={0} tabStyle={{color: '#f44336'}} style={{borderTopWidth:1, borderTopColor:'#D3D3D3'}}>
+						<Tab heading="Saved" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View style={{overflow: 'scroll'}}>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="Posts" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View style={{overflow: 'scroll'}}>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="Comments" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+						<Tab heading="History" tabStyle={{backgroundColor: 'white'}} textStyle={{color: 'gray'}} activeTabStyle={{backgroundColor: 'white'}} activeTextStyle={{color: '#f44336', fontWeight: 'bold'}}>
+							<View>
+								{
+									this.state.test.testPosts.map((item, i) => {
+										return <TabPost key={i} post={item} {...this.props}/>
+									})
+								}
+							</View>
+						</Tab>
+					</Tabs>
+				</Content>
+		</Container>
       )
   }
 }

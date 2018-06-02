@@ -6,6 +6,7 @@ import { StackNavigator } from 'react-navigation';
 import Account from '../Account/Account';
 import SearchNav from './SearchNav';
 import SignupScreen from '../SignUp/SignupScreen';
+import Post from '../Posts/Post'
 
 // Generate a stack for navigation
 // Generally, this is the component that wraps the child components
@@ -17,6 +18,9 @@ const RootStack = StackNavigator({
 			  navigationOptions: {
           header: null
         }
+      },
+      Post: {
+        screen: Post,
       },
       Signup: {
 			  screen: SignupScreen,
