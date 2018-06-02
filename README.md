@@ -48,13 +48,18 @@ Once we had decided on our implementation of the back end service, we had to con
 ### Client Development
 Our intention for this application was to provide a mobile first platform with which the users would be able to create and answer posts with ease. For this, we considered mobile capable web applications which are more easily accessible but we decided to go for native code because this would also give us more control over the user experience. Developing a standalone application has the advantage of direct installation, and when we found React-Native had the capability of developing for both Android devices as well as iOS devices at the same time, we thought that we could produce a a more consistent user experience for all users regardless of what phone they were using while maintaining an application that ran on native code. In addition, most of our team was already familiar with both React and Material UI design, which made finding packages that satisfied our eventual User Interface design easier to accomplish. The only exception to this was the drawing library that we used (Canvas), which was the best open source option we could find for quickly implementing drawing over photo capabilities without having to write a complicated piece of software ourselves in the limited time that we had.
 
+### Testing
+In terms of testing, we tried to keep the server code tested as much as possible. For this reason, we generally aimed for at least 85% code coverage on unit tests, with several components tested for integration. We believed that the server was important to test as it allowed us to see functionality before deployment and allowed us to keep a good eye on what components required work. We recognized that code coverage is not the best metric for success when writing tests, but it was important that we made sure most of the code was tested in the first place. Our priority was still in writing good tests that tested function output as well as the overall action of a system.
+
+For the client side, we actually didn't spend that much time writing unit tests since we were in a time crunch and were rushed to finish. If this application is ever deployed, testing for the client will have been done so as to give it a similar level of quality assurance as the server, mitigating any user dissatisfaction and technical debt.
+
 ## Development Team
-| Name              | Role(s)                           |
-| ----------------- |:---------------------------------:|
-| Alex Gilbert      | Product Management/Developer      |
-| Davin Lee         | Project Management/Developer      |
-| Derek Wang        | Lead Developer                    |
-| Kanon Shibata     | Lead Designer                     |
+| Name              | Role(s)                           | Contact        |
+| ----------------- |:---------------------------------:|----------------|
+| Alex Gilbert      | Product Management/Developer      | agilbe@uw.edu  |
+| Davin Lee         | Project Management/Developer      | davinl@uw.edu  |
+| Derek Wang        | Lead Developer                    | d95wang@uw.edu |
+| Kanon Shibata     | Lead Designer                     | kshibata@uw.edu|
 
 ## Project Timeline
 **[AppWeek Timeline (Read Only)](https://app.teamweek.com/#pg/6hGsJu7uJgUkuUMtogdRId_TRHJhxAar)**
