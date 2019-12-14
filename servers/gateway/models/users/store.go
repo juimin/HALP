@@ -42,6 +42,12 @@ type Store interface {
 	// UpdateBookmarks allows for updating the list of bookmarks the user has
 	BookmarksUpdate(userID bson.ObjectId, updates *BookmarksUpdate) (*User, error)
 
+	// PostVoteUpdate
+	PostVoteUpdate(userID bson.ObjectId, updates *PostVoting) (*User, error)
+
+	// CommentVoteUpdate
+	CommentVoteUpdate(userID bson.ObjectId, updates *CommentVoting) (*User, error)
+
 	// GetAll gets every user in the store
 	GetAll() ([]*User, error)
 }
