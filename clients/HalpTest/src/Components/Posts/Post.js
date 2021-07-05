@@ -130,7 +130,7 @@ class Post extends Component {
                         <Text note>{String(post.comments.length) + " Comments"}</Text>
                      </View>
                      <Button transparent>
-                        <Icon active name="arrow-round-up"/>
+                        <Icon active name="arrow-round-up" style={{color: "gray"}}/>
                      </Button>
                      <Button transparent>
                         <Icon active name="arrow-round-down" style={{color: "gray"}}/>
@@ -146,7 +146,6 @@ class Post extends Component {
                   </View>
                </CardItem>
             </Card>
-
          </Container>
       );rr
    }
